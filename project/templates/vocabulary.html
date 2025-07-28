@@ -1,0 +1,14 @@
+ <!-- templates/vocabulary.html -->
+{% extends 'nav.html' %}
+
+{% block title %}MAIN PAGE{% endblock %}
+
+{% block content %}
+    <h1>{{page_name}}</h1>
+    <h2>Вітаю на сайті!</h2>
+    <p>Це головна сторінка мого Django-проєкту.</p>
+    <button  class="js-create-new-list">Створити новий список слів</button>
+
+    <div class="js-study_list_date_container"></div>
+   <div class="study-list-container"></div>
+{% endblock %}
