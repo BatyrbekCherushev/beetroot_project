@@ -1,0 +1,38 @@
+site_name: Heroes of Word
+#site_url: https://mydomain.org/mysite
+
+nav:
+- Документація проекта:
+  - ІНТРО: DOCUMENTATION/index.md
+  - Сторінка "профіль": DOCUMENTATION/page_profile.md
+  - Сторінка "словник": DOCUMENTATION/page_vocabulary.md
+  - Сторінка "зброярня": DOCUMENTATION/page_armory.md
+  - Сторінка "арена": DOCUMENTATION/page_arena.md
+    
+
+- Команди: 
+  - DJANGO: COMMANDS/commands_django.md
+  - MKDOCS: COMMANDS/commands_mkdocs.md
+
+
+theme:
+  name: material
+  language: uk
+  features:
+    - search.highlight
+    - navigation.footer
+    - navigation.instant # ускорение загрузки (SPA)
+    - navigation.tracking # динамический URL страницы 
+    - navigation.tabs # перенос названий документов в горизонтальное меню
+    - navigation.tabs.sticky # горизонтальное меню не скрывается при прокрутке
+    - navigation.indexes # главные страницы разделов не отображаются в меню
+    - navigation.top # вкл. кнопку возврата наверх
+  palette: 
+    - scheme: default
+      toggle:
+        icon: material/brightness-7 
+        name: Темний
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Світлий
