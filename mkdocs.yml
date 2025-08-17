@@ -4,7 +4,7 @@ site_url: https://batyrbekcherushev.github.io/beetroot_project/
 repo_url: https://github.com/BatyrbekCherushev/beetroot_project
 
 nav:
-- ІНТРО: DOCUMENTATION/index.md
+- ІНТРО: index.md
 - Документація проекта:  
   - Сторінка "профіль": DOCUMENTATION/page_profile.md
   - Сторінка "словник": DOCUMENTATION/page_vocabulary.md
