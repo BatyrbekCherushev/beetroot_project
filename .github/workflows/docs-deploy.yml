@@ -3,11 +3,13 @@ name: Deploy Docs
 on:
   push:
     branches:
-      - main   # або інша гілка, з якої ти хочеш деплоїти
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # ✅ дозволяє пушити у gh-pages
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
