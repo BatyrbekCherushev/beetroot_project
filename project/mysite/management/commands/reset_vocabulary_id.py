@@ -89,6 +89,7 @@ class Command(BaseCommand):
         # CREATE NEW USER VOCABULARY
         if with_refresh:
             file_path = finders.find('mysite/DB/OXFORD_5000.db')
+            # file_path = finders.find('mysite/DB/TEST.db') # TESTING DB
             self.stdout.write("Завантажую словник із зовнішньої бази...")
             vocabulary_list = get_scratch_db(file_path)
             create_user_vocabulary(vocabulary_list)

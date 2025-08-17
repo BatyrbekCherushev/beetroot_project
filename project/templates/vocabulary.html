@@ -5,10 +5,188 @@
 
 {% block content %}
     <h1>{{page_name}}</h1>
-    <h2>Вітаю на сайті!</h2>
-    <p>Це головна сторінка мого Django-проєкту.</p>
-    <button  class="js-create-new-list">Створити новий список слів</button>
+    <h2 class="js-title">Вітаю на сайті!</h2>
+    
+  
+    
 
-    <div class="js-study_list_date_container"></div>
-   <div class="study-list-container"></div>
+    
+    <!-- BOXES WITH WORDS ==> -->
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                INFO
+            </button>    
+            </h2>
+            
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                <div class="accordion-body position-relative">
+                        <p>Це сторінка-словник. Тут ви можете:</p>
+                </div>
+            </div>
+
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+            <button class="accordion-button js-vocabulary-basic" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                Accordion Item #1
+            </button>
+            
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                <div class="accordion-body position-relative">
+                    
+                    <div class="container">
+                        <div class="row">
+                            <div class="js-title col-12 "></div>
+                        </div>
+                        <!-- Block with boxes -->
+                        <div class="row">
+                            <div class="js-box box box-REPEAT col position-relative" data-operation-area="js-operating-empty" data-box="REPEAT">
+                                <svg height="200px" width="200px" viewBox="0 0 48 48" fill="white" xmlns="http://www.w3.org/2000/svg">                   
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier"> 
+                                        <rect width="48" height="48" fill="white" fill-opacity="0.01"></rect> 
+                                        <rect class="js-box-painted box-frame" x="6" y="12" width="36" height="30" rx="2" fill="black" stroke="#000000" stroke-width="4" stroke-linejoin="round"></rect> 
+                                        <path d="M17.9498 24.0083L29.9498 24.0083" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> 
+                                        <path class="box-frame" d="M6 13L13 5H35L42 13" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                    <text class="js-box-text-REPEAT" x="50%" y="75%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
+                                </svg>
+                            </div> 
+                            <div class="js-box box box-PROCESS col position-relative" data-operation-area="js-operating-study" data-box="PROCESS">
+                                <svg height="200px" width="200px" viewBox="0 0 48 48" fill="white" xmlns="http://www.w3.org/2000/svg">                   
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier"> 
+                                        <rect width="48" height="48" fill="white" fill-opacity="0.01"></rect> 
+                                        <rect class="js-box-painted box-frame" x="6" y="12" width="36" height="30" rx="2" fill="orange" stroke="#000000" stroke-width="4" stroke-linejoin="round"></rect> 
+                                        <path d="M17.9498 24.0083L29.9498 24.0083" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> 
+                                        <path class="box-frame" d="M6 13L13 5H35L42 13" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                    <text class="js-box-text-PROCESS" x="50%" y="75%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
+                                </svg>
+                            </div>   
+                            <div class="js-box box box-BOX_1 col position-relative " data-operation-area="js-operating-testing" data-box="BOX_1">
+                                <span class="js-usable box-badge"></span>
+                                <svg height="200px" width="200px" viewBox="0 0 48 48" fill="white" xmlns="http://www.w3.org/2000/svg">                   
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier"> 
+                                        <rect width="48" height="48" fill="white" fill-opacity="0.01"></rect> 
+                                        <rect class="js-box-painted box-frame" x="6" y="12" width="36" height="30" rx="2" fill="lightblue" stroke="#000000" stroke-width="4" stroke-linejoin="round"></rect> 
+                                        <path d="M17.9498 24.0083L29.9498 24.0083" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> 
+                                        <path class="box-frame" d="M6 13L13 5H35L42 13" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                    <text class="js-box-text-BOX_1" x="50%" y="75%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
+                                </svg>
+                            </div>   
+                            <div class="js-box box box-BOX_2 col " data-operation-area="js-operating-testing" data-box="BOX_2">
+                                <svg height="200px" width="200px" viewBox="0 0 48 48" fill="white" xmlns="http://www.w3.org/2000/svg">                   
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier"> 
+                                        <rect width="48" height="48" fill="white" fill-opacity="0.01"></rect> 
+                                        <rect class="js-box-painted box-frame" x="6" y="12" width="36" height="30" rx="2" fill="blue" stroke="#000000" stroke-width="4" stroke-linejoin="round"></rect> 
+                                        <path d="M17.9498 24.0083L29.9498 24.0083" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> 
+                                        <path class="box-frame" d="M6 13L13 5H35L42 13" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                    <text class="js-box-text-BOX_2" x="50%" y="75%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
+                                </svg>
+                            </div>
+                            <div class="js-box box box-BOX_3 col" data-operation-area="js-operating-testing" data-box="BOX_3">
+                                <svg height="200px" width="200px" viewBox="0 0 48 48" fill="white" xmlns="http://www.w3.org/2000/svg">                   
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier"> 
+                                        <rect width="48" height="48" fill="white" fill-opacity="0.01"></rect> 
+                                        <rect class="js-box-painted box-frame"x="6" y="12" width="36" height="30" rx="2" fill="darkblue" stroke="#000000" stroke-width="4" stroke-linejoin="round"></rect> 
+                                        <path d="M17.9498 24.0083L29.9498 24.0083" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> 
+                                        <path class="box-frame" d="M6 13L13 5H35L42 13" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                    <text class="js-box-text-BOX_3" x="50%" y="75%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
+                                </svg>
+                            </div>
+                            <div class="js-box box box-LEARNT col" data-operation-area="js-operating-testing" data-box="LEARNT">
+                                <svg height="200px" width="200px" viewBox="0 0 48 48" fill="white" xmlns="http://www.w3.org/2000/svg">                   
+                                    <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                                    <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                                    <g id="SVGRepo_iconCarrier"> 
+                                        <rect width="48" height="48" fill="white" fill-opacity="0.01"></rect> 
+                                        <rect class="js-box-painted box-frame" x="6" y="12" width="36" height="30" rx="2" fill="green" stroke="#000000" stroke-width="4" stroke-linejoin="round"></rect> 
+                                        <path d="M17.9498 24.0083L29.9498 24.0083" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path> 
+                                        <path class="box-frame" d="M6 13L13 5H35L42 13" stroke="#000000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </g>
+                                    <text class="js-box-text-LEARNT" x="50%" y="75%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
+                                </svg>                
+                            </div> 
+                        </div>
+                        <!-- Operating area with current study words and create study list logic-->
+                        <div class="js-operating-study oper_area oper_area_study row justify-content-center d-none">
+                            <div class="col-12">
+                                <label for="">Take
+                                    <input id="number_rep_words" type="number" value="0" > words from REPEAT BOX
+                                </label><br>
+                                <label for="">Take
+                                    <input id="number_new_words" type="number" value="0"> words from NEW words
+                                </label><br>
+                                
+                                <button  class="js-create-new-list">Створити новий список слів</button>
+                                <div class="js-study_list_date_container"></div>
+                            </div>
+                            <div class="col-12">
+                                <div class="position-relative align-self-center card-wrapper-container">
+                                    <button class="js-previous-card navigation_button navigation_button_prev">⬅️</button>
+                                    <div class="js-flip-card-container card-wrapper"></div>
+                                    <button class="js-next-card navigation_button navigation_button_next">➡️</button>
+                                </div>
+                            </div>                         
+                        </div>
+                        <div class="js-operating-testing oper_area oper_area_testing row d-none" data-operating-box="">
+                            <div class="col">
+                                <p>Коли Ви натискаєте НЕКСТ відбувається пошук серед слів у відповідній коробці, які сьогодні не міняли свого статусу. Тобто якщо слово попало в цю коробку сьогодні, Вам його не видасть.</p>
+                                <button class="js-next-word"> Next word</button>
+                                <p class="js-show-word"></p>
+                                <input class="js-input-answer" type="text" data-word-id="" data-word-box="">
+                                <button class="js-test-answer"> TEST</button>
+                                <div class="js-feedback"></div>
+                                
+                            </div>
+                        </div>
+                        <div class="js-operating-empty d-none">
+                            NO INFO HERE
+                        </div>
+                        
+                        
+                    </div>
+                    
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- <== BOXES WITH WORDS -->
+        
+
+
+    <!-- TOAST -->
+     <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header text-center">
+            <!-- <img src="..." class="rounded me-2" alt="..."> -->
+            <strong class="me-auto ">СТВОРЕННЯ НОВОГО СПИСКУ СЛІВ</strong>
+            <small></small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+            Новий список слів створено успішно!
+            </div>
+        </div>
+    </div>
+     <!-- TOAST -->
+    
 {% endblock %}

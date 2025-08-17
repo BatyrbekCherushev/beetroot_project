@@ -1,3 +1,4 @@
+import os
 """
 Django settings for project project.
 
@@ -121,3 +122,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+LOGIN_URL = '/login/'  # тут має бути шлях до твого логіну
+LOGIN_REDIRECT_URL = '/'  # куди редіректити після успішного логіну
+LOGOUT_REDIRECT_URL = '/login/'  # куди після логауту
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
