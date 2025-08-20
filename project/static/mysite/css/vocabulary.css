@@ -1,0 +1,47 @@
+/* .box-active {
+    border-radius: 40px;
+    background-color: lightslategray;
+} */
+
+
+.oper_area_study {
+    background-color: lightgray;
+    border: 2px;
+    border-radius: 10px;
+    border-color: black;
+}
+
+.oper_area_testing {
+    background-color: orange;
+}
+
+
+.box-overloaded .js-box-painted,
+.box-overloaded .box-frame {
+    stroke: darkred;
+    fill: red;
+}
+
+.box:hover .box-frame {
+    stroke: lightgrey;
+    cursor: pointer;
+}
+
+.box:active .box-frame,
+.box-active:active .box-frame {
+    stroke: orange;
+}
+
+.box-active .box-frame {
+    stroke: blueviolet;
+}
+
+.box-badge {
+    position: absolute;
+    background-color: aqua;
+    border-radius: 30px;
+    padding: 5px;
+    bottom: 0;
+    width: 30px;
+    height: 30px;
+}

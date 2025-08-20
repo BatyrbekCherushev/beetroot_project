@@ -7,5 +7,81 @@
     <h1>{{page_name}}</h1>
     <h2>WELCOME TO YOUR PERSONAL ROOM</h2>
     <p>YOU CAN GET SOME INFORMATION HERE ABOUT YOUR SUCCESS</p>
-    <div class="js-show-settings"></div>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="accordion" id="accordion-panel-profile">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                            Характеристики вашого персонажа
+                        </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
+                        <div class="accordion-body text-start">
+                            <p class="">Рівень:</p>
+                            <p class="">Сила:</p>
+                            <p class="">Ловкость:</p>
+                            <p class="">Витривалість:</p>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                        <button class="accordion-button " type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                            Налаштування базового словника
+                        </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse show">
+                        <div class="accordion-body text-start">
+                            {{settings}}
+                            <form class="js-form-settings"  method="POST" action="" >
+                                 {% csrf_token %}
+                                <label for="settings-form-min_words_number">Мінімальна кількість слів в навчальному списку<br>
+                                    <input id="settings-form-min_words_number" class="settings_input"  type="number" value ="{{settings.min_words_number}}" >
+                                </label>
+                                <br>
+                                <label for="settings-form-new_words_number">Дефолтна кількість слів зі статусом "НОВЕ" при створенні навчального списку<br>
+                                    <input id="settings-form-new_words_number" class="settings_input"  type="number" value ="{{settings.new_words_number}}" >
+                                </label>
+                                <br>
+                                <label for="settings-form-rep_words_number">Дефолтна кількість слів з коробки "ПОВТОРЕННЯ" при створенні навчального списку<br>
+                                    <input id="settings-form-rep_words_number" class="settings_input"  type="number" value ="{{settings.rep_words_number}}" >
+                                </label>
+                                <br>
+                                <label for="settings-form-BOX_1_limit">Макс кількість слів в КОРОБКА-1 до якої вона не стає червона<br>
+                                    <input id="settings-form-BOX_1_limit" class="settings_input"  type="number" value ="{{settings.BOX_1_limit}}" >
+                                </label>
+                                <br>
+                                <label for="settings-form-BOX_2_limit">Макс кількість слів в КОРОБКА-2 до якої вона не стає червона<br>
+                                    <input id="settings-form-BOX_2_limit" class="settings_input"  type="number" value ="{{settings.BOX_2_limit}}" >
+                                </label>
+                                <br>
+                                <label for="settings-form-BOX_3_limit">Макс кількість слів в КОРОБКА-3 до якої вона не стає червона<br>
+                                    <input id="settings-form-BOX_3_limit" class="settings_input"  type="number" value ="{{settings.BOX_3_limit}}" >
+                                </label>
+                                <br>
+                                <button type="submit">ЗБЕРЕГТИ НОВІ НАЛАШТУВАННЯ</button>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                            Налаштування кастомного словника
+                        </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <strong>This is the third item’s accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It’s also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                
 {% endblock %}

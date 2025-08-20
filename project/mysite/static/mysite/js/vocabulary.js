@@ -1,6 +1,10 @@
 let words = '';
 let currentBox = ''
-// let userInfo
+const NEXT_BOX_SCHEME = {
+  'BOX_1': 'BOX_2',
+  'BOX_2': 'BOX_3',
+  'BOX_3': 'LEARNT'
+}
 
 const toastLiveExample = document.getElementById('liveToast')
 const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
@@ -13,44 +17,34 @@ function showLocalStorage(){
   console.log(`Showing local storage ${localStorage.getItem("daily_words_date")}`)
 }
 
-function getCookie(name) {
-  let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
-    const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
-      const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
-        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-        break;
-      }
-    }
-  }
-  return cookieValue;
-}
+
 
 async function getStatisticsBasic() {
   fetch('/get-statistics-basic/')
     .then(response => response.json())
     .then(data => {
       refreshStatistics(data);  
-      console.log(data)
+      // console.log(data)
     });
 }
 
 function refreshStatistics(data) {
   document.querySelector('.js-vocabulary-basic').textContent = `BASIC VOCABULARY (${data['TOTAL']} words totally, ${data['NEW']} new words, ${data['REPEAT']} words for repeat)`;
-  // console.log(data)
+  // console.log('vocabulary.js: ', JSON.parse(localStorage.getItem('userInfo'))['settings']);
   const categories = ['REPEAT','PROCESS','BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']
+  const settings = JSON.parse(localStorage.getItem('userInfo'))['settings'];
         for (const category of categories){
           let text = '';
           if (['BOX_1', 'BOX_2', 'BOX_3'].includes(category)) {
-            text = `${data[category]} / ${window.userInfo['settings'][`${category}_limit`]}`
+            text = `${data[category]} / ${settings[`${category}_limit`]}`
+            document.querySelector(`.js-box.box-${category} .js-usable`).textContent = data[`${category}_usable`] + " для тесту";
           } else {
             text = data[category];
           }
+            // console.log(category)
             document.querySelector(`.js-box-text-${category}`).textContent = text;
         }
-    document.querySelector('.js-usable').textContent = data['BOX_1_usable']
+    document.querySelector('.js-box.box-LEARNT .js-usable').textContent = data['LEARNT_usable'] + " для тесту";
         paintBoxes(data);
 }
 
@@ -58,32 +52,19 @@ function refreshStatistics(data) {
 function paintBoxes(data){
   for (category of ['BOX_1', 'BOX_2', 'BOX_3']) {
     // console.log(category);
-    if (data[category] >= window.userInfo['settings'][`${category}_limit`]) {
-     document.querySelector(`.js-box.box-${category}`).classList.add('box-overloaded');
+    // console.log(JSON.parse(localStorage.getItem('userInfo'))['settings'][`${category}_limit`])
+    if (data[category] >= JSON.parse(localStorage.getItem('userInfo'))['settings'][`${category}_limit`]) {
+     document.querySelector(`.js-box.box-${category}`).classList.add('box_overloaded');
       }
   else {
-    document.querySelector(`.js-box.box-${category}`).classList.remove('box-overloaded');
+    document.querySelector(`.js-box.box-${category}`).classList.remove('box_overloaded');
   }
   }
-// if (data['BOX_1'] >= window.userSettings['box_1_limit']) {
-//         document.querySelector('.js-box-painted-BOX_1').classList.add('box-overloaded');
-//       }
-// else {
-//   document.querySelector('.js-box-painted-BOX_1').classList.remove('box-overloaded');
-// }
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
   const storedWords = localStorage.getItem("daily_words");
   const storedDate = localStorage.getItem("daily_words_date");
-  
-  // try {
-  //       userInfo = await getUserInfo();  // чекаємо завершення fetch
-        
-  //   } catch (err) {
-  //       console.error(err);
-  //   }
-
   if (storedWords) {
     // повертаємо збережені слова
     words = JSON.parse(storedWords);
@@ -99,7 +80,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 const createButton = document.querySelector('.js-create-new-list')
 
 createButton.addEventListener('click', (event) =>{
-    createStudyList();
+    if (document.querySelector('.js-box.box-BOX_1').classList.contains('box_overloaded')){
+      alert('BOX-1 does not have place')
+    } else {
+      createStudyList();
+    }
+    
    
 });
 
@@ -108,7 +94,7 @@ const previousCardBtn = document.querySelector('.js-previous-card');
 const nextCardBtn = document.querySelector('.js-next-card');
 
 previousCardBtn.addEventListener('click', () => {
-  const activeElement = document.querySelector('.card-container.active');
+  const activeElement = document.querySelector('.card_container.active');
   let prevElement = activeElement?.previousElementSibling;
   if (prevElement) {
     prevElement.classList.add('active');
@@ -119,6 +105,22 @@ previousCardBtn.addEventListener('click', () => {
   } else {
     previousCardBtn.disabled = true;
 
+  }
+});
+
+// SHOW NEXT CARD
+nextCardBtn.addEventListener('click', () => {
+  const activeElement = document.querySelector('.card_container.active');
+  let nextElement = activeElement?.nextElementSibling;
+  
+  if (nextElement){
+    nextElement.classList.add('active');
+    activeElement.classList.remove('active');
+    if (previousCardBtn.disabled) {
+      previousCardBtn.disabled = false;
+    }
+  } else {
+    nextCardBtn.disabled = true;
   }
 });
 
@@ -178,25 +180,71 @@ function fillWords(wordsList, createDate){
   container.innerHTML = '';
   wordsList.forEach((word, index) => {     
     const item = document.createElement('div');
-    item.classList.add('card','card-container')
+    item.classList.add('card_container')
    
     if (index === 0) {
         item.classList.add('active'); // Перший елемент каруселі має бути активним
       }
 
-      item.innerHTML = `
-        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill  text-bg-secondary">${index + 1}</span>
-        <h5 class="card-header">${word.articke + ' ' + word.eng}</h5>
-        <div class="card-body flip-card p-0 m-0 w-100">
-        <div class="flip-card-inner js-flip-card">
-            <div class="flip-card-front">${'SOME COMMENTARY'}</div>
-            <div class="flip-card-back">${word.ukr}</div>
+      item.innerHTML =
+      `
+      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill  text-bg-secondary">${index + 1}</span>
+      <div class="card_warpper flip-card">
+      
+            <div class="flip-card-inner js-flip-card">
+                <div class="flip-card-front">${word.article + ' ' + word.eng}</div>
+                <div class="flip-card-back">${word.ukr}</div>
+                <div class="accordion" id="word-accordion">
+                    
+                </div>
+            </div>
+            
         </div>
+        <div class="accordion_wrapper">
+            <div class="accordion" id="accordionWord-${index + 1}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCommentary-${index + 1}" aria-expanded="true" aria-controls="collapseCommentary-${index + 1}">
+                        COMMENTS
+                    </button>
+                    </h2>
+                    <div id="collapseCommentary-${index + 1}" class="accordion-collapse collapse" data-bs-parent="#accordionWord-${index + 1}">
+                    <div class="accordion-body">
+                        ${'SOME COMMENTARY'}
+                    </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSynonims-${index + 1}" aria-expanded="false" aria-controls="collapseSynonims-${index + 1}">
+                        SYNONIMS
+                    </button>
+                    </h2>
+                    <div id="collapseSynonims-${index + 1}" class="accordion-collapse collapse" data-bs-parent="#accordionWord-${index + 1}">
+                    <div class="accordion-body">
+                        ${'SYNONIMS: ' + word.synonims}
+                    </div>
+                    </div>
+                </div>
+  
+            </div>
+        </div>`;
+      
+      
+      
+      // `
+      //   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill  text-bg-secondary">${index + 1}</span>
+      //   <h5 class="card-header">${word.article + ' ' + word.eng}</h5>
+      //   <div class="card-body flip-card p-0 m-0 w-100">
+      //   <div class="flip-card-inner js-flip-card">
+      //       <div class="flip-card-front">${'SOME COMMENTARY'}</div>
+      //       <div class="flip-card-back">${word.ukr}</div>
+      //   </div>
           
-        </div>
-        <div class="card-footer text-body-secondary">${'SYNONIMS: ' + word.synonims}</div>
+      //   </div>
+      //   <div class="card-footer text-body-secondary">${'SYNONIMS: ' + word.synonims}</div>
         
-      `;
+      // `;
       container.appendChild(item);
   });
 
@@ -209,21 +257,7 @@ function fillWords(wordsList, createDate){
 });
 }
 
-// SHOW NEXT CARD
-nextCardBtn.addEventListener('click', () => {
-  const activeElement = document.querySelector('.card-container.active');
-  let nextElement = activeElement?.nextElementSibling;
-  
-  if (nextElement){
-    nextElement.classList.add('active');
-    activeElement.classList.remove('active');
-    if (previousCardBtn.disabled) {
-      previousCardBtn.disabled = false;
-    }
-  } else {
-    nextCardBtn.disabled = true;
-  }
-});
+
 
 //СLICK on BOX element на бокс він стає активним і в оперативні області з'являється відповідний контент
 document.querySelectorAll('.js-box').forEach(box => {
@@ -276,7 +310,7 @@ function getNextWord(boxName) {
                 alert('Слова для цього бокса закінчилися');
                 return;
             }
-
+            // console.log('NEXT BUTTON CLICK: ', data)
             const word = data.word;
             // console.log('Наступне слово:', word.eng);
             // тут можна оновити UI: показати слово користувачу
@@ -290,6 +324,13 @@ document.querySelector('.js-next-word').addEventListener('click', () => {
 })
 
 document.querySelector('.js-test-answer').addEventListener('click',async () => {
+  // console.log(`.js-box.box-${NEXT_BOX_SCHEME[currentBox]}`);
+    const next_box_selector_part = NEXT_BOX_SCHEME[currentBox]
+    const next_box = document.querySelector(`.js-box.box-${next_box_selector_part}`);
+    
+   if (next_box && next_box.classList.contains('box_overloaded')) {
+    alert(`BOX ${next_box_selector_part} is overloaded`)
+   } else {
     const input = document.querySelector('.js-input-answer');
     const word_id = input.dataset.wordId
     const answer = input.value.trim();
@@ -336,11 +377,14 @@ document.querySelector('.js-test-answer').addEventListener('click',async () => {
         }
         clear_input(); // очищаємо інпут
         getStatisticsBasic();
+        getNextWord(currentBox);
 
     } catch (err) {
         // console.error('Помилка при відправці відповіді:', err);
         feedback.textContent = 'Помилка при перевірці відповіді';
     }
+   }
+    
 });
 
 

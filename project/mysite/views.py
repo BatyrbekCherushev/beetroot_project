@@ -50,9 +50,12 @@ def login_and_register(request):
 @login_required
 def index_page(request):
     return render(request, 'index.html', context = {'page_name': 'index'})
+
 @login_required
 def profile_page(request):
-    return render(request, 'profile.html', context = {'page_name': 'profile',})
+    return render(request, 'profile.html', context = {'page_name': 'profile',
+                                                      'player_info': get_player_info(request.user),
+                                                      'settings': get_settings_vocabulary_basic(request.user)})
 @login_required
 def vocabulary_page(request):
     return render(request, 'vocabulary.html', context = {'page_name': 'vocabulary',})
@@ -176,7 +179,7 @@ def get_box_word(request):
     # Беремо випадкове слово з цього бокса
     # word_progress = UserWordsProgress.objects.filter(user=user, status=box).exclude(status_changed_date__date=today).order_by('?').first() #стара версія де перевірялось що статус слова помінявся не сьогодні
     #тепер бере слово якщо дата зміни статусу не менше ніж закладено в налаштування користувача
-    word_progress = UserWordsProgress.objects.filter(user=user, status=box, status_changed_date__date__lte=today - timedelta(days=user_settings.testing_days_limit)).order_by('?').first()
+    word_progress = UserWordsProgress.objects.filter(user=user, status=box, status_changed_date__date__lt=today - timedelta(days=user_settings.testing_days_limit)).order_by('?').first()
 
     
 
@@ -268,7 +271,11 @@ def get_statistics_basic(request):
     count_box_2_words = UserWordsProgress.objects.filter(user=user, status='BOX_2').count()
     count_box_3_words = UserWordsProgress.objects.filter(user=user, status='BOX_3').count()
     count_learnt_words = UserWordsProgress.objects.filter(user=user, status='LEARNT').count()
-    count_new_words = count_total_words -count_repeat_words - count_process_words - count_box_1_words -count_box_2_words - count_box_3_words - count_learnt_words
+    count_new_words = count_total_words - count_repeat_words - count_process_words - count_box_1_words - count_box_2_words - count_box_3_words - count_learnt_words
+    
+
+    limit_date = today - timedelta(days=user.settings.testing_days_limit)
+
 
     # TEST response
     return JsonResponse({
@@ -277,9 +284,10 @@ def get_statistics_basic(request):
         'REPEAT': count_repeat_words,
         'PROCESS': count_process_words,
         'BOX_1': count_box_1_words,
-        'BOX_1_usable': UserWordsProgress.objects.filter(user=user, status='BOX_1', status_changed_date__date__lte=today - timedelta(days=user_settings.testing_days_limit)).count(),
-        'BOX_2_usable': UserWordsProgress.objects.filter(user=user, status='BOX_2', status_changed_date__date__lte=today - timedelta(days=user_settings.testing_days_limit)).count(),
-        'BOX_3_usable': UserWordsProgress.objects.filter(user=user, status='BOX_3', status_changed_date__date__lte=today - timedelta(days=user_settings.testing_days_limit)).count(),
+        'BOX_1_usable': UserWordsProgress.objects.filter(user=user, status='BOX_1', status_changed_date__date__lt=limit_date).count(),
+        'BOX_2_usable': UserWordsProgress.objects.filter(user=user, status='BOX_2', status_changed_date__date__lt=limit_date).count(),
+        'BOX_3_usable': UserWordsProgress.objects.filter(user=user, status='BOX_3', status_changed_date__date__lt=limit_date).count(),
+        'LEARNT_usable': UserWordsProgress.objects.filter(user=user, status='LEARNT', status_changed_date__date__lt=limit_date).count(),
         # 'BOX_2': 200,
         'BOX_2': count_box_2_words,
         'BOX_3': count_box_3_words,
@@ -289,29 +297,38 @@ def get_statistics_basic(request):
         'BOX_3_LIMIT': user_settings.box_3_limit})
 
 # PROFILE =============================================================================================
-@login_required
-def get_user_info(request):
+BOX_1_LIMIT_MIN = 90
 
-    user_settings = request.user.settings
-    user_profile = request.user.profile
-    return JsonResponse({
-        'profile':{
+def get_settings_vocabulary_basic(user):
+    user_settings = user.settings
+    return {        
+        'new_words_number': user_settings.new_words_number,
+        'rep_words_number': user_settings.rep_words_number,
+        'min_words_number': user_settings.min_words_number, 
+        'BOX_1_limit': user_settings.box_1_limit,
+        'BOX_1_limit_min': BOX_1_LIMIT_MIN,
+        'BOX_2_limit':user_settings.box_2_limit,
+        'BOX_3_limit': user_settings.box_3_limit}
+
+
+def get_player_info(user):
+    user_profile = user.profile
+    return {
+            'user_name': user.username, 
             'level': user_profile.level,
             'current_exp': user_profile.current_exp,
             'currency': user_profile.currency,
-        },
-        'settings':{
-                    'user_name': request.user.username, 
-                    'new_words_number': user_settings.new_words_number,
-                    'rep_words_number': user_settings.rep_words_number,
-                    'min_words_number': user_settings.min_words_number, 
-                    'BOX_1_limit': user_settings.box_1_limit,
-                    'BOX_2_limit':user_settings.box_2_limit,
-                    'BOX_3_limit': user_settings.box_3_limit},
+        }
 
-            
-        
-    })
+@login_required
+def get_user_info(request):
+    user = request.user
+    
+    return JsonResponse({
+        'profile': get_player_info(user),
+        'settings':get_settings_vocabulary_basic(user)
+        })
+
 # TESTING ==============================================================================================
 import random
 
