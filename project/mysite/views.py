@@ -129,7 +129,9 @@ def create_study_list(request):
             'article': word.article,
             'eng': word.eng,
             'ukr': word.ukr,
-            'synonims': word.synonims, 
+            'synonims': word.synonims,
+            'word_type': word.word_type,
+            'word_level': word.word_level 
         })
 
     if len(words_list) == 0:

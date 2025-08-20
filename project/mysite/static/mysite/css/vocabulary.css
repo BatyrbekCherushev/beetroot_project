@@ -106,30 +106,82 @@
     justify-self: center;
 }
 
-.badge_date {
-    position: absolute;
-    top: 0;
-    left: 0;
-    
-}
-
 .cards_wrapper {
-    margin-top: 30px;
+    margin-top: 60px;
     display: flex;
     justify-self: center;
-    width: 450px;
     justify-content: center;
     align-content: center;
+    border: 2px solid darkred;
+    border-radius: 5px;
+    box-shadow: 5px 5px 10px rgba(240, 5, 5, 0.3);
 }
 
 .card_container {
     width: 300px;
     display:none;
+    position: relative;
 }
 
 .card_container.active {
     display: block;
 }
+
+/* BADGES */
+.card_badge {
+    border: 2px solid darkred;
+    border-radius: 30px;
+    min-width: 36px;
+    background-color: white;
+    position: absolute;
+    top: -43px;
+    padding: 4px;
+    box-shadow: 5px 5px 10px rgba(240, 5, 5, 0.3);
+}
+
+.badge_index {    
+    width: 30px;
+    left: 2px;
+}
+
+.badge_word_level {
+    left: 40px;
+}
+
+.badge_word_type {
+left: 80px;
+}
+
+.badge_date {
+    position: absolute;
+    cursor:pointer;
+    width: 30px;    
+    top: 18px;
+    right: 0%;
+}
+
+.badge_date::after {
+  content: attr(data-tooltip); /* бере текст із атрибуту */
+  position: absolute;
+  top: 0;
+  right: -11%;
+  transform: translateX(101%);
+  background: white;
+  color: darkred;
+  border: 2px solid darkred;
+  padding: 5px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.3s;
+  white-space: nowrap;
+  box-shadow: 5px 5px 10px rgba(240, 5, 5, 0.3);
+}
+
+.badge_date:hover::after {
+  opacity: 1;
+}
+
+
 
 
 
@@ -175,21 +227,38 @@
   transform: rotateY(180deg);
 }
 
+/* NAVIGATION */
 .navigation_button {
-position: absolute;
-top: 50%;
-font-size: xx-large;
-border: none;
-background-color: transparent;
+    width: 60px;
+    position: absolute;
+    top: 50%;
+    font-size: xx-large;
+    /* border: none; */
+    /* background-color: transparent; */
+    border-radius: 30px;
+    border: 2px solid darkred;
+    color: darkred;
+    box-shadow: 5px 5px 10px rgba(240, 5, 5, 0.3);
+}
+
+.navigation_button:hover {
+    color: lightblue;
+    border-color: rgb(173, 216, 230);
+    box-shadow: 5px 5px 10px rgba(173, 216, 230, 0.3);
+}
+
+.navigation_button:active {
+    color: white;
+    border-color: white;
 }
 
 .navigation_button_prev {
-    top: 0;
-    left: -16%
+    top: 90px;
+    left: -22%
 }
 
 .navigation_button_next {
-    top: 0;
-    right: -16%
+    top: 90px;
+    right: -22%
 }
 /* CARDS - END */

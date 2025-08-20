@@ -174,7 +174,8 @@ function createStudyList() {
 function fillWords(wordsList, createDate){
   // console.log(wordsList)
   const dateItem = document.querySelector('.js-study_list_date_container')
-  dateItem.innerHTML = `List creating date: ${createDate}`
+  dateItem.textContent = 'D';
+  dateItem.dataset.tooltip = `List creating date: ${createDate}`;
 
   const container = document.querySelector('.js-flip-card-container');
   container.innerHTML = '';
@@ -188,8 +189,11 @@ function fillWords(wordsList, createDate){
 
       item.innerHTML =
       `
-      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill  text-bg-secondary">${index + 1}</span>
-      <div class="card_warpper flip-card">
+      <span class="card_badge badge_index">${index + 1}</span>
+      <span class="card_badge badge_word_level">${word.word_level}</span>
+      <span class="card_badge badge_word_type">${word.word_type}</span>
+      
+      <div class=" card_warpper flip-card">
       
             <div class="flip-card-inner js-flip-card">
                 <div class="flip-card-front">${word.article + ' ' + word.eng}</div>
@@ -201,14 +205,14 @@ function fillWords(wordsList, createDate){
             
         </div>
         <div class="accordion_wrapper">
-            <div class="accordion" id="accordionWord-${index + 1}">
+            <div class="accordion accordion-flush" id="accordionWord-${index + 1}">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                     <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCommentary-${index + 1}" aria-expanded="true" aria-controls="collapseCommentary-${index + 1}">
                         COMMENTS
                     </button>
                     </h2>
-                    <div id="collapseCommentary-${index + 1}" class="accordion-collapse collapse" data-bs-parent="#accordionWord-${index + 1}">
+                    <div id="collapseCommentary-${index + 1}" class="accordion-collapse collapse" >
                     <div class="accordion-body">
                         ${'SOME COMMENTARY'}
                     </div>
@@ -220,7 +224,7 @@ function fillWords(wordsList, createDate){
                         SYNONIMS
                     </button>
                     </h2>
-                    <div id="collapseSynonims-${index + 1}" class="accordion-collapse collapse" data-bs-parent="#accordionWord-${index + 1}">
+                    <div id="collapseSynonims-${index + 1}" class="accordion-collapse collapse" >
                     <div class="accordion-body">
                         ${'SYNONIMS: ' + word.synonims}
                     </div>
