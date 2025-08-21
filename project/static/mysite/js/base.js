@@ -1,7 +1,4 @@
-
-
-
-export function getCookie(name) {
+function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
     const cookies = document.cookie.split(';');
@@ -17,8 +14,10 @@ export function getCookie(name) {
 }
 
 async function init() {
-    window.userInfo = await getUserInfo();
-    console.log(window.userInfo);
+    // window.userInfo = await getUserInfo();
+    userInfo = await getUserInfo();
+    localStorage.setItem('userInfo', JSON.stringify(userInfo)) 
+    console.log('base.js:', localStorage.getItem('userInfo'));
 }
 
 async function getUserInfo() {
