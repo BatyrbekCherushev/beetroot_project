@@ -13,3 +13,6 @@ __pycache__/
 
 # Системне
 .DS_Store
+
+#python environment
+myenv/
