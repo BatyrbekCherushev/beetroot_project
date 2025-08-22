@@ -34,6 +34,6 @@ urlpatterns = [
     path('arena/', views.arena_page, name = 'arena'),    
     
     #pygame
-    path("api/word/", views.get_word, name="get_word")    
+    path("api/word/", views.minigame_get_word, name="get_word")    
 ]
 

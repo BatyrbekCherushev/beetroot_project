@@ -7,11 +7,12 @@ const NEXT_BOX_SCHEME = {
   'BOX_3': 'LEARNT'
 }
 
+
 const toastLiveExample = document.getElementById('liveToast')
 const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-const noWordsModal = new bootstrap.Modal('#modalNoWordsForTest', {
-  keyboard: false
-});
+// const noWordsModal = new bootstrap.Modal('#modalNoWordsForTest', {
+//   keyboard: false
+// });
 
 
 // bASIC FUNCTIONS ==================================================================================================
@@ -42,17 +43,17 @@ function refreshStatistics(data) {
   const categories = ['REPEAT','PROCESS','BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']
   const settings = JSON.parse(localStorage.getItem('userInfo'))['settings'];
         for (const category of categories){
-          let text = '';
-          if (['BOX_1', 'BOX_2', 'BOX_3'].includes(category)) {
-            text = `${data[category]} / ${settings[`${category}_limit`]}`
-            document.querySelector(`.js-box.box-${category} .js-usable`).textContent = data[`${category}_usable`] + " для тесту";
-          } else {
-            text = data[category];
+          let text = data[category];
+          if (['BOX_1', 'BOX_2', 'BOX_3', 'LEARNT'].includes(category)) {
+            if (category != 'LEARNT') {
+              text = text +` / ${settings[`${category}_limit`]}`
+            }
+            document.querySelector(`.js-box.box-${category} .js-test`).textContent = data[`${category}_usable`] + " для тесту";
           }
             // console.log(category)
             document.querySelector(`.js-box-text-${category}`).textContent = text;
         }
-    document.querySelector('.js-box.box-LEARNT .js-usable').textContent = data['LEARNT_usable'] + " для тесту";
+    // document.querySelector('.js-box.box-LEARNT .js-test').textContent = data['LEARNT_usable'] + " для тесту";
         paintBoxes(data);
 }
 
@@ -93,18 +94,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 // СLIK create link under the PROCESS box
 document.querySelector('.js-link-create-list')
 
-// CLICK on CREATE NEW LIST BUTTON
-const createButton = document.querySelector('.js-create-new-list')
 
-createButton.addEventListener('click', (event) =>{
-    if (document.querySelector('.js-box.box-BOX_1').classList.contains('box_overloaded')){
-      alert('BOX-1 does not have place')
-    } else {
-      createStudyList();
-    }
-    
-   
-});
 
 // SHOW PREVIOUS CARD
 const previousCardBtn = document.querySelector('.js-previous-card');
@@ -141,7 +131,29 @@ nextCardBtn.addEventListener('click', () => {
   }
 });
 
-// CREATE NEW STUDY LIST
+// CREATE NEW STUDY LIST =================================================================
+const slideBlockCreateList = document.querySelector('.js-slide-block-create-list');
+document.querySelector('.js-create-list').addEventListener('click', ()=>{
+  slideBlockCreateList.classList.add('slide_block_show');
+});
+
+document.querySelector('.js-slide-hide-create-list').addEventListener('click', () => {
+  slideBlockCreateList.classList.remove('slide_block_show');
+});
+
+// CLICK on CREATE NEW LIST BUTTON
+const createButton = document.querySelector('.js-create-new-list')
+
+createButton.addEventListener('click', (event) =>{
+    if (document.querySelector('.js-box.box-BOX_1').classList.contains('box_overloaded')){
+      alert('BOX-1 does not have place')
+    } else {
+      createStudyList();
+    }
+    
+   
+});
+
 function createStudyList() {
   fetch('/create-list/', {
     method: 'POST',
@@ -164,7 +176,7 @@ function createStudyList() {
     return response.json(); // успішна відповідь
   })
   .then(data => {
-    console.log('Success:', data);
+    // console.log('Success:', data);
     toastBootstrap.show();
     const listCreateDate = new Date().toLocaleString();
     fillWords(data.words, listCreateDate);
@@ -192,7 +204,7 @@ function createStudyList() {
 function fillWords(wordsList, createDate){
   // console.log(wordsList)
   const dateItem = document.querySelector('.js-study_list_date_container')
-  dateItem.dataset.tooltip = `List creating date: ${createDate}`;
+  dateItem.dataset.tooltip = `Список створено: ${createDate}`;
 
   const container = document.querySelector('.js-flip-card-container');
   container.innerHTML = '';
@@ -253,8 +265,18 @@ function fillWords(wordsList, createDate){
       container.appendChild(item);
   });
 
-    const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-    const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl,))
+
+// STUDY WORDS ===========================================================================================
+const slideBlockStudy = document.querySelector('.js-slide-block-study');
+document.querySelector('.js-study-words').addEventListener('click', () => {
+  slideBlockStudy.classList.add('slide_block_show');
+});
+
+document.querySelector('.js-slide-hide-study').addEventListener('click', () => {
+  slideBlockStudy.classList.remove('slide_block_show');
+}); 
+
+//  ROTATING WORD CARD
     document.querySelectorAll('.js-flip-card').forEach(card => {
       card.addEventListener('click', () => {
       card.closest('.flip-card').classList.toggle('flipped');
@@ -270,75 +292,68 @@ document.querySelectorAll('.js-box').forEach(box => {
         // console.log(event.currentTarget);
         const clickedBox = event.currentTarget;
         const boxCategory = clickedBox.dataset.box;
+        currentBox = boxCategory
         const boxStatistics = JSON.parse(localStorage.getItem('userInfo'))['statistics'][boxCategory];
-
-        console.log(boxCategory, statistics);
-        const activeBox = document.querySelector('.js-box.box-active')
-
-        const newAreaSelector = `.${clickedBox.dataset.operationArea}`;
-        const newArea = document.querySelector(newAreaSelector);
+        const activeBox = document.querySelector('.js-box.box-active');
+        document.querySelector('.js-slide-title').textContent = boxCategory;
+        // console.log(boxCategory, statistics);
+       
 
         // Зняти клас з попереднього активного
         if (activeBox && activeBox !== clickedBox) {
             activeBox.classList.remove('box-active');
-
-            const oldArea = document.querySelector(`.${activeBox.dataset.operationArea}`);
-            // Ховаємо стару область тільки якщо це інша зона
-            if (oldArea && oldArea !== newArea) {
-                oldArea.classList.add('d-none');
-            }
         }
 
         // Додати клас активному блоку
         clickedBox.classList.add('box-active');
-
-        // Показати область, якщо вона ще прихована
-        if (newArea && newArea.classList.contains('d-none')) {
-            newArea.classList.remove('d-none');
-        }
-        
-        if (boxStatistics == 0) {
-          newArea.classList.add('d-none');
-        }
-        
-        currentBox = clickedBox.dataset.box
-        document.querySelector('.js-title').textContent = currentBox;
-        // console.log(currentBox)
-
-        document.querySelector('.js-show-word').textContent = '';
-        document.querySelector('.js-input-answer').value = '';
-        document.querySelector('.js-feedback').textContent = '';
-
-
-
     });
 });
 
 // TESTING =========================================================================================================
-function getNextWord(boxName) {
-    fetch(`/get-box-word/?box=${boxName}`)
-        .then(response => response.json())
-        .then(data => {
-            if (!data.word) {
-                const testing_days_limit = JSON.parse(localStorage.getItem('userInfo'))['settings']['testing_days_limit'];
-                document.querySelector('#modalNoWordsForTest .modal-body').innerHTML = `В коробці ${boxName} немає слів для тестування!!!<br> треба почекати <strong>${testing_days_limit}</strong> днів згідно з налаштуваннями профілю...`;
-                
-                noWordsModal.show();
-                // const myModal = document.getElementById('modalNoWordsForTest');
-                
-                return;
-            }
-            // console.log('NEXT BUTTON CLICK: ', data)
-            const word = data.word;
-            // console.log('Наступне слово:', word.eng);
-            // тут можна оновити UI: показати слово користувачу
-            document.querySelector('.js-show-word').textContent = `${word.article} ${word.eng}`;
-            document.querySelector('.js-input-answer').dataset.wordId = data.word.id
-        });
-}
 document.querySelector('.js-next-word').addEventListener('click', () => {
+    console.log('currentbox = ',currentBox);
     getNextWord(currentBox);
-})
+});
+
+async function getNextWord(boxName) {
+    try {
+        // можна показати "завантаження..."
+        document.querySelector('.js-show-word').textContent = '⏳ Завантаження...';
+
+        const response = await fetch(`/get-box-word/?box=${boxName}`);
+
+        if (!response.ok) {
+            console.warn(`Не вдалося отримати слово, статус: ${response.status}`);
+            showEmptyBoxMessage(boxName);
+            return;
+        }
+
+        const data = await response.json();
+
+        if (!data?.word) {
+            showEmptyBoxMessage(boxName);
+            return;
+        }
+
+        const word = data.word;
+        document.querySelector('.js-show-word').textContent = `${word.article} ${word.eng}`;
+        document.querySelector('.js-input-answer').dataset.wordId = word.id;
+
+    } catch (error) {
+        console.error('Помилка запиту:', error);
+        document.querySelector('.js-feedback').textContent = "⚠️ Сталася помилка при отриманні слова.";
+    }
+}
+
+function showEmptyBoxMessage(boxName) {
+    const testing_days_limit = JSON.parse(localStorage.getItem('userInfo'))['settings']['testing_days_limit'];
+    document.querySelector('.js-feedback').innerHTML = `
+        В коробці ${boxName} немає слів для тестування!!!<br>
+        Треба почекати <strong>${testing_days_limit}</strong> днів згідно з налаштуваннями профілю...
+    `;
+}
+
+
 
 document.querySelector('.js-test-answer').addEventListener('click',async () => {
     const next_box_selector_part = NEXT_BOX_SCHEME[currentBox]
@@ -405,5 +420,17 @@ document.querySelector('.js-test-answer').addEventListener('click',async () => {
 
 
 
+const slideBlockTesting = document.querySelector('.js-slide-block-testing');
 
+// TESTING WORDS
+document
+  .querySelectorAll('.js-test')
+  .forEach(button => {
+  button.addEventListener('click', () => {
+    slideBlockTesting.classList.add('slide_block_show');
+  });
+});
 
+document.querySelector('.js-slide-hide-test').addEventListener('click', () => {
+slideBlockTesting.classList.remove('slide_block_show');
+});

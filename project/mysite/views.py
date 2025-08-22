@@ -352,7 +352,7 @@ WORDS = [
     {"eng": "house", "ukr": "будинок"},
 ]
 
-def get_word(request):
+def minigame_get_word(request):
     word = random.choice(WORDS)
     return JsonResponse(word)
     

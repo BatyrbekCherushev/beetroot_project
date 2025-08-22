@@ -42,7 +42,7 @@
                                 <div class="container">
                                     <div class="row" style="min-height: 200px;">
                                         <!-- BOX REPEAT -->
-                                        <div class="col js-box box box-REPEAT position-relative " data-operation-area="js-operating-empty" data-box="REPEAT">
+                                        <div class="col js-box box box-REPEAT position-relative " data-box="REPEAT">
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
                                                 <g>
@@ -62,7 +62,7 @@
                                         </div>
 
                                         <!-- BOX-PROCESS -->
-                                        <div class="col js-box box box-PROCESS  position-relative" data-operation-area="js-operating-study" data-box="PROCESS">
+                                        <div class="col js-box box box-PROCESS  position-relative"  data-box="PROCESS">
                                             <!-- <span class="js-box-text-PROCESS position-absolute"></span> -->
                                             <svg class="box_painted_svg" width="150px"  height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                 viewBox="0 0 54 54" xml:space="preserve">
@@ -81,14 +81,16 @@
                                                 <text class="js-box-text-PROCESS" x="50%" y="84%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
                                             </svg>
                                             <div class="box_badge">
-                                                <div class="js-create-list box_badge_item" data-bs-toggle="modal" data-bs-target="#exampleModal" data-tooltip="Створити новий список слів">+ </div>
-                                                <div class="js-study_list_date_container box_badge_item " >i</div>
+                                                <div class="js-study_list_date_container box_badge_item " >I</div>
+                                                <div class="js-study-words box_badge_item" data-tooltip="Вчити слова">L</div>
+                                                <div class="js-create-list box_badge_item" data-tooltip="Створити новий список слів">+ </div>
+                                                
                                             </div>
                                             
                                         </div>
                                        
                                         <!-- BOX-1 -->                                      
-                                        <div class="js-box box col box-BOX_1  position-relative " data-operation-area="js-operating-testing" data-box="BOX_1" >
+                                        <div class="js-box box col box-BOX_1  position-relative " data-box="BOX_1" >
                                             
                                             <svg class="box_painted_svg" width="150px"  height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                 viewBox="0 0 54 54" xml:space="preserve">
@@ -106,11 +108,13 @@
                                                 </g>
                                                 <text class="js-box-text-BOX_1" x="50%" y="84%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
                                             </svg>
-                                            <div class="js-usable box_badge"></div>
+                                            <div class=" box_badge">
+                                                <div class="js-test box_badge_item" data-tooltip="Кількість слів які попали в цей бокс не менше 5 днів назад"></div>
+                                            </div>
                                         </div>
 
                                         <!-- BOX-2 -->
-                                        <div class="col js-box box box-BOX_2 position-relative " data-operation-area="js-operating-testing" data-box="BOX_2" >
+                                        <div class="col js-box box box-BOX_2 position-relative " data-box="BOX_2" >
                                             
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
@@ -128,11 +132,13 @@
                                                 </g>
                                                 <text class="js-box-text-BOX_2" x="50%" y="84%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
                                             </svg>
-                                            <div class="js-usable box_badge"></div>
+                                            <div class=" box_badge">
+                                                <div class="js-test box_badge_item" ></div>
+                                            </div>
                                         </div>
 
                                         <!-- BOX-3 -->
-                                        <div class="col js-box box box-BOX_3 position-relative" data-operation-area="js-operating-testing" data-box="BOX_3" >
+                                        <div class="col js-box box box-BOX_3 position-relative" data-box="BOX_3" >
                                             
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
@@ -150,7 +156,9 @@
                                                 </g>
                                                 <text class="js-box-text-BOX_3" x="50%" y="84%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
                                             </svg>
-                                            <div class="js-usable box_badge"></div>
+                                            <div class=" box_badge">
+                                                <div class="js-test box_badge_item" ></div>
+                                            </div>
                                         </div>
                                         <!-- BOX-LEARNT -->
                                         <div class="col js-box box box-LEARNT position-relative" data-operation-area="js-operating-testing" data-box="LEARNT">
@@ -171,43 +179,16 @@
                                                 </g>
                                                 <text class="js-box-text-LEARNT" x="50%" y="84%" text-anchor="middle" dominant-baseline="middle" font-size="8" fill="white"></text>
                                             </svg>
-                                             <div class="js-usable box_badge"></div>
+                                             <div class=" box_badge">
+                                                <div class="js-test box_badge_item" data-bs-toggle="modal" data-bs-target="#staticBackdrop" ></div>
+                                            </div>
                                         </div>
                                         
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- OPERATING BLOCK - START-->
-                        <div class="row " >
-                            <h2 class="js-title">Вітаю на сайті!</h2>
-                            <div class="col-12 js-operating-study oper_area oper_area_study justify-content-center d-none">
-                                
-                                
-                                <div class="position-relative align-self-center cards_container">
-                                    
-                                    <button class="js-previous-card navigation_button navigation_button_prev">
-                                        ⮜
-                                    </button>
-                                    <div class="js-flip-card-container cards_wrapper"></div>
-                                    <button class="js-next-card navigation_button navigation_button_next">
-                                        ⮞
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="js-operating-testing oper_area oper_area_testing col-12 d-none" data-operating-box="">
-                                <p>Коли Ви натискаєте НЕКСТ відбувається пошук серед слів у відповідній коробці, які сьогодні не міняли свого статусу. Тобто якщо слово попало в цю коробку сьогодні, Вам його не видасть.</p>
-                                <button class="js-next-word"> Next word</button>
-                                <p class="js-show-word"></p>
-                                <input class="js-input-answer" type="text" data-word-id="" data-word-box="">
-                                <button class="js-test-answer"> TEST</button>
-                                <div class="js-feedback"></div>
-                            </div>
-                            <div class="js-operating-empty d-none col-12">
-                                NO INFO HERE
-                            </div>
-                        </div>
-                        <!-- OPERATING BLOCK - END-->
+                        
                     </div>
                 </div>
             </div>
@@ -232,50 +213,44 @@
         </div>
     </div>
      <!-- TOAST -->
+      
+     
 
-     <!-- MODAL CREATE LIST -->
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-                                <label for="">Take
+
+<!-- SLIDE BLOCKS -->
+     <!-- SLIDE BLOCK CREATE STUDY LIST-->
+    <div class="js-slide-block-create-list slide_block">
+        <button class="js-slide-hide-create-list">CLOSE</button>
+        <label for="">Take
                                     <input id="number_rep_words" type="number" value="0" > words from REPEAT BOX
                                 </label><br>
                                 <label for="">Take
                                     <input id="number_new_words" type="number" value="0"> words from NEW words
                                 </label>
-                                
-                                
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="js-create-new-list btn btn-primary" data-bs-dismiss="modal">Створити список</button>
-      </div>
+                                <button  class="js-create-new-list " >Створити список</button>
     </div>
-  </div>
-</div>
-
-<!-- MODAL NO WORD FOR TESTING -->
- <div class="modal fade" id="modalNoWordsForTest" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      </div>
+    <!-- SLIDE BLOCK STUDY-->
+    <div class="js-slide-block-study slide_block  oper_area oper_area_study justify-content-center">
+        <button class="js-slide-hide-study">CLOSE</button> 
+        <div class="position-relative align-self-center cards_container">
+           <button class="js-previous-card navigation_button navigation_button_prev">
+                ⮜
+            </button>
+            <div class="js-flip-card-container cards_wrapper"></div>
+            <button class="js-next-card navigation_button navigation_button_next">
+                ⮞
+            </button>
+        </div>                 
+    </div> 
+    <!--SLIDE BLOCK TEST WORDS  -->
+    <div class="js-slide-block-testing slide_block ">
+        <div class="js-slide-title"></div>
+        <button class="js-slide-hide-test"> close</button>
+        <p>Коли Ви натискаєте НЕКСТ відбувається пошук серед слів у відповідній коробці, які сьогодні не міняли свого статусу. Тобто якщо слово попало в цю коробку сьогодні, Вам його не видасть.</p>
+        <button class="js-next-word"> Next word</button>
+        <p class="js-show-word"></p>
+        <input class="js-input-answer" type="text" data-word-id="" data-word-box="">
+        <button class="js-test-answer"> TEST</button>
+        <div class="js-feedback"></div>                    
     </div>
-  </div>
-</div>
-
-    
 {% endblock %}

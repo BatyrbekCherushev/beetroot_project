@@ -1,5 +1,6 @@
 let words = '';
 let currentBox = ''
+let statistics
 const NEXT_BOX_SCHEME = {
   'BOX_1': 'BOX_2',
   'BOX_2': 'BOX_3',
@@ -8,8 +9,10 @@ const NEXT_BOX_SCHEME = {
 
 const toastLiveExample = document.getElementById('liveToast')
 const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
+const noWordsModal = new bootstrap.Modal('#modalNoWordsForTest', {
+  keyboard: false
+});
 
-let statistics
 
 // bASIC FUNCTIONS ==================================================================================================
 function showLocalStorage(){
@@ -17,13 +20,18 @@ function showLocalStorage(){
   console.log(`Showing local storage ${localStorage.getItem("daily_words_date")}`)
 }
 
-
-
-async function getStatisticsBasic() {
-  fetch('/get-statistics-basic/')
+async function getUserInfo(){
+  fetch('/get-user-info/')
     .then(response => response.json())
     .then(data => {
-      refreshStatistics(data);  
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      console.log('vocabulary.js -> userInfo =', JSON.parse(localStorage.getItem('userInfo')));
+      if (data.statistics.PROCESS == 0) {
+        localStorage.setItem("daily_words",'');
+        localStorage.setItem("daily_words_date", '');
+      }
+      // console.log('vocabulary.js: \n', localStorage.getItem('daily_words'));
+      refreshStatistics(data.statistics);  
       // console.log(data)
     });
 }
@@ -50,32 +58,41 @@ function refreshStatistics(data) {
 
 
 function paintBoxes(data){
-  for (category of ['BOX_1', 'BOX_2', 'BOX_3']) {
-    // console.log(category);
-    // console.log(JSON.parse(localStorage.getItem('userInfo'))['settings'][`${category}_limit`])
+  for (category of ['REPEAT','PROCESS', 'BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']) {
+    const currentBox = document.querySelector(`.js-box.box-${category}`);
+    
+    if (data[category] == 0) {
+      currentBox.classList.add('box_empty');
+      
+    } else {
+      currentBox.classList.remove('box_empty');
+    }
     if (data[category] >= JSON.parse(localStorage.getItem('userInfo'))['settings'][`${category}_limit`]) {
-     document.querySelector(`.js-box.box-${category}`).classList.add('box_overloaded');
+     currentBox.classList.add('box_overloaded');
       }
-  else {
-    document.querySelector(`.js-box.box-${category}`).classList.remove('box_overloaded');
-  }
+    else {
+      currentBox.classList.remove('box_overloaded');
+    }
   }
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
-  const storedWords = localStorage.getItem("daily_words");
+  getUserInfo();
+
+  let storedWords = localStorage.getItem("daily_words");
   const storedDate = localStorage.getItem("daily_words_date");
-  if (storedWords) {
-    // повертаємо збережені слова
+  console.log(`stored words ${storedWords}`)
+  if (storedWords){
     words = JSON.parse(storedWords);
     fillWords(words, storedDate)
-    getStatisticsBasic();
   }
-  
-  
 });
 
 // STUDY PROCCESS BLOCK ================================================================================================
+
+// СLIK create link under the PROCESS box
+document.querySelector('.js-link-create-list')
+
 // CLICK on CREATE NEW LIST BUTTON
 const createButton = document.querySelector('.js-create-new-list')
 
@@ -154,7 +171,8 @@ function createStudyList() {
 
     localStorage.setItem("daily_words", JSON.stringify(data.words));
     localStorage.setItem("daily_words_date", listCreateDate);
-    getStatisticsBasic();
+    getUserInfo();
+    
       
   })
   .catch(error => {
@@ -166,7 +184,7 @@ function createStudyList() {
     } else {
       alert('Сталася помилка при створенні списку слів.');
     }
-     getStatisticsBasic();
+     getUserInfo();
   });
 }
 
@@ -174,7 +192,6 @@ function createStudyList() {
 function fillWords(wordsList, createDate){
   // console.log(wordsList)
   const dateItem = document.querySelector('.js-study_list_date_container')
-  dateItem.textContent = 'D';
   dateItem.dataset.tooltip = `List creating date: ${createDate}`;
 
   const container = document.querySelector('.js-flip-card-container');
@@ -190,7 +207,7 @@ function fillWords(wordsList, createDate){
       item.innerHTML =
       `
       <span class="card_badge badge_index">${index + 1}</span>
-      <span class="card_badge badge_word_level">${word.word_level}</span>
+      <span class="card_badge badge_word_level badge_word_level_${word.word_level}">${word.word_level}</span>
       <span class="card_badge badge_word_type">${word.word_type}</span>
       
       <div class=" card_warpper flip-card">
@@ -233,22 +250,6 @@ function fillWords(wordsList, createDate){
   
             </div>
         </div>`;
-      
-      
-      
-      // `
-      //   <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill  text-bg-secondary">${index + 1}</span>
-      //   <h5 class="card-header">${word.article + ' ' + word.eng}</h5>
-      //   <div class="card-body flip-card p-0 m-0 w-100">
-      //   <div class="flip-card-inner js-flip-card">
-      //       <div class="flip-card-front">${'SOME COMMENTARY'}</div>
-      //       <div class="flip-card-back">${word.ukr}</div>
-      //   </div>
-          
-      //   </div>
-      //   <div class="card-footer text-body-secondary">${'SYNONIMS: ' + word.synonims}</div>
-        
-      // `;
       container.appendChild(item);
   });
 
@@ -268,6 +269,10 @@ document.querySelectorAll('.js-box').forEach(box => {
     box.addEventListener('click', (event) => {
         // console.log(event.currentTarget);
         const clickedBox = event.currentTarget;
+        const boxCategory = clickedBox.dataset.box;
+        const boxStatistics = JSON.parse(localStorage.getItem('userInfo'))['statistics'][boxCategory];
+
+        console.log(boxCategory, statistics);
         const activeBox = document.querySelector('.js-box.box-active')
 
         const newAreaSelector = `.${clickedBox.dataset.operationArea}`;
@@ -292,6 +297,10 @@ document.querySelectorAll('.js-box').forEach(box => {
             newArea.classList.remove('d-none');
         }
         
+        if (boxStatistics == 0) {
+          newArea.classList.add('d-none');
+        }
+        
         currentBox = clickedBox.dataset.box
         document.querySelector('.js-title').textContent = currentBox;
         // console.log(currentBox)
@@ -311,7 +320,12 @@ function getNextWord(boxName) {
         .then(response => response.json())
         .then(data => {
             if (!data.word) {
-                alert('Слова для цього бокса закінчилися');
+                const testing_days_limit = JSON.parse(localStorage.getItem('userInfo'))['settings']['testing_days_limit'];
+                document.querySelector('#modalNoWordsForTest .modal-body').innerHTML = `В коробці ${boxName} немає слів для тестування!!!<br> треба почекати <strong>${testing_days_limit}</strong> днів згідно з налаштуваннями профілю...`;
+                
+                noWordsModal.show();
+                // const myModal = document.getElementById('modalNoWordsForTest');
+                
                 return;
             }
             // console.log('NEXT BUTTON CLICK: ', data)
@@ -323,12 +337,10 @@ function getNextWord(boxName) {
         });
 }
 document.querySelector('.js-next-word').addEventListener('click', () => {
-    // console.log(currentBox)
     getNextWord(currentBox);
 })
 
 document.querySelector('.js-test-answer').addEventListener('click',async () => {
-  // console.log(`.js-box.box-${NEXT_BOX_SCHEME[currentBox]}`);
     const next_box_selector_part = NEXT_BOX_SCHEME[currentBox]
     const next_box = document.querySelector(`.js-box.box-${next_box_selector_part}`);
     
@@ -380,7 +392,7 @@ document.querySelector('.js-test-answer').addEventListener('click',async () => {
             
         }
         clear_input(); // очищаємо інпут
-        getStatisticsBasic();
+        getUserInfo();
         getNextWord(currentBox);
 
     } catch (err) {
