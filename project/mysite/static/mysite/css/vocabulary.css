@@ -1,14 +1,11 @@
-/* .box-active {
-    border-radius: 40px;
-    background-color: lightslategray;
-} */
 
-/* OPERATION AREA - START */
+
+/* OPERATION AREA */
 .oper_area {
     min-height: 500px;
 }
 .oper_area_study {
-    background-color: lightgray;
+    background-color: white;
     border: 2px;
     border-radius: 10px;
     border-color: black;
@@ -17,12 +14,13 @@
 .oper_area_testing {
     background-color: orange;
 }
-/* OPERATION AREA - END */
+/* OPERATION AREA =================================================== */
 
-/* BOXES - START */
+/* BOXES */
 
 .box:hover  {
     stroke: lightgoldenrodyellow !important; 
+    /* stroke: var(--interface-color-1); */
     cursor: pointer;
 }
 
@@ -33,25 +31,6 @@
 
 .box-active  {
     stroke: lightgoldenrodyellow;
-}
-
-.box-badge {
-    display: none;
-    /* position: absolute; */
-    /* background-color: gray; */
-    color: gray;
-    border-width:3px ;
-    border-radius: 30px;
-    padding: 5px;
-    /* bottom: -50px; */
-    /* left: 50%; */
-    /* transform: translate(-50%, 25%); */
-    /* width: 35px;
-    height: 35px; */
-}
-
-.box:hover .box-badge {
-    display: block;
 }
 
 
@@ -75,6 +54,17 @@
     fill: white !important;
 }
 
+.box_empty:hover .box_painted_svg,
+.box_empty:hover .box_painted_out,
+.box_empty:hover .box_painted_inside,
+.box_empty:hover .box_painted_card_1,
+.box_empty:hover .box_painted_card_3,
+.box_empty:hover .box_painted_card_2 {
+    stroke-width: 1px;
+    stroke: var(--interface-color-1) !important; 
+    /* fill: var(--interface-color-1) !important; */
+}
+
 .box_overloaded .box_painted_svg,
 .box_overloaded .box_painted_out,
 .box_overloaded .box_painted_inside {
@@ -95,8 +85,67 @@
     stroke: lightcoral !important;
 }
 
+.box_badge_item {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background-color: var(--interface-color-1);
+    border: 2px solid white;
+    color: white;
+    border-radius: 30px;
+}
 
-/* BOXES - END */
+.box_badge_item:hover{
+    
+     border: 2px solid var(--interface-color-1);
+    background-color: white;
+    color: var(--interface-color-1);
+}
+
+.box_badge_item:active{
+    background-color: var(--interface-color-2);
+}
+
+.box_badge_item::after {
+  content: attr(data-tooltip); /* бере текст із атрибуту */
+  position: absolute;
+  left: 0;
+  bottom: -50%;
+  transform: translate(-50%, 80%);
+  background: white;
+  color: var(--interface-color-1);
+  border: 2px solid var(--interface-color-1);
+  padding: 5px;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.3s;
+  white-space: nowrap;
+  box-shadow: 5px 5px 10px var(--interface-color-1);
+}
+
+.box_badge_item:hover::after {
+  opacity: 1;
+}
+
+.box_badge {
+    display: flex;
+    color: gray;
+    border-width:3px ;
+    border-radius: 30px;
+    padding: 5px;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    display: none;
+}
+
+.box:hover .box_badge {
+    display: flex;  
+    justify-content: space-around; 
+}
+
+/* BOXES ================================================================= */
 
 
 /* CARDS - START */
@@ -112,9 +161,9 @@
     justify-self: center;
     justify-content: center;
     align-content: center;
-    border: 2px solid darkred;
+    border: 2px solid var(--interface-color-1);
     border-radius: 5px;
-    box-shadow: 5px 5px 10px rgba(240, 5, 5, 0.3);
+    box-shadow: 5px 5px 10px var(--interface-color-1);
 }
 
 .card_container {
@@ -129,14 +178,14 @@
 
 /* BADGES */
 .card_badge {
-    border: 2px solid darkred;
+    border: 2px solid var(--interface-color-1);
     border-radius: 30px;
     min-width: 36px;
     background-color: white;
     position: absolute;
     top: -43px;
     padding: 4px;
-    box-shadow: 5px 5px 10px rgba(240, 5, 5, 0.3);
+    box-shadow: 5px 5px 10px var(--interface-color-1);
 }
 
 .badge_index {    
@@ -148,39 +197,33 @@
     left: 40px;
 }
 
+.badge_word_level_A1 {
+    background-color: yellow;
+}
+
+.badge_word_level_A2 {
+    background-color: orange;
+}
+
+.badge_word_level_B1 {
+    background-color: pink;
+    /* color: white; */
+}
+
+.badge_word_level_B2 {
+    background-color: blue;
+    color: white;
+}
+
+.badge_word_level_C1 {
+    background-color: purple;
+    color: white;
+}
+
 .badge_word_type {
 left: 80px;
 }
-
-.badge_date {
-    position: absolute;
-    cursor:pointer;
-    width: 30px;    
-    top: 18px;
-    right: 0%;
-}
-
-.badge_date::after {
-  content: attr(data-tooltip); /* бере текст із атрибуту */
-  position: absolute;
-  top: 0;
-  right: -11%;
-  transform: translateX(101%);
-  background: white;
-  color: darkred;
-  border: 2px solid darkred;
-  padding: 5px;
-  border-radius: 5px;
-  opacity: 0;
-  transition: 0.3s;
-  white-space: nowrap;
-  box-shadow: 5px 5px 10px rgba(240, 5, 5, 0.3);
-}
-
-.badge_date:hover::after {
-  opacity: 1;
-}
-
+/* BADGES ============== */
 
 
 
@@ -219,7 +262,7 @@ left: 80px;
 }
 
 .flip-card-front {
-  background-color: #f0f0f0;
+  background-color: var(--interface-color-1);
 }
 
 .flip-card-back {
@@ -236,20 +279,20 @@ left: 80px;
     /* border: none; */
     /* background-color: transparent; */
     border-radius: 30px;
-    border: 2px solid darkred;
-    color: darkred;
-    box-shadow: 5px 5px 10px rgba(240, 5, 5, 0.3);
+    border: 2px solid var(--interface-color-1);
+    color: var(--interface-color-1);
+    box-shadow: 5px 5px 10px var(--interface-color-1);
 }
 
 .navigation_button:hover {
-    color: lightblue;
-    border-color: rgb(173, 216, 230);
+    color: white;
+    border-color: white;
     box-shadow: 5px 5px 10px rgba(173, 216, 230, 0.3);
 }
 
 .navigation_button:active {
-    color: white;
-    border-color: white;
+    color: var(--interface-color-2);
+    border-color: var(--interface-color-2);
 }
 
 .navigation_button_prev {

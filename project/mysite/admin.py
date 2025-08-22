@@ -17,7 +17,35 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Word)
 class WordAdmin(admin.ModelAdmin):
-    list_display = ('id', 'eng', 'ukr', 'word_level', 'word_type', 'article', 'synonims')
+    list_display = (
+        'id',
+        "word_level",
+        "word_type",
+        "article",
+        "eng",
+    "transcription",
+    "ukr",
+    "translation_options",
+    "synonims",
+    "comment",
+    "category",
+    "sub_category",
+    "is_irregular_verb",
+    "is_modal_verb")
+    list_editable = (
+        "word_level",
+        "word_type",
+    "article",
+    "eng",
+    "transcription",
+    "ukr",
+    "translation_options",
+    "synonims",
+    "comment",
+    "category",
+    "sub_category",
+    "is_irregular_verb",
+    "is_modal_verb")
     readonly_fields = ('id',)
 
 class CustomUserAdmin(DefaultUserAdmin):

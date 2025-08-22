@@ -19,10 +19,26 @@ from datetime import timedelta
 # Create your views here.
 
 # ============================================> DEFINE FUNCTIONS <=====================================================
-def login_and_register(request):
+def login_user(request):
     login_form = AuthenticationForm()
-    register_form = UserCreationForm()
+    
 
+    if request.method == 'POST':
+        # Якщо форма логіну була надіслана
+        if 'login_submit' in request.POST:
+            login_form = AuthenticationForm(data=request.POST)
+            if login_form.is_valid():
+                user = login_form.get_user()
+                login(request, user)
+                return redirect('index')
+
+    context = {
+        'login_form': login_form,
+    }
+    return render(request, 'login.html', context)
+
+def register_user(request):
+    register_form = UserCreationForm()
     if request.method == 'POST':
         # Якщо форма реєстрації була надіслана
         if 'register_submit' in request.POST:
@@ -32,24 +48,16 @@ def login_and_register(request):
                 # UserSettings створюється автоматично через сигнал post_save
                 login(request, user)
                 return redirect('index')  # редірект на головну сторінку
-
-        # Якщо форма логіну була надіслана
-        elif 'login_submit' in request.POST:
-            login_form = AuthenticationForm(data=request.POST)
-            if login_form.is_valid():
-                user = login_form.get_user()
-                login(request, user)
-                return redirect('index')
-
     context = {
-        'login_form': login_form,
         'register_form': register_form
     }
-    return render(request, 'login_register.html', context)
+    return render(request, 'register.html', context)
+
 
 @login_required
 def index_page(request):
-    return render(request, 'index.html', context = {'page_name': 'index'})
+    return render(request, 'index.html', context = {'page_name': 'index',
+                                                    'user_name': request.user.username})
 
 @login_required
 def profile_page(request):
@@ -118,6 +126,7 @@ def create_study_list(request):
         )
     # Масове оновлення статусу на PROCESS
     UserWordsProgress.objects.filter(id__in=rep_words_ids).update(status='PROCESS')
+    
     # Отримуємо відповідні слова
     rep_words = Word.objects.filter(
         id__in=UserWordsProgress.objects.filter(id__in=rep_words_ids)
@@ -152,6 +161,8 @@ def create_study_list(request):
             'eng': word.eng,
             'ukr': word.ukr,
             'synonims': word.synonims, 
+            'word_type': word.word_type,
+            'word_level': word.word_level 
         })
 
     if len(words_list) > 0:
@@ -257,53 +268,13 @@ def test_word(request):
         'repetition_count': progress.repetition_count
     })
 
-@login_required
-def get_statistics_basic(request):
-    """Counts statistics for basic vocabulary, for every category of word"""
-    # from datetime import timedelta
-
-    user = request.user
-    user_settings = request.user.settings
-    today = now().date()
-
-    count_total_words = Word.objects.count()
-    count_repeat_words = UserWordsProgress.objects.filter(user=user, status='REPEAT').count()
-    count_process_words = UserWordsProgress.objects.filter(user=user, status='PROCESS').count()
-    count_box_1_words = UserWordsProgress.objects.filter(user=user, status='BOX_1').count()
-    count_box_2_words = UserWordsProgress.objects.filter(user=user, status='BOX_2').count()
-    count_box_3_words = UserWordsProgress.objects.filter(user=user, status='BOX_3').count()
-    count_learnt_words = UserWordsProgress.objects.filter(user=user, status='LEARNT').count()
-    count_new_words = count_total_words - count_repeat_words - count_process_words - count_box_1_words - count_box_2_words - count_box_3_words - count_learnt_words
-    
-
-    limit_date = today - timedelta(days=user.settings.testing_days_limit)
-
-
-    # TEST response
-    return JsonResponse({
-        'TOTAL': count_total_words,
-        'NEW': count_new_words,
-        'REPEAT': count_repeat_words,
-        'PROCESS': count_process_words,
-        'BOX_1': count_box_1_words,
-        'BOX_1_usable': UserWordsProgress.objects.filter(user=user, status='BOX_1', status_changed_date__date__lt=limit_date).count(),
-        'BOX_2_usable': UserWordsProgress.objects.filter(user=user, status='BOX_2', status_changed_date__date__lt=limit_date).count(),
-        'BOX_3_usable': UserWordsProgress.objects.filter(user=user, status='BOX_3', status_changed_date__date__lt=limit_date).count(),
-        'LEARNT_usable': UserWordsProgress.objects.filter(user=user, status='LEARNT', status_changed_date__date__lt=limit_date).count(),
-        # 'BOX_2': 200,
-        'BOX_2': count_box_2_words,
-        'BOX_3': count_box_3_words,
-        'LEARNT': count_learnt_words,
-        'BOX_1_LIMIT': user_settings.box_1_limit,
-        'BOX_2_LIMIT': user_settings.box_2_limit,
-        'BOX_3_LIMIT': user_settings.box_3_limit})
-
 # PROFILE =============================================================================================
 BOX_1_LIMIT_MIN = 90
 
 def get_settings_vocabulary_basic(user):
     user_settings = user.settings
-    return {        
+    return {  
+        'testing_days_limit': user_settings.testing_days_limit,      
         'new_words_number': user_settings.new_words_number,
         'rep_words_number': user_settings.rep_words_number,
         'min_words_number': user_settings.min_words_number, 
@@ -322,13 +293,54 @@ def get_player_info(user):
             'currency': user_profile.currency,
         }
 
+def get_statistics_basic(user):
+    """Counts statistics for basic vocabulary, for every category of word"""
+    # from datetime import timedelta
+
+    user = user
+    user_settings = user.settings
+    today = now().date()
+
+    count_total_words = Word.objects.count()
+    count_repeat_words = UserWordsProgress.objects.filter(user=user, status='REPEAT').count()
+    count_process_words = UserWordsProgress.objects.filter(user=user, status='PROCESS').count()
+    count_box_1_words = UserWordsProgress.objects.filter(user=user, status='BOX_1').count()
+    count_box_2_words = UserWordsProgress.objects.filter(user=user, status='BOX_2').count()
+    count_box_3_words = UserWordsProgress.objects.filter(user=user, status='BOX_3').count()
+    count_learnt_words = UserWordsProgress.objects.filter(user=user, status='LEARNT').count()
+    count_new_words = count_total_words - count_repeat_words - count_process_words - count_box_1_words - count_box_2_words - count_box_3_words - count_learnt_words
+    
+
+    limit_date = today - timedelta(days=user.settings.testing_days_limit)
+
+
+    # TEST response
+    return {
+        'TOTAL': count_total_words,
+        'NEW': count_new_words,
+        'REPEAT': count_repeat_words,
+        'PROCESS': count_process_words,
+        'BOX_1': count_box_1_words,
+        'BOX_1_usable': UserWordsProgress.objects.filter(user=user, status='BOX_1', status_changed_date__date__lt=limit_date).count(),
+        'BOX_2_usable': UserWordsProgress.objects.filter(user=user, status='BOX_2', status_changed_date__date__lt=limit_date).count(),
+        'BOX_3_usable': UserWordsProgress.objects.filter(user=user, status='BOX_3', status_changed_date__date__lt=limit_date).count(),
+        'LEARNT_usable': UserWordsProgress.objects.filter(user=user, status='LEARNT', status_changed_date__date__lt=limit_date).count(),
+        # 'BOX_2': 200,
+        'BOX_2': count_box_2_words,
+        'BOX_3': count_box_3_words,
+        'LEARNT': count_learnt_words,
+        'BOX_1_LIMIT': user_settings.box_1_limit,
+        'BOX_2_LIMIT': user_settings.box_2_limit,
+        'BOX_3_LIMIT': user_settings.box_3_limit}
+
 @login_required
 def get_user_info(request):
     user = request.user
     
     return JsonResponse({
         'profile': get_player_info(user),
-        'settings':get_settings_vocabulary_basic(user)
+        'settings':get_settings_vocabulary_basic(user), 
+        'statistics': get_statistics_basic(user),
         })
 
 # TESTING ==============================================================================================

@@ -38,14 +38,14 @@ class Word(models.Model):
     article = models.CharField(max_length=4, default='')
     eng = models.CharField(max_length=30)
     transcription = models.CharField(max_length=30, default='')
-    forms = models.CharField(max_length=40, default='')
     ukr = models.CharField(max_length=30, default='')
-    commentary = models.TextField(default='')
+    translation_options = models.TextField(default='')
     synonims = models.TextField(default='NO SYNONIM FOR THIS WORD')
+    comment = models.TextField(default='')
     category = models.CharField(max_length=20, default='')
     sub_category = models.CharField(max_length=20, default='')
-    is_oxford = models.BooleanField(default = True)
-    is_important = models.BooleanField(default = False)
+    is_irregular_verb = models.BooleanField(default = True)
+    is_modal_verb = models.BooleanField(default = False)
     
     class Meta:
         verbose_name = 'Слово'
