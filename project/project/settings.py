@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-#%dd-&t0w^)(&mgyb*pi-53k@n8b0pc+p*+eoiql)5(urnl-ba
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['batyrbekcherushev.pythonanywhere.com']
 
 
 # Application definition
@@ -117,13 +117,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 LOGIN_URL = '/login/'  # тут має бути шлях до твого логіну
 LOGIN_REDIRECT_URL = '/'  # куди редіректити після успішного логіну
 LOGOUT_REDIRECT_URL = '/login/'  # куди після логауту

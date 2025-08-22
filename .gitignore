@@ -5,8 +5,10 @@ LOCAL_WORKING_FILES/
 .vscode/
 
 # Python
-__pycache__/
+**/__pycache__/
 *.pyc
+
+
 
 # Бази
 *.db
