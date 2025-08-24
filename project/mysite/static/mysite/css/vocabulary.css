@@ -152,6 +152,27 @@
     justify-content: space-around; 
 }
 
+.block_badge {
+    position: absolute;
+    bottom: -10%;
+    left: 50%;
+    opacity: 0;
+    transition: all 0.3s ease;
+    border: 2px solid var(--interface-color-2);
+    border-radius: 5px;
+    text-shadow: 1px 1px  var(--interface-color-2);
+    box-shadow: 2px 2px 2px 2px var(--interface-color-2);
+    padding: 5px;
+    background-color: white;
+}
+
+.block_badge_show {
+  opacity: 1;
+  transform: translate(-50%, 3%);
+  transition: all 0.3s ease;
+}
+
+
 /* BOXES ================================================================= */
 
 
@@ -326,7 +347,7 @@ left: 80px;
   width: 100%;
   min-height: 500px;
   background-color: white;
-  color: var(--interface-color-2);
+  /* color: var(--interface-color-2); */
   text-align: center;
   padding: 20px 0;
   box-shadow: 0 -2px 10px rgba(0,0,0,0.3);

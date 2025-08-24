@@ -7,6 +7,16 @@ const NEXT_BOX_SCHEME = {
   'BOX_3': 'LEARNT'
 }
 
+const boxesNamesUkr = {
+  'BOX_1': 'КОРОБКА-1',
+  'BOX_2': 'КОРОБКА-2',
+  'BOX_3': 'КОРОБКА-3',
+  'LEARNT': 'ВИВЧЕНІ',
+  'REPEAT': 'ПОВТОР',
+  'PROCESS': "В ПРОЦЕСІ ВИВЧЕННЯ"
+
+}
+
 
 const toastLiveExample = document.getElementById('liveToast')
 const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
@@ -26,7 +36,7 @@ async function getUserInfo(){
     .then(response => response.json())
     .then(data => {
       localStorage.setItem('userInfo', JSON.stringify(data));
-      console.log('vocabulary.js -> userInfo =', JSON.parse(localStorage.getItem('userInfo')));
+      // console.log('vocabulary.js -> userInfo =', JSON.parse(localStorage.getItem('userInfo')));
       if (data.statistics.PROCESS == 0) {
         localStorage.setItem("daily_words",'');
         localStorage.setItem("daily_words_date", '');
@@ -38,7 +48,7 @@ async function getUserInfo(){
 }
 
 function refreshStatistics(data) {
-  document.querySelector('.js-vocabulary-basic').textContent = `BASIC VOCABULARY (${data['TOTAL']} words totally, ${data['NEW']} new words, ${data['REPEAT']} words for repeat)`;
+  document.querySelector('.js-vocabulary-basic-header').textContent = ` ${data['TOTAL']} слів в словнику всього, ${data['NEW']} слів зі статусом НОВЕ`;
   // console.log('vocabulary.js: ', JSON.parse(localStorage.getItem('userInfo'))['settings']);
   const categories = ['REPEAT','PROCESS','BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']
   const settings = JSON.parse(localStorage.getItem('userInfo'))['settings'];
@@ -53,7 +63,6 @@ function refreshStatistics(data) {
             // console.log(category)
             document.querySelector(`.js-box-text-${category}`).textContent = text;
         }
-    // document.querySelector('.js-box.box-LEARNT .js-test').textContent = data['LEARNT_usable'] + " для тесту";
         paintBoxes(data);
 }
 
@@ -82,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   let storedWords = localStorage.getItem("daily_words");
   const storedDate = localStorage.getItem("daily_words_date");
-  console.log(`stored words ${storedWords}`)
+  // console.log(`stored words ${storedWords}`)
   if (storedWords){
     words = JSON.parse(storedWords);
     fillWords(words, storedDate)
@@ -132,14 +141,6 @@ nextCardBtn.addEventListener('click', () => {
 });
 
 // CREATE NEW STUDY LIST =================================================================
-const slideBlockCreateList = document.querySelector('.js-slide-block-create-list');
-document.querySelector('.js-create-list').addEventListener('click', ()=>{
-  slideBlockCreateList.classList.add('slide_block_show');
-});
-
-document.querySelector('.js-slide-hide-create-list').addEventListener('click', () => {
-  slideBlockCreateList.classList.remove('slide_block_show');
-});
 
 // CLICK on CREATE NEW LIST BUTTON
 const createButton = document.querySelector('.js-create-new-list')
@@ -267,14 +268,6 @@ function fillWords(wordsList, createDate){
 
 
 // STUDY WORDS ===========================================================================================
-const slideBlockStudy = document.querySelector('.js-slide-block-study');
-document.querySelector('.js-study-words').addEventListener('click', () => {
-  slideBlockStudy.classList.add('slide_block_show');
-});
-
-document.querySelector('.js-slide-hide-study').addEventListener('click', () => {
-  slideBlockStudy.classList.remove('slide_block_show');
-}); 
 
 //  ROTATING WORD CARD
     document.querySelectorAll('.js-flip-card').forEach(card => {
@@ -287,31 +280,52 @@ document.querySelector('.js-slide-hide-study').addEventListener('click', () => {
 
 
 //СLICK on BOX element на бокс він стає активним і в оперативні області з'являється відповідний контент
+function clear_test_slide_block(){
+  document.querySelector('.js-show-word').textContent = '';
+  document.querySelector('.js-feedback').textContent = '';
+}
 document.querySelectorAll('.js-box').forEach(box => {
     box.addEventListener('click', (event) => {
         // console.log(event.currentTarget);
         const clickedBox = event.currentTarget;
         const boxCategory = clickedBox.dataset.box;
-        currentBox = boxCategory
+        currentBox = boxCategory;
         const boxStatistics = JSON.parse(localStorage.getItem('userInfo'))['statistics'][boxCategory];
         const activeBox = document.querySelector('.js-box.box-active');
         document.querySelector('.js-slide-title').textContent = boxCategory;
-        // console.log(boxCategory, statistics);
-       
-
+        
         // Зняти клас з попереднього активного
+        // закрити якщо потрібно попередні слайд блоки, очистити інфу з тест блоків
         if (activeBox && activeBox !== clickedBox) {
+            clear_test_slide_block();
+            const notTestBlocks = ['PROCESS', 'REPEAT'];
+           if (notTestBlocks.includes(boxCategory)) {
+              hide_test_slide_block();
+          }
             activeBox.classList.remove('box-active');
         }
 
         // Додати клас активному блоку
         clickedBox.classList.add('box-active');
+        
     });
 });
 
 // TESTING =========================================================================================================
 document.querySelector('.js-next-word').addEventListener('click', () => {
-    console.log('currentbox = ',currentBox);
+    
+      
+    const nextBox = document.querySelector(`.js-box.box-${currentBox}`).dataset.nextBox;
+    const statistics = JSON.parse(localStorage.getItem('userInfo'))['statistics'];
+    const nextBoxLength = statistics[nextBox];
+    const nextBoxLengthLimit = statistics[`${nextBox}_LIMIT`];
+    // console.log('currentbox = ',currentBox);
+    // console.log('Next box = ', nextBox, 'length = ', nextBoxLength, 'limit = ', nextBoxLengthLimit);
+    
+    if (nextBox && nextBoxLength == nextBoxLengthLimit) {
+      alert('В НАСТУПНОМУ БОКСІ НЕМАЄ МІСЦЯ');
+      return
+    }
     getNextWord(currentBox);
 });
 
@@ -420,17 +434,65 @@ document.querySelector('.js-test-answer').addEventListener('click',async () => {
 
 
 
-const slideBlockTesting = document.querySelector('.js-slide-block-testing');
+// ПОКАЗ ІНФИ ПРО БЛОК ПРИ НАВЕДЕННІ НА КОРОБКУ====================================
+const vocabularyBadge = document.querySelector('.js-block-badge');
+const boxes = document.querySelectorAll('.js-box');
 
-// TESTING WORDS
+boxes.forEach( box => {
+  box.addEventListener('mouseenter', () =>{
+    vocabularyBadge.textContent = boxesNamesUkr[box.dataset.box];
+    vocabularyBadge.classList.add('block_badge_show');
+  });
+
+  box.addEventListener('mouseleave', () =>{
+    vocabularyBadge.textContent = '';
+    vocabularyBadge.classList.remove('block_badge_show');
+  });
+});
+
+
+
+
+
+
+
+
+
+// SLIDE BLOCKS====================================================================
+const slideBlockCreateList = document.querySelector('.js-slide-block-create-list');
+const slideBlockTesting = document.querySelector('.js-slide-block-testing');
+const slideBlockStudy = document.querySelector('.js-slide-block-study');
+
+function hide_slide_blocks(){
+  [slideBlockCreateList, slideBlockStudy, slideBlockTesting].forEach(slideBlock =>{
+      slideBlock.classList.remove('slide_block_show');
+    });
+}
+
+function hide_test_slide_block(){
+  slideBlockTesting.classList.remove('slide_block_show');
+}
+
 document
   .querySelectorAll('.js-test')
   .forEach(button => {
   button.addEventListener('click', () => {
+    hide_slide_blocks();
     slideBlockTesting.classList.add('slide_block_show');
   });
 });
 
-document.querySelector('.js-slide-hide-test').addEventListener('click', () => {
-slideBlockTesting.classList.remove('slide_block_show');
+document.querySelector('.js-create-list').addEventListener('click', ()=>{
+  hide_slide_blocks();
+  slideBlockCreateList.classList.add('slide_block_show');
 });
+
+document.querySelector('.js-study-words').addEventListener('click', () => {
+  hide_slide_blocks();
+  slideBlockStudy.classList.add('slide_block_show');
+});
+
+document.querySelectorAll('.js-slide-block-hide').forEach( button => {
+  button.addEventListener('click', () => {
+    hide_slide_blocks();
+  })});

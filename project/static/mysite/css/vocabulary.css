@@ -61,7 +61,7 @@
 .box_empty:hover .box_painted_card_3,
 .box_empty:hover .box_painted_card_2 {
     stroke-width: 1px;
-    stroke: var(--interface-color-1) !important; 
+    stroke: var(--interface-color-2) !important; 
     /* fill: var(--interface-color-1) !important; */
 }
 
@@ -87,40 +87,47 @@
 
 .box_badge_item {
     position: relative;
-    width: 30px;
-    height: 30px;
-    background-color: var(--interface-color-1);
-    border: 2px solid white;
-    color: white;
+    min-width: 30px;
+    min-height: 30px;
+    background-color: lightgoldenrodyellow;
+    border: 2px solid var(--interface-color-2);
+    color: var(--interface-color-2);
     border-radius: 30px;
+    padding: 3px;
 }
 
 .box_badge_item:hover{
     
-     border: 2px solid var(--interface-color-1);
+     border: 2px solid var(--interface-color-2);
     background-color: white;
-    color: var(--interface-color-1);
+    color: var(--interface-color-2);
 }
 
 .box_badge_item:active{
     background-color: var(--interface-color-2);
+    border-color: white;
+    color: white;
 }
 
 .box_badge_item::after {
   content: attr(data-tooltip); /* бере текст із атрибуту */
   position: absolute;
-  left: 0;
-  bottom: -50%;
-  transform: translate(-50%, 80%);
+  width: 150px;
+  left: 50%;
+  top: 40px;
+  transform: translateX(-50%);
   background: white;
-  color: var(--interface-color-1);
-  border: 2px solid var(--interface-color-1);
+  color: var(--interface-color-2);
+  border: 2px solid var(--interface-color-2);
   padding: 5px;
   border-radius: 5px;
   opacity: 0;
   transition: 0.3s;
   white-space: nowrap;
-  box-shadow: 5px 5px 10px var(--interface-color-1);
+  box-shadow: 5px 5px 10px var(--interface-color-2);
+  overflow: hidden;          /* текст не вийде за межі блоку */
+  word-wrap: break-word;     /* переносить довгі слова */
+  white-space: normal;  
 }
 
 .box_badge_item:hover::after {
@@ -161,9 +168,9 @@
     justify-self: center;
     justify-content: center;
     align-content: center;
-    border: 2px solid var(--interface-color-1);
+    border: 2px solid var(--interface-color-2);
     border-radius: 5px;
-    box-shadow: 5px 5px 10px var(--interface-color-1);
+    box-shadow: 5px 5px 10px var(--interface-color-2);
 }
 
 .card_container {
@@ -178,14 +185,15 @@
 
 /* BADGES */
 .card_badge {
-    border: 2px solid var(--interface-color-1);
+    border: 2px solid var(--interface-color-2);
+    color: var(--interface-color-2);
     border-radius: 30px;
     min-width: 36px;
     background-color: white;
     position: absolute;
     top: -43px;
     padding: 4px;
-    box-shadow: 5px 5px 10px var(--interface-color-1);
+    box-shadow: 5px 5px 10px var(--interface-color-2);
 }
 
 .badge_index {    
@@ -242,6 +250,9 @@ left: 80px;
   height: 100%;
   transition: transform 0.6s;
   transform-style: preserve-3d;
+  border: 1px solid var(--interface-color-2);
+  color: var(--interface-color-2);
+  background-color: white;
 }
 
 .flip-card.flipped .flip-card-inner {
@@ -279,9 +290,9 @@ left: 80px;
     /* border: none; */
     /* background-color: transparent; */
     border-radius: 30px;
-    border: 2px solid var(--interface-color-1);
-    color: var(--interface-color-1);
-    box-shadow: 5px 5px 10px var(--interface-color-1);
+    border: 2px solid var(--interface-color-2);
+    color: var(--interface-color-2);
+    box-shadow: 5px 5px 10px var(--interface-color-2);
 }
 
 .navigation_button:hover {
@@ -305,3 +316,25 @@ left: 80px;
     right: -22%
 }
 /* CARDS - END */
+
+
+
+.slide_block {
+  position: fixed;        /* зафіксований внизу екрана */
+  bottom: -100%;         /* початково ховаємо за межами екрана */
+  left: 0;
+  width: 100%;
+  min-height: 500px;
+  background-color: white;
+  color: var(--interface-color-2);
+  text-align: center;
+  padding: 20px 0;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+  transition: bottom 0.5s ease; /* плавний ефект */
+  border: 2px solid var(--interface-color-2);
+}
+
+/* клас для показу блоку */
+.slide_block.slide_block_show {
+  bottom: 0; /* при показі піднімаємо блок на видиму позицію */
+}
