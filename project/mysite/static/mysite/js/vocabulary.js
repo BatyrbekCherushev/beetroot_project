@@ -1,170 +1,232 @@
-let words = '';
-let currentBox = ''
-let statistics
-const NEXT_BOX_SCHEME = {
-  'BOX_1': 'BOX_2',
-  'BOX_2': 'BOX_3',
-  'BOX_3': 'LEARNT'
-}
+import { getCookie } from './global.js';
+import * as boxes_and_slides from  './elements/boxes_and_slide_blocks.js'
 
-const boxesNamesUkr = {
-  'BOX_1': 'КОРОБКА-1',
-  'BOX_2': 'КОРОБКА-2',
-  'BOX_3': 'КОРОБКА-3',
-  'LEARNT': 'ВИВЧЕНІ',
-  'REPEAT': 'ПОВТОР',
-  'PROCESS': "В ПРОЦЕСІ ВИВЧЕННЯ"
-
-}
-
-
-const toastLiveExample = document.getElementById('liveToast')
-const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLiveExample)
-// const noWordsModal = new bootstrap.Modal('#modalNoWordsForTest', {
-//   keyboard: false
-// });
+//=============================================================================================== EDIT or ADD WORD ===============================================================================
+const btn_add_word = document.querySelector('.js-btn-add-word');
+const btn_modify_word = document.querySelector('.js-btn-modify-word');
+const btn_clear_fields = document.querySelector('.js-edit-clear-fields');
+const input_edit_language = document.querySelector('.js-edit-language');
+const input_edit_word_type = document.querySelector('.js-edit-word-type');
+const input_edit_word_level = document.querySelector('.js-edit-word-level');
+const input_edit_article = document.querySelector('.js-edit-article');
+const input_edit_transcription = document.querySelector('.js-edit-transcription');
+const input_edit_word = document.querySelector('.js-edit-word');
+const input_edit_translation = document.querySelector('.js-edit-translation');
+// const textEditTranslationOptions = document.querySelector('.js-edit-translation-options');
+const input_edit_category = document.querySelector('.js-edit-category');
+const input_edit_sub_category = document.querySelector('.js-edit-subcategory');
+const input_edit_comment = document.querySelector('.js-edit-comment');
+const input_edit_synonims = document.querySelector('.js-edit-synonims');
+const input_edit_ID = document.querySelector('.js-edit-id');
+const input_edit_status = document.querySelector('.js-edit-status');
+const search_feedback = document.querySelector('.js-search-feedbcak');
 
 
-// bASIC FUNCTIONS ==================================================================================================
-function showLocalStorage(){
-  console.log(`Showing local storage ${localStorage.getItem("daily_words")}`)
-  console.log(`Showing local storage ${localStorage.getItem("daily_words_date")}`)
-}
 
-async function getUserInfo(){
-  fetch('/get-user-info/')
-    .then(response => response.json())
-    .then(data => {
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      // console.log('vocabulary.js -> userInfo =', JSON.parse(localStorage.getItem('userInfo')));
-      if (data.statistics.PROCESS == 0) {
-        localStorage.setItem("daily_words",'');
-        localStorage.setItem("daily_words_date", '');
-      }
-      // console.log('vocabulary.js: \n', localStorage.getItem('daily_words'));
-      refreshStatistics(data.statistics);  
-      // console.log(data)
-    });
-}
+//============================================================================================ SEARCH WORD  ======================================================================================
+//--------------------------------------------------------------------------------- EDIT CATEGORIES AUTOCHANGE
+const select_search_category = document.querySelector('.js-edit-category');
+const select_search_subcategory = document.querySelector('.js-edit-subcategory');
 
-function refreshStatistics(data) {
-  document.querySelector('.js-vocabulary-basic-header').textContent = ` ${data['TOTAL']} слів в словнику всього, ${data['NEW']} слів зі статусом НОВЕ`;
-  // console.log('vocabulary.js: ', JSON.parse(localStorage.getItem('userInfo'))['settings']);
-  const categories = ['REPEAT','PROCESS','BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']
-  const settings = JSON.parse(localStorage.getItem('userInfo'))['settings'];
-        for (const category of categories){
-          let text = data[category];
-          if (['BOX_1', 'BOX_2', 'BOX_3', 'LEARNT'].includes(category)) {
-            if (category != 'LEARNT') {
-              text = text +` / ${settings[`${category}_limit`]}`
-            }
-            document.querySelector(`.js-box.box-${category} .js-test`).textContent = data[`${category}_usable`] + " для тесту";
-          }
-            // console.log(category)
-            document.querySelector(`.js-box-text-${category}`).textContent = text;
-        }
-        paintBoxes(data);
-}
+function update_search_subcategories(selectedCategory){
+  const subcategories_map = JSON.parse(localStorage.getItem('word_categories'))['subcategories'];
+  select_search_subcategory.innerHTML = '';
+  const randomOption = document.createElement("option");
+  randomOption.value = 'RANDOM';
+  randomOption.textContent = 'RANDOM';
+  select_search_subcategory.appendChild(randomOption);
 
-
-function paintBoxes(data){
-  for (category of ['REPEAT','PROCESS', 'BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']) {
-    const currentBox = document.querySelector(`.js-box.box-${category}`);
-    
-    if (data[category] == 0) {
-      currentBox.classList.add('box_empty');
-      
-    } else {
-      currentBox.classList.remove('box_empty');
-    }
-    if (data[category] >= JSON.parse(localStorage.getItem('userInfo'))['settings'][`${category}_limit`]) {
-     currentBox.classList.add('box_overloaded');
-      }
-    else {
-      currentBox.classList.remove('box_overloaded');
-    }
+  if (selectedCategory && subcategories_map) {
+        subcategories_map[selectedCategory].forEach(sub => {
+            const option = document.createElement("option");
+            option.value = sub['id'];
+            option.textContent = sub['name'];
+            select_search_subcategory.appendChild(option);
+        });
   }
+  select_search_subcategory.value = 'RANDOM';
 }
 
-document.addEventListener('DOMContentLoaded', async function () {
-  getUserInfo();
-
-  let storedWords = localStorage.getItem("daily_words");
-  const storedDate = localStorage.getItem("daily_words_date");
-  // console.log(`stored words ${storedWords}`)
-  if (storedWords){
-    words = JSON.parse(storedWords);
-    fillWords(words, storedDate)
-  }
-});
-
-// STUDY PROCCESS BLOCK ================================================================================================
-
-// СLIK create link under the PROCESS box
-document.querySelector('.js-link-create-list')
-
-
-
-// SHOW PREVIOUS CARD
-const previousCardBtn = document.querySelector('.js-previous-card');
-const nextCardBtn = document.querySelector('.js-next-card');
-
-previousCardBtn.addEventListener('click', () => {
-  const activeElement = document.querySelector('.card_container.active');
-  let prevElement = activeElement?.previousElementSibling;
-  if (prevElement) {
-    prevElement.classList.add('active');
-    activeElement.classList.remove('active');
-    if (nextCardBtn.disabled) {
-      nextCardBtn.disabled = false;
-    }
-  } else {
-    previousCardBtn.disabled = true;
-
-  }
-});
-
-// SHOW NEXT CARD
-nextCardBtn.addEventListener('click', () => {
-  const activeElement = document.querySelector('.card_container.active');
-  let nextElement = activeElement?.nextElementSibling;
+//Зміна значень в селекті з ПІДКАТЕГОРІЯМИ при виборі КАТЕГОРІЇ слова
+select_search_category.addEventListener('change', (event) =>{ 
+  const selectedCategory = event.target.value;  
+  console.log(selectedCategory);
+  update_search_subcategories(selectedCategory);  
   
-  if (nextElement){
-    nextElement.classList.add('active');
-    activeElement.classList.remove('active');
-    if (previousCardBtn.disabled) {
-      previousCardBtn.disabled = false;
+}); 
+
+
+
+
+document.querySelector('.js-btn-search-word').addEventListener('click', async () =>{
+    input_edit_ID.value = '';
+    input_edit_status.value = '';
+    btn_add_word.disabled = true;
+    btn_modify_word.disabled = true;
+
+    const params = new URLSearchParams({
+        language: input_edit_language.value,
+        word_type: input_edit_word_type.value,
+        word_level: input_edit_word_level.value,
+        article: input_edit_article.value,
+        transcription: input_edit_transcription.value,
+        word: input_edit_word.value,
+        translation: input_edit_translation.value,
+        // translation_options: textEditTranslationOptions.value,
+        category: input_edit_category.value,
+        sub_category: input_edit_sub_category.value,
+        comment: input_edit_comment.value,
+        synonims: input_edit_synonims.value,
+    });
+
+    const response = await fetch(`/get-custom-words/?${params.toString()}`, {
+    method: 'GET',
+    headers: {
+      'X-CSRFToken': getCookie('csrftoken') // CSRF не потрібен для GET, але можна залишити
     }
-  } else {
-    nextCardBtn.disabled = true;
+  });
+
+  const data = await response.json();
+  const tableSearchResults = document.querySelector('.js-search-results-list');
+  tableSearchResults.innerHTML = '';
+  
+  search_feedback.textContent = '';
+  console.log(data);
+
+  if (data['words']) {
+    data['words'].forEach((word,index)  =>{
+      const tableItem = document.createElement("tr");
+      
+      tableItem.classList.add('js-found-word', 'search_word_item');
+      for (let property in word){
+        tableItem.setAttribute(`data-${property}`, word[property]);
+      }
+      //number
+      const cell_number = document.createElement("td");
+      cell_number.textContent = index + 1;
+      tableItem.appendChild(cell_number);
+
+      // LANGUAGE
+      if (word['language']) {
+        const cell_language = document.createElement("td"); 
+        cell_language.textContent = word['language'];
+        tableItem.appendChild(cell_language);
+      }
+
+      // WORD LEVEL
+        const word_level = word['word_level'] || '---'
+        const cell_word_level = document.createElement("td");
+        cell_word_level.textContent = word_level;
+        tableItem.classList.add(`search_word_item_${word_level}`)
+        tableItem.appendChild(cell_word_level);
+
+      // WORD TYPe
+      const word_type = word['word_type'] || "---";
+      const cell_word_type = document.createElement("td");
+      cell_word_type.textContent = word_type;      
+      tableItem.appendChild(cell_word_type);
+      
+      // WORD
+      if (word['word']){
+        const cell_word = document.createElement("td"); 
+        cell_word.textContent = word['article'] + ' ' + word['word']
+        tableItem.appendChild(cell_word);
+      }
+
+      
+
+      // WORD STATUS
+      if (word['status']) {
+        const cell_word_status = document.createElement("td");
+        cell_word_status.textContent = word['status'] != "" ? word['status'] :  '----';
+        // cell_word_status.textContent = '----';
+        tableItem.appendChild(cell_word_status);
+      }
+      
+
+      tableSearchResults.appendChild(tableItem);
+    });
+
+    document.querySelectorAll('.js-found-word').forEach(element => {
+      element.addEventListener('click', () => {
+        btn_modify_word.disabled = false;
+        const activeElement = document.querySelector('.search_word_item.active');
+        if (activeElement){
+          activeElement.classList.remove('active');
+        }
+        element.classList.add('active');
+
+        input_edit_language.value = element.dataset.language;
+        input_edit_word_type.value = element.dataset.word_type;
+        input_edit_word_level.value = element.dataset.word_level;
+        input_edit_category.value = element.dataset.word_category;
+        update_search_subcategories(input_edit_category.value);
+        input_edit_sub_category.value = element.dataset.word_subcategory;
+        
+        input_edit_article.value = element.dataset.article
+        input_edit_word.value = element.dataset.word;
+        input_edit_transcription.value = element.dataset.transcription
+        input_edit_translation.value = element.dataset.translation;
+        input_edit_comment.value = element.dataset.comment;
+        input_edit_synonims.value = element.dataset.synonims;
+        // textEditTranslationOptions.value = element.dataset.translation_options;
+        input_edit_ID.value = element.dataset.id;
+        input_edit_status.value = element.dataset.status;
+
+      });
+    });
+    document.querySelector('.table_search_results_wrapper').scrollIntoView({ behavior: "smooth" });
+    
+  }
+
+  if (data['status'] == 'error') {
+    btn_add_word.disabled = false;
+    
+    search_feedback.textContent = 'NO WORDS FOUND WITH SUCH A FILTER CONDITIONS';
+    search_feedback.classList.add('text-danger');
+    tableSearchResults.innerHTML = '';
   }
 });
 
-// CREATE NEW STUDY LIST =================================================================
-
-// CLICK on CREATE NEW LIST BUTTON
-const createButton = document.querySelector('.js-create-new-list')
-
-createButton.addEventListener('click', (event) =>{
-    if (document.querySelector('.js-box.box-BOX_1').classList.contains('box_overloaded')){
-      alert('BOX-1 does not have place')
-    } else {
-      createStudyList();
+//  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   ADD NEW CUSTOM WORD
+btn_add_word.addEventListener('click', () =>{
+  const body_data = {
+        language: input_edit_language.value,
+        word_type: input_edit_word_type.value,
+        word_level: input_edit_word_level.value,
+        article: input_edit_article.value,
+        transcription: input_edit_transcription.value,
+        word: input_edit_word.value,
+        ukrainian: input_edit_translation.value,
+        // translation_options: textEditTranslationOptions.value,
+        category: input_edit_category.value,
+        sub_category: input_edit_sub_category.value,
+        comment: input_edit_comment.value,
+        synonims: input_edit_synonims.value,
     }
-    
-   
-});
-
-function createStudyList() {
-  fetch('/create-list/', {
+    if (!body_data['word']) {
+        console.log(' OBLIGATORY FIELD')
+        return
+    }
+  fetch('/add-word/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-CSRFToken': getCookie('csrftoken')
     },
     body: JSON.stringify({
-      rep_number: 3,
-      new_number: 10
+        language: input_edit_language.value,
+        word_type: input_edit_word_type.value,
+        word_level: input_edit_word_level.value,
+        article: input_edit_article.value,
+        transcription: input_edit_transcription.value,
+        word: input_edit_word.value,
+        translation: input_edit_translation.value,
+        // translation_options: textEditTranslationOptions.value,
+        category: input_edit_category.value,
+        sub_category: input_edit_sub_category.value,
+        comment: input_edit_comment.value,
+        synonims: input_edit_synonims.value,
     })
   })
   .then(response => {
@@ -177,322 +239,92 @@ function createStudyList() {
     return response.json(); // успішна відповідь
   })
   .then(data => {
-    // console.log('Success:', data);
-    toastBootstrap.show();
-    const listCreateDate = new Date().toLocaleString();
-    fillWords(data.words, listCreateDate);
-
-    localStorage.setItem("daily_words", JSON.stringify(data.words));
-    localStorage.setItem("daily_words_date", listCreateDate);
-    getUserInfo();
+    console.log('Success:', data);
+    
     
       
   })
   .catch(error => {
     // тут ловимо як мережеві помилки, так і помилки сервера
     console.error('Error:', error);
-    if (error.code === 'NO_MORE_WORDS') {
-      alert('Слова для вивчення закінчилися!');
-      // toastBootstrap.show('Слова для вивчення закінчилися!');
-    } else {
-      alert('Сталася помилка при створенні списку слів.');
+    alert(error);
+    
+  });
+});
+
+//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  MODIFY EXISTING CUSTOM WORD 
+
+btn_modify_word.addEventListener('click', ()=> {
+  fetch('/modify-word/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': getCookie('csrftoken')
+    },
+    body: JSON.stringify({
+        word_ID: input_edit_ID.value,
+        language: input_edit_language.value,
+        word_type: input_edit_word_type.value,
+        word_level: input_edit_word_level.value,
+        article: input_edit_article.value,
+        transcription: input_edit_transcription.value,
+        word: input_edit_word.value,
+        translation: input_edit_translation.value,
+        // translation_options: textEditTranslationOptions.value,
+        category: input_edit_category.value,
+        sub_category: input_edit_sub_category.value,
+        comment: input_edit_comment.value,
+        synonims: input_edit_synonims.value,
+        status: input_edit_status,
+    })
+  })
+  .then(response => {
+    if (!response.ok) { // якщо HTTP статус не 2xx
+      return response.json().then(errData => {
+        // обробляємо помилку
+        throw errData; 
+      });
     }
-     getUserInfo();
-  });
-}
-
-// FILL WORD CARDS WITH WORDS
-function fillWords(wordsList, createDate){
-  // console.log(wordsList)
-  const dateItem = document.querySelector('.js-study_list_date_container')
-  dateItem.dataset.tooltip = `Список створено: ${createDate}`;
-
-  const container = document.querySelector('.js-flip-card-container');
-  container.innerHTML = '';
-  wordsList.forEach((word, index) => {     
-    const item = document.createElement('div');
-    item.classList.add('card_container')
-   
-    if (index === 0) {
-        item.classList.add('active'); // Перший елемент каруселі має бути активним
-      }
-
-      item.innerHTML =
-      `
-      <span class="card_badge badge_index">${index + 1}</span>
-      <span class="card_badge badge_word_level badge_word_level_${word.word_level}">${word.word_level}</span>
-      <span class="card_badge badge_word_type">${word.word_type}</span>
-      
-      <div class=" card_warpper flip-card">
-      
-            <div class="flip-card-inner js-flip-card">
-                <div class="flip-card-front">${word.article + ' ' + word.eng}</div>
-                <div class="flip-card-back">${word.ukr}</div>
-                <div class="accordion" id="word-accordion">
-                    
-                </div>
-            </div>
-            
-        </div>
-        <div class="accordion_wrapper">
-            <div class="accordion accordion-flush" id="accordionWord-${index + 1}">
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCommentary-${index + 1}" aria-expanded="true" aria-controls="collapseCommentary-${index + 1}">
-                        COMMENTS
-                    </button>
-                    </h2>
-                    <div id="collapseCommentary-${index + 1}" class="accordion-collapse collapse" >
-                    <div class="accordion-body">
-                        ${'SOME COMMENTARY'}
-                    </div>
-                    </div>
-                </div>
-                <div class="accordion-item">
-                    <h2 class="accordion-header">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSynonims-${index + 1}" aria-expanded="false" aria-controls="collapseSynonims-${index + 1}">
-                        SYNONIMS
-                    </button>
-                    </h2>
-                    <div id="collapseSynonims-${index + 1}" class="accordion-collapse collapse" >
-                    <div class="accordion-body">
-                        ${'SYNONIMS: ' + word.synonims}
-                    </div>
-                    </div>
-                </div>
-  
-            </div>
-        </div>`;
-      container.appendChild(item);
-  });
-
-
-// STUDY WORDS ===========================================================================================
-
-//  ROTATING WORD CARD
-    document.querySelectorAll('.js-flip-card').forEach(card => {
-      card.addEventListener('click', () => {
-      card.closest('.flip-card').classList.toggle('flipped');
-    });
-});
-}
-
-
-
-//СLICK on BOX element на бокс він стає активним і в оперативні області з'являється відповідний контент
-function clear_test_slide_block(){
-  document.querySelector('.js-show-word').textContent = '';
-  document.querySelector('.js-feedback').textContent = '';
-}
-document.querySelectorAll('.js-box').forEach(box => {
-    box.addEventListener('click', (event) => {
-        // console.log(event.currentTarget);
-        const clickedBox = event.currentTarget;
-        const boxCategory = clickedBox.dataset.box;
-        currentBox = boxCategory;
-        const boxStatistics = JSON.parse(localStorage.getItem('userInfo'))['statistics'][boxCategory];
-        const activeBox = document.querySelector('.js-box.box-active');
-        document.querySelector('.js-slide-title').textContent = boxCategory;
-        
-        // Зняти клас з попереднього активного
-        // закрити якщо потрібно попередні слайд блоки, очистити інфу з тест блоків
-        if (activeBox && activeBox !== clickedBox) {
-            clear_test_slide_block();
-            const notTestBlocks = ['PROCESS', 'REPEAT'];
-           if (notTestBlocks.includes(boxCategory)) {
-              hide_test_slide_block();
-          }
-            activeBox.classList.remove('box-active');
-        }
-
-        // Додати клас активному блоку
-        clickedBox.classList.add('box-active');
-        
-    });
-});
-
-// TESTING =========================================================================================================
-document.querySelector('.js-next-word').addEventListener('click', () => {
+    return response.json(); // успішна відповідь
+  })
+  .then(data => {
+    console.log('Success:', data);
+    search_feedback.textContent = 'Modification of the word was successful!!!';
+    search_feedback.classList.remove('text-danger');
+    search_feedback.classList.add('text-success');
     
       
-    const nextBox = document.querySelector(`.js-box.box-${currentBox}`).dataset.nextBox;
-    const statistics = JSON.parse(localStorage.getItem('userInfo'))['statistics'];
-    const nextBoxLength = statistics[nextBox];
-    const nextBoxLengthLimit = statistics[`${nextBox}_LIMIT`];
-    // console.log('currentbox = ',currentBox);
-    // console.log('Next box = ', nextBox, 'length = ', nextBoxLength, 'limit = ', nextBoxLengthLimit);
+  })
+  .catch(error => {
+    // тут ловимо як мережеві помилки, так і помилки сервера
+    console.error('Error:', error);
+    alert(error);
     
-    if (nextBox && nextBoxLength == nextBoxLengthLimit) {
-      alert('В НАСТУПНОМУ БОКСІ НЕМАЄ МІСЦЯ');
-      return
-    }
-    getNextWord(currentBox);
-});
-
-async function getNextWord(boxName) {
-    try {
-        // можна показати "завантаження..."
-        document.querySelector('.js-show-word').textContent = '⏳ Завантаження...';
-
-        const response = await fetch(`/get-box-word/?box=${boxName}`);
-
-        if (!response.ok) {
-            console.warn(`Не вдалося отримати слово, статус: ${response.status}`);
-            showEmptyBoxMessage(boxName);
-            return;
-        }
-
-        const data = await response.json();
-
-        if (!data?.word) {
-            showEmptyBoxMessage(boxName);
-            return;
-        }
-
-        const word = data.word;
-        document.querySelector('.js-show-word').textContent = `${word.article} ${word.eng}`;
-        document.querySelector('.js-input-answer').dataset.wordId = word.id;
-
-    } catch (error) {
-        console.error('Помилка запиту:', error);
-        document.querySelector('.js-feedback').textContent = "⚠️ Сталася помилка при отриманні слова.";
-    }
-}
-
-function showEmptyBoxMessage(boxName) {
-    const testing_days_limit = JSON.parse(localStorage.getItem('userInfo'))['settings']['testing_days_limit'];
-    document.querySelector('.js-feedback').innerHTML = `
-        В коробці ${boxName} немає слів для тестування!!!<br>
-        Треба почекати <strong>${testing_days_limit}</strong> днів згідно з налаштуваннями профілю...
-    `;
-}
-
-
-
-document.querySelector('.js-test-answer').addEventListener('click',async () => {
-    const next_box_selector_part = NEXT_BOX_SCHEME[currentBox]
-    const next_box = document.querySelector(`.js-box.box-${next_box_selector_part}`);
-    
-   if (next_box && next_box.classList.contains('box_overloaded')) {
-    alert(`BOX ${next_box_selector_part} is overloaded`)
-   } else {
-    const input = document.querySelector('.js-input-answer');
-    const word_id = input.dataset.wordId
-    const answer = input.value.trim();
-    const feedback = document.querySelector('.js-feedback');
-
-    const clear_input = () => {
-      input.value = ''
-    }
-
-    if (!answer) {
-        feedback.textContent = 'Введи відповідь!';
-        return;
-    }
-
-    try {
-        const response = await fetch('/test-word/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')  // функція getCookie повинна бути визначена
-            },
-            body: JSON.stringify({
-                word_id: word_id,
-                answer: answer
-            })
-        });
-
-        const data = await response.json();
-
-        if (data.error) {
-            feedback.textContent = data.error;
-            clear_input();
-            return;
-        }
-
-        if (data.correct) {
-            feedback.textContent = 'Правильно! 🎉';
-            
-            // console.log(currentBox);
-            // getNextWord(currentBox); // показати наступне слово
-        } else {
-            feedback.textContent = `Відповідь ${answer} є НЕПРАВИЛЬНА. \n Правильна відповідь: ${data.correct_answer}`;
-            
-        }
-        clear_input(); // очищаємо інпут
-        getUserInfo();
-        getNextWord(currentBox);
-
-    } catch (err) {
-        // console.error('Помилка при відправці відповіді:', err);
-        feedback.textContent = 'Помилка при перевірці відповіді';
-    }
-   }
-    
-});
-
-
-
-// ПОКАЗ ІНФИ ПРО БЛОК ПРИ НАВЕДЕННІ НА КОРОБКУ====================================
-const vocabularyBadge = document.querySelector('.js-block-badge');
-const boxes = document.querySelectorAll('.js-box');
-
-boxes.forEach( box => {
-  box.addEventListener('mouseenter', () =>{
-    vocabularyBadge.textContent = boxesNamesUkr[box.dataset.box];
-    vocabularyBadge.classList.add('block_badge_show');
-  });
-
-  box.addEventListener('mouseleave', () =>{
-    vocabularyBadge.textContent = '';
-    vocabularyBadge.classList.remove('block_badge_show');
   });
 });
 
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>==================================== CLEAR FIELDS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+function clear_filter_fields(){
+  const tableSearchResults = document.querySelector('.js-search-results-list');
+  const search_feedback = document.querySelector('.js-search-feedbcak');
+  tableSearchResults.innerHTML = '';
+  input_edit_language.value = input_edit_language.querySelector("option[selected]").value;
+  input_edit_word_type.value = input_edit_word_type.querySelector("option[selected]").value;
+  input_edit_word_level.value = input_edit_word_level.querySelector("option[selected]").value;
+  input_edit_category.value = '';
+  update_search_subcategories();
+  input_edit_article.value = input_edit_article.defaultValue;
+  input_edit_word.value = input_edit_word.defaultValue;
+  input_edit_transcription.value = input_edit_transcription.defaultValue;
+  input_edit_translation.value = input_edit_translation.defaultValue;
+  input_edit_comment.value = input_edit_comment.defaultValue;
+  input_edit_synonims.value = input_edit_synonims.defaultValue;
+  input_edit_ID.value = input_edit_ID.defaultValue;
+  input_edit_status.value = input_edit_status.defaultValue;
+  search_feedback.textContent = '';
 
-
-
-
-
-
-
-
-// SLIDE BLOCKS====================================================================
-const slideBlockCreateList = document.querySelector('.js-slide-block-create-list');
-const slideBlockTesting = document.querySelector('.js-slide-block-testing');
-const slideBlockStudy = document.querySelector('.js-slide-block-study');
-
-function hide_slide_blocks(){
-  [slideBlockCreateList, slideBlockStudy, slideBlockTesting].forEach(slideBlock =>{
-      slideBlock.classList.remove('slide_block_show');
-    });
 }
 
-function hide_test_slide_block(){
-  slideBlockTesting.classList.remove('slide_block_show');
-}
-
-document
-  .querySelectorAll('.js-test')
-  .forEach(button => {
-  button.addEventListener('click', () => {
-    hide_slide_blocks();
-    slideBlockTesting.classList.add('slide_block_show');
-  });
+btn_clear_fields.addEventListener('click', ()=>{
+  clear_filter_fields();
 });
-
-document.querySelector('.js-create-list').addEventListener('click', ()=>{
-  hide_slide_blocks();
-  slideBlockCreateList.classList.add('slide_block_show');
-});
-
-document.querySelector('.js-study-words').addEventListener('click', () => {
-  hide_slide_blocks();
-  slideBlockStudy.classList.add('slide_block_show');
-});
-
-document.querySelectorAll('.js-slide-block-hide').forEach( button => {
-  button.addEventListener('click', () => {
-    hide_slide_blocks();
-  })});

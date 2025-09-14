@@ -26,7 +26,9 @@ SECRET_KEY = 'django-insecure-#%dd-&t0w^)(&mgyb*pi-53k@n8b0pc+p*+eoiql)5(urnl-ba
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['batyrbekcherushev.pythonanywhere.com']
+ALLOWED_HOSTS = ['batyrbekcherushev.pythonanywhere.com',
+                 '127.0.0.1',
+    'localhost']
 
 
 # Application definition
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
 ]
 
 MIDDLEWARE = [
@@ -127,3 +130,9 @@ LOGIN_URL = '/login/'  # тут має бути шлях до твого лог�
 LOGIN_REDIRECT_URL = '/'  # куди редіректити після успішного логіну
 LOGOUT_REDIRECT_URL = '/login/'  # куди після логауту
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
+
+import mimetypes
+mimetypes.add_type("application/javascript", ".js", True)
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000

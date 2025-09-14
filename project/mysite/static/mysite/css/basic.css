@@ -1,6 +1,20 @@
 :root {
-  --interface-color-1: rgb(173, 216, 230);
-  --interface-color-2: darkred;
+  --interface-color-1: #283044;
+  /* --interface-color-2: rgb(173, 216, 230); */
+  --interface-color-3: #6b8fa8;
+  --interface-color-2: #5d7d95;
+  --interface-color-4: #c3d5e1;
+  --interface-color-5: #78a1bb;
+
+  
+}
+
+body {
+  min-height: 1000px;
+}
+
+h1{
+  color: var(--interface-color-2) !important;
 }
 
 /* NAVIGATION */
@@ -26,6 +40,7 @@
 
 .nav_icon_wrapper:hover .nav_icon_text {
   display: block;
+  color: var(--interface-color-2);
 }
 
 .nav_icon {
@@ -42,22 +57,27 @@
     /* box-shadow: 5px 5px 10px rgba(173, 216, 230, 0.3); */
     cursor: pointer;
     transform: rotatez(5deg);
-   
 }
 
 .nav_icon:active {
-    fill: white
+    fill: var(--interface-color-1)
     
 }
 
 .nav_icon_open {
-    fill: darkred;
-    stroke: darkred;
+    fill: var(--interface-color-2);
+    stroke: var(--interface-color-2);
     fill: var(--interface-color-2);
      stroke: rgb(--interface-color-2);
 }
 
 /*============================= */
+
+/* BOOTSRAP ACCORDIONS */
+.accordion-item {
+  border-color: var(--interface-color-4);
+}
+
 
 
 

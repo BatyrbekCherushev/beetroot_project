@@ -1,32 +1,27 @@
- <!-- templates/vocabulary.html -->
+ <!-- templates/library.html -->
 {% extends 'slide_blocks.html' %}
 
-{% block title %}VOCABULARY{% endblock %}
+{% block title %}LIBRARY{% endblock %}
 
 {% block content %}
 <br><br>
-    <h1>СЛОВНИК</h1>
-    <p>Сторінка Вашого кастомного словника</p>
-    <div>{{custom_categories_all}}</div>
+    <h1>БІБЛІОТЕКА</h1>
+    <p>Сторінка вивчення слів...</p>
     <br>
 
     
-   
-
+    
+    <!-- BOXES WITH WORDS ==> -->
     <div class="accordion" id="accordionExample">
-        <!-- ================== INFO BLOCK =================== -->
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"><strong>INFO</strong></button>    
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse " >
                 <div class="accordion-body position-relative text-start">
-                    <p>Це сторінка-словник. Тут ви можете:</p>
+                    <p>Це сторінка бібліотека. Тут ви можете:</p>
                     <ul>
-                        <li>Створити власний кастомний словник зі слів будь якої мови. За вивчені слова з кастомного словника Ви не отримуєте ігрової валюти.</li>
-                        <li>Вивчати слова з кастомного словника за інтервальним принципом </li>
-                        
-                        
+                        <li>Вивчати слова за інтервальним принципом з базових словників різних мов, Англійська - OXFORD 5000</li>
                     </ul>
                     <p>Як користуватись словником</p>
                     <ul>
@@ -42,243 +37,7 @@
                 </div>
             </div>
         </div>
-        <!-- SEARCH WORDS BLOCK BLOCK ========================================= -->
-         <div class="accordion-item">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed"
-                type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomVocab" aria-expanded="true" aria-controls="collapseCustomVocab"><strong>ДОДАТИ / РЕДАГУВАТИ СЛОВА</strong></button>    
-            </h2>
-            <div id="collapseCustomVocab" class="accordion-collapse collapse " >
-                <div class="accordion-body position-relative text-start">
-                    <div class="container">
-                        
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="table_search_results_wrapper">
-                                    <table class="table table-success ">
-                                        <thead>
-                                            <th>#</th>
-                                            <th>Мова</th>
-                                            <th>Рівень</th>
-                                            <th>Тип</th>
-                                            <th>Слово</th>
-                                            <th>Статус</th>
-                                        </thead>
-                                    
-                                        <tbody class="js-search-results-list">
-                                            <tr class="table-danger"></tr>
-                                        </tbody>
-                                    
-
-                                    </table>
-                                </div>
-                                <div class="js-search-feedbcak"></div>
-                            </div>
-                        </div>
-
-                        <hr>
-                        
-                        <div class="row">
-                            <div class="col-6">
-                                <table class="table search_filter">
-                                    <!-- LANGUAGE -->
-                                    <tr>
-                                        <td>
-                                            <label for="">* мову:</label>
-                                        </td>
-                                        <td>
-                                            <select class="js-edit-language" name="language" id="">
-                                                <option value="EN" selected>ENGLISH</option>
-                                                <option value="DE">DEUTCH</option>
-                                                <option value="FR">FRENCH</option>
-                                                <option value="ES">SPANISH</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <!-- WORD TYPE -->
-                                            <label for="">
-                                                * word type:
-                                                
-                                            </label>
-                                        </td>
-                                        <td>
-                                            <select class="js-edit-word-type" name="word_type" id="">
-                                                <option value="" selected >RANDOM</option>
-                                                <option value="ІМЕННИК">ІМЕННИК</option>
-                                                <option value="ДІЄСЛОВО">ДІЄСЛОВО</option>
-                                                <option value="ПРИКМЕТНИК">ПРИКМЕТНИК</option>
-                                                <option value="ІНШЕ">ІНШЕ</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                             <!-- WORD LEVEL -->
-                                            <label for="">
-                                                * word level    
-                                            </label>
-                                        </td>
-                                        <td>
-                                            <select class="js-edit-word-level" name="word_level" id="">
-                                                <option value="" selected>RANDOM</option>
-                                                <option value="A1">A1</option>
-                                                <option value="A2">A2</option>
-                                                <option value="B1">B1</option>
-                                                <option value="B2">B2</option>
-                                                <option value="C1">C1</option>
-                                                <option value="C2">C2</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <!-- CATEGORY -->
-                                    <tr>
-                                        <td>
-                                            
-                                           * category
-                                        </td>
-                                        <td>                
-                                                <select class="js-edit-category" name="category">
-                                                    <option value="" selected>RANDOM</option>
-                                                    {% for category in user_info.categories.categories %}
-                                                        <option value="{{ category.id }}">{{ category.name }}</option>
-                                                    {% endfor %}
-                                                </select>                        
-                                            
-                                        </td>
-                                    </tr>
-                                    <!-- SUBCATEGORY -->
-                                    <tr>
-                                        <td>                                            
-                                             * Введіть субкатегорію
-                                        </td>
-                                        <td>
-                                            <select class="js-edit-subcategory" name="" id="" >
-                                                <option value="RANDOM" selected>RANDOM</option>
-                                                
-                                            </select>
-                                            
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                             <!-- WORD STATUS -->
-                                            <label for="">
-                                                * WORD STATUS
-                                                
-                                            </label>
-                                        </td>
-                                        <td>
-                                            <input class="js-edit-status" type="text" name="id" disabled>
-                                        </td>
-                                    </tr>   
-                                     <!-- WORD ID -->
-                                    <tr>
-                                        <td>WORD ID</td>
-                                        <td><input class="js-edit-id" type="text" name="id" disabled></td>
-                                    </tr>                                 
-                                </table>                                 
-                            </div>
-                            <div class="col-6">
-                                <table class="table search_filter">
-                                    <tr>
-                                        <td>
-                                            <!-- ARTICLE -->
-                                            <label for="">
-                                                * article
-                                                
-                                            </label>
-                                        </td>
-                                        <td>
-                                            <input class="js-edit-article" type="text" name="article">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <!-- WORD -->
-                                            <label for="">
-                                                * <strong>word</strong>
-                                                
-                                            </label>
-                                        </td>
-                                        <td>
-                                            <input class="js-edit-word" name="word" type="text">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <!-- TRANSCRIPTION -->
-                                            <label for="">
-                                                * transcription
-                                                
-                                            </label>
-                                        </td>
-                                        <td>
-                                            <input class="js-edit-transcription" type="text" name="transcription">
-                                        </td>
-                                    </tr>
-                                     <!-- TRANSLATION -->
-                                    <tr>
-                                        <td>                                          
-                                            * translation
-                                        </td>
-                                        <td>
-                                            <input class="js-edit-translation" type="text" name="translation">
-                                        </td>
-                                    </tr>
-                                    <!-- COMMENT -->
-                                    <tr>
-                                        <td>* commentary</td>
-                                        <td><input class="js-edit-comment" type="text" name="comment"></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <!-- SYNONIMS -->
-                                            <label for="">
-                                                * synonims
-                                                
-                                            </label>
-                                        </td>
-                                        <td>
-                                            <input class="js-edit-synonims" type="text" name="synonims">
-                                        </td>
-                                    </tr>  
-                                    <tr>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>                                  
-                                </table>                               
-                            </div>
-                            
-                        </div>
-                        
-                        <div class="row justify-content-center" >
-                            <div class="col">
-                                <button class="js-btn-add-word btn btn-success" disabled>ADD WORD</button>
-                                
-                            </div>
-                            <div class="col">
-                                <button class="js-btn-modify-word btn btn-warning" disabled>MODIFY WORD</button>
-                            </div>
-                            <div class="col">
-                                <button class="js-edit-clear-fields btn btn-secondary">CLEAR FIELDS</button>
-                                    
-                            </div>
-                            <div class="col">
-                                <button class="js-btn-search-word btn btn-dark">SEARCH WORD</button>
-                            </div>
-                        </div>
-
-                        
-                    </div>
-                    
-                </div>
-            </div>
-        </div>
-        <!-- SEARCH WORDS BLOCK ========================================= END -->
-
-        <!-- ================== ENGLISH LANGUAGE STUDY BLOCK - START=================== -->
+        <!-- ================== BASIC ENG VOCABULARY BLOCK =================== -->
          <div class="accordion-item position-relative">
             <div class="js-block-badge block_badge"> BLOCK INFO</div>
             <h2 class="accordion-header position-relative">
@@ -287,13 +46,14 @@
                     aria-expanded="true"
                     aria-controls="collapseTwo">
                     <svg class="collapse_button_flag" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 496 496" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path style="fill:#29337A;" d="M496,369.6c0,27.2-21.6,46.4-48,46.4H48c-26.4,0-48-19.2-48-46.4V126.4C0,99.2,21.6,80,48,80h400 c26.4,0,48,19.2,48,46.4V369.6z"></path> <path style="fill:#1B265B;" d="M48,80h400c26.4,0,48,19.2,48,46.4v243.2c0,27.2-25.6,46.4-52,46.4"></path> <g> <path style="fill:#111D49;" d="M48,80h400c26.4,0,48,19.2,48,46.4V216"></path> <path style="fill:#111D49;" d="M496,368.8c0,27.2-21.6,47.2-48,47.2H48c-26.4,0-48-20.8-48-48"></path> </g> <polygon style="fill:#FFFFFF;" points="272,248 442.4,80 394.4,80 248,226.4 101.6,80 53.6,80 224,248 53.6,416 101.6,416 248,269.6 394.4,416 442.4,416 "></polygon> <g> <polygon style="fill:#D9ECED;" points="102.4,368 53.6,416 101.6,416 149.6,368 "></polygon> <polygon style="fill:#D9ECED;" points="346.4,368 394.4,416 442.4,416 393.6,368 "></polygon> <polygon style="fill:#D9ECED;" points="411.2,386.4 272,249.6 442.4,80 394.4,80 248,226.4 101.6,80 53.6,80 85.6,110.4 "></polygon> </g> <polygon style="fill:#FFFFFF;" points="496,216 280,216 280,80 216,80 216,216 0,216 0,280 216,280 216,416 280,416 280,280 496,280 "></polygon> <g> <rect x="216" y="368" style="fill:#D9ECED;" width="64" height="48"></rect> <polygon style="fill:#D9ECED;" points="280,80 216,80 216,216 210.4,216 285.6,280 496,280 496,216 280,216 "></polygon> </g> <polygon style="fill:#E51D35;" points="496,232 264,232 273.6,232 432.8,80 416.8,80 264,232 264,80 232,80 232,232 232,232 77.6,80 63.2,80 216,232 0,232 0,264 216.8,264 67.2,416 81.6,416 232,264 232,416 264,416 264,265.6 418.4,416 432.8,416 280,264 496,264 "></polygon> <g> <rect x="232" y="368" style="fill:#AF0026;" width="32" height="48"></rect> <polygon style="fill:#AF0026;" points="114.4,368 67.2,416 81.6,416 129.6,368 "></polygon> <polygon style="fill:#AF0026;" points="369.6,368 418.4,416 432.8,416 384,368 "></polygon> <polygon style="fill:#AF0026;" points="278.4,232 432.8,80 416.8,80 264,232 264,80 232,80 232,232 232,232 77.6,80 63.2,80 151.2,167.2 343.2,328.8 280,264 496,264 496,232 264,232 "></polygon> </g> </g></svg>
-                    <strong>АНГЛІЙСЬКИЙ КОРИСТУВАЦЬКИЙ СЛОВНИК  </strong><br><span class="js-vocabulary-basic-header"></span></button>
+                    <strong>АНГЛІЙСЬКИЙ БАЗОВИЙ СЛОВНИК 'OXFORD 5000'  </strong><br><span class="js-vocabulary-header" data-instance_type="basic" data-instance_language="EN"></span></button>
                 
             </h2>
-
+            
+            <!-- ENGLISH LANGUAGE BOXES -->
             <div id="collapseTwo" class="accordion-collapse collapse " >
                 <div class="accordion-body position-relative">
-                    <div class="container">
+                     <div class="container">
                         
                         <div class="row">
                             <div class="col-12 align-content-center">
@@ -301,7 +61,7 @@
                                     <div class="row" style="min-height: 200px;">
 
                                         <!-- BOX REPEAT -->
-                                        <div class="col js-box box box-REPEAT position-relative " data-instance_type="custom" data-instance_language="EN" data-box="REPEAT">
+                                        <div class="col js-box box box-REPEAT position-relative " data-instance_type="basic" data-instance_language="EN" data-box="REPEAT">
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
                                                 <g>
@@ -321,7 +81,7 @@
                                         </div>
 
                                         <!-- BOX-PROCESS -->
-                                        <div class="col js-box box box-PROCESS  position-relative" data-instance_type="custom" data-instance_language="EN"  data-box="PROCESS">
+                                        <div class="col js-box box box-PROCESS  position-relative" data-instance_type="basic" data-instance_language="EN"  data-box="PROCESS">
                                             <!-- <span class="js-box-text-PROCESS position-absolute"></span> -->
                                             <svg class="box_painted_svg" width="150px"  height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                 viewBox="0 0 54 54" xml:space="preserve">
@@ -349,7 +109,7 @@
                                         </div>
                                        
                                         <!-- BOX-1 -->                                      
-                                        <div class="js-box box col box-BOX_1  position-relative " data-box="BOX_1" data-next_box="BOX_2" data-instance_type="custom" data-instance_language="EN">
+                                        <div class="js-box box col box-BOX_1  position-relative " data-box="BOX_1" data-next_box="BOX_2" data-instance_type="basic" data-instance_language="EN">
                                             
                                             <svg class="box_painted_svg" width="150px"  height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                 viewBox="0 0 54 54" xml:space="preserve">
@@ -375,7 +135,7 @@
                                         </div>
 
                                         <!-- BOX-2 -->
-                                        <div class="col js-box box box-BOX_2 position-relative " data-instance_type="custom" data-instance_language="EN" data-box="BOX_2" data-next_box="BOX_3">
+                                        <div class="col js-box box box-BOX_2 position-relative " data-instance_type="basic" data-instance_language="EN" data-box="BOX_2" data-next_box="BOX_3">
                                             
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
@@ -401,7 +161,7 @@
                                         </div>
 
                                         <!-- BOX-3 -->
-                                        <div class="col js-box box box-BOX_3 position-relative" data-box="BOX_3" data-next_box="LEARNT" data-instance_type="custom" data-instance_language="EN">
+                                        <div class="col js-box box box-BOX_3 position-relative" data-box="BOX_3" data-next_box="LEARNT" data-instance_type="basic" data-instance_language="EN">
                                             
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
@@ -426,7 +186,7 @@
                                             </div>
                                         </div>
                                         <!-- BOX-LEARNT -->
-                                        <div class="col js-box box box-LEARNT position-relative" data-instance_type="custom" data-instance_language="EN" data-operation-area="js-operating-testing" data-box="LEARNT">
+                                        <div class="col js-box box box-LEARNT position-relative" data-instance_type="basic" data-instance_language="EN" data-operation-area="js-operating-testing" data-box="LEARNT">
                                            
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
@@ -452,21 +212,19 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>                        
+                        </div>
+                        
                     </div>
-                     
                 </div>
             </div>
         </div>
-        <!-- ================== ENGLISH LANGUAGE STUDY BLOCK - END=================== -->
-
         <!--  ========================================================================================= DEUTCH VOCABULARY ========================================================================= -->
          <div class="accordion-item">
             <h2 class="accordion-header">
                 <button class="accordion-button collapsed"
                 type="button" data-bs-toggle="collapse" data-bs-target="#collapseDeutch" aria-expanded="true" aria-controls="collapseDeutch">
                 <svg class="collapse_button_flag" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 496 496" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path style="fill:#F8D12E;" d="M0,304v65.6C0,396.8,21.6,416,48,416h400c26.4,0,48-19.2,48-46.4V304H0z"></path> <path style="fill:#333333;" d="M448,80H48C21.6,80,0,99.2,0,126.4V192h496v-65.6C496,99.2,474.4,80,448,80z"></path> <rect y="192" style="fill:#DB2727;" width="496" height="112"></rect> <path style="fill:#DBB30F;" d="M446.4,416c26.4,0,49.6-19.2,49.6-46.4V304H315.2L446.4,416z"></path> <path style="fill:#202121;" d="M448,80H48l132.8,112H496v-65.6C496,99.2,474.4,80,448,80z"></path> <polygon style="fill:#C10E0E;" points="316,304 496,304 496,192 180,192 "></polygon> <path d="M448,80H48l370.4,112H496v-65.6C496,99.2,474.4,80,448,80z"></path> <polygon style="fill:#A00808;" points="496,214.4 496,192 414.4,192 "></polygon> <path style="fill:#D89F12;" d="M496,368.8c0,29.6-21.6,47.2-48,47.2H48c-26.4,0-48-20.8-48-48"></path> </g></svg>
-                <strong> НІМЕЦЬКИЙ КОРИСТУВАЦЬКИЙ СЛОВНИК</strong></button>    
+                <strong> НІМЕЦЬКИЙ БАЗОВИЙ СЛОВНИК</strong></button>    
             </h2>
             <div id="collapseDeutch" class="accordion-collapse collapse " >
                 <div class="accordion-body position-relative text-start">
@@ -478,7 +236,7 @@
                                     <div class="row" style="min-height: 200px;">
 
                                         <!-- BOX REPEAT -->
-                                        <div class="col js-box box box-REPEAT position-relative " data-instance_type="custom" data-instance_language="DE" data-box="REPEAT">
+                                        <div class="col js-box box box-REPEAT position-relative " data-instance_type="basic" data-instance_language="DE" data-box="REPEAT">
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
                                                 <g>
@@ -498,7 +256,7 @@
                                         </div>
 
                                         <!-- BOX-PROCESS -->
-                                        <div class="col js-box box box-PROCESS  position-relative" data-instance_type="custom" data-instance_language="DE"  data-box="PROCESS">
+                                        <div class="col js-box box box-PROCESS  position-relative" data-instance_type="basic" data-instance_language="DE"  data-box="PROCESS">
                                             <!-- <span class="js-box-text-PROCESS position-absolute"></span> -->
                                             <svg class="box_painted_svg" width="150px"  height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                 viewBox="0 0 54 54" xml:space="preserve">
@@ -526,7 +284,7 @@
                                         </div>
                                        
                                         <!-- BOX-1 -->                                      
-                                        <div class="js-box box col box-BOX_1  position-relative " data-box="BOX_1" data-next_box="BOX_2" data-instance_type="custom" data-instance_language="DE">
+                                        <div class="js-box box col box-BOX_1  position-relative " data-box="BOX_1" data-next_box="BOX_2" data-instance_type="basic" data-instance_language="DE">
                                             
                                             <svg class="box_painted_svg" width="150px"  height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                 viewBox="0 0 54 54" xml:space="preserve">
@@ -552,7 +310,7 @@
                                         </div>
 
                                         <!-- BOX-2 -->
-                                        <div class="col js-box box box-BOX_2 position-relative " data-instance_type="custom" data-instance_language="DE" data-box="BOX_2" data-next_box="BOX_3">
+                                        <div class="col js-box box box-BOX_2 position-relative " data-instance_type="basic" data-instance_language="DE" data-box="BOX_2" data-next_box="BOX_3">
                                             
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
@@ -578,7 +336,7 @@
                                         </div>
 
                                         <!-- BOX-3 -->
-                                        <div class="col js-box box box-BOX_3 position-relative" data-box="BOX_3" data-next_box="LEARNT" data-instance_type="custom" data-instance_language="DE">
+                                        <div class="col js-box box box-BOX_3 position-relative" data-box="BOX_3" data-next_box="LEARNT" data-instance_type="basic" data-instance_language="DE">
                                             
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
@@ -603,7 +361,7 @@
                                             </div>
                                         </div>
                                         <!-- BOX-LEARNT -->
-                                        <div class="col js-box box box-LEARNT position-relative" data-instance_type="custom" data-instance_language="DE" data-operation-area="js-operating-testing" data-box="LEARNT">
+                                        <div class="col js-box box box-LEARNT position-relative" data-instance_type="basic" data-instance_language="DE" data-operation-area="js-operating-testing" data-box="LEARNT">
                                            
                                             <svg class="box_painted_svg" width="150px" height="150px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                                                     viewBox="0 0 54 54" xml:space="preserve">
@@ -638,5 +396,5 @@
         
     </div>
 
-      
+   
 {% endblock %}

@@ -1,0 +1,208 @@
+ <!-- templates/slide_blocks.html -->
+{% extends 'nav.html' %}
+{% block title %}{% endblock %}
+{% block content %}{% endblock %}
+
+{% block slide_blocks %}
+
+<!-- SLIDE BLOCKS -->
+     <!-- SLIDE BLOCK CREATE STUDY LIST =========================================================================================================================================================-->
+    <div class="js-slide-block-create-list slide_block" data-caller_instance_type="" data-caller_instance_language="">
+        <!-- <button class="js-slide-block-hide">CLOSE</button> -->
+         <div class="slide_block_wrapper">
+            <div class="js-slide-block-hide slide_block_btn_close">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path  d="M 20,4 3,21 33,50 3,80 20,97 49,67 79,97 95,80 65,50 95,20 80,4 50,34 z"></path> </g></svg>
+            </div>
+            
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div>СТВОРЕННЯ НАВЧАЛЬНОГО СПИСКУ СЛІВ ДЛЯ ... <strong><span class="js-slide-title"></span></strong></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="text-start">
+            
+                <label for=""> * Загальна  кількість слів в списку для навчання 
+                    <input class="js-study-list-length" id="study_list_length" type="number"
+                    value="{{user_info.settings.basic_EN.study_list_length}}"
+                    min="10"
+                    max="40"> <strong>(РЕКОМЕНДОВАНО - 20, МІНІМУМ - 10, МАКСИМУМ - 40)</strong>
+                </label><br>
+                <label for="">* Кількість слів для навчання із коробки ПОВТОР
+                    <input class="js-rep-words-number" id="number_rep_words" type="number" value="{{user_info.settings.basic_EN.repeat_words_number}}" > <strong> (Решта слів береться із НОВИХ)</strong>
+                </label><br>
+                <!-- <label for="">* Кількість слів для навчання із числа НОВИХ 
+                    <input class="js-new-words-number" id="number_new_words" type="number" value="{{user_info.settings.new_words_number}}"> 
+                </label><strong>(Підраховується автоматично я крізниця загальної кількості слів і слів з ПОВТОРу)</strong><br> -->
+                <hr>
+                <p><strong>ОПЦІЇ ДЛЯ НОВИХ СЛІВ В СПИСКУ НАВЧАННЯ</strong></p>
+                            
+                <label for="">* Оберіть рівень слів
+                    <select class="js-study-list-words-level" name="" id="">
+                        <option value="RANDOM" selected>RANDOM</option>
+                        <option value="A1" >A1</option>
+                        <option value="A2">A2</option>
+                        <option value="B1">B1</option>
+                        <option value="B2">B2</option>
+                        <option value="C1">C1</option>
+                        <option value="C2">C2</option>
+                    </select>
+                </label><br>
+                <label for="">* Оберіть type слів
+                    <select class="js-study-list-words-type" name="" id="">
+                        <option value="RANDOM" selected>RANDOM</option>
+                        <option value="NOUN" >NOUN</option>
+                        <option value="VERB">VERB</option>
+                        <option value="ADJECTIVE">ADJECTIVE</option>
+                    </select>
+                </label><br>
+                <label for="">* Оберіть категорію слів
+                    <select class="js-study-list-category" name="" id="" >
+                        <option value="RANDOM" selected>RANDOM</option>
+                        {% for category in user_info.categories.categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select><strong> </strong>
+                </label><br>
+                <label for="">* Оберіть підкатегорію слів
+                    <select class="js-study-list-subcategories" name="" id="" >
+                        <option value="RANDOM" selected>RANDOM</option>
+                        
+                    </select><strong> (підвантажується динамічно при зміні категорії)</strong>
+                </label><br>
+                <button  class="js-create-new-list " >Створити список</button>
+            </div>
+                </div>
+            </div>
+         </div>
+        
+        
+    </div>
+    
+    <!--SLIDE BLOCK TEST WORDS ======================================================================================================= -->
+    <div class="js-slide-block-testing slide_block"data-caller_instance_type="" data-caller_instance_language="" data-caller_box="">
+        <div class="slide_block_wrapper">
+            <div class="js-slide-block-hide slide_block_btn_close">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path  d="M 20,4 3,21 33,50 3,80 20,97 49,67 79,97 95,80 65,50 95,20 80,4 50,34 z"></path> </g></svg>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div class="js-spinner-testing spinner-border d-none" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div class="js-feedback"></div>
+                        <div >ТЕСТУВАТИ СЛОВА З <strong><span class="js-slide-title"></span></strong></div>
+                        <p>Коли Ви натискаєте НЕКСТ відбувається пошук серед слів у відповідній коробці, які сьогодні не міняли свого статусу. Тобто якщо слово попало в цю коробку сьогодні, Вам його не видасть.</p>
+                        <button class="js-next-word"> Показати слово для тестування</button>
+                        <p class="js-show-word"></p>
+                        <input class="js-input-answer" placeholder="введіть переклад тут" type="text" data-word-id="" data-word-box="">
+                        <button class="js-test-answer" disabled> Перевірити переклад</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <!-- SLIDE BLOCK - CLEAN BOX -->
+     <div class="js-slide-block-clean-box slide_block" data-caller_instance_type="" data-caller_instance_language="" data-caller_box="">
+        <div class="slide_block_wrapper">
+            <div class="js-slide-block-hide slide_block_btn_close">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path  d="M 20,4 3,21 33,50 3,80 20,97 49,67 79,97 95,80 65,50 95,20 80,4 50,34 z"></path> </g></svg>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <div>ОЧИСТИТИ КОРОБКУ <strong><span class="js-slide-title"></span></strong></div>
+                        <label for="">
+                            <input class="js-clean-box-number" type="number" required value="20">
+                            <br>
+                            <strong>При очищенні коробки, слова потрапляють в коробку ПОВТОР</strong>
+                        </label>
+                        <button class="js-clean-box-btn"> ОЧИСТИТИ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+     </div>
+
+     <!-- SLIDE BLOCK STUDY ====================================================================================================================================================================-->
+    <div class="js-slide-block-study slide_block justify-content-center" data-caller_instance_type="" data-caller_instance_language="">
+        
+        <div class="slide_block_wrapper">
+            <div class="js-slide-block-hide slide_block_btn_close">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path  d="M 20,4 3,21 33,50 3,80 20,97 49,67 79,97 95,80 65,50 95,20 80,4 50,34 z"></path> </g></svg>
+            </div>
+
+            <!-- ENGLISH LIBRARY CARDS CONTAINER -->
+            <div class="js-study-cards-container position-relative  cards_container d-none" data-instance_type="" data-instance_language="EN">
+                <!-- BADGES -->
+                <span class="js-card-badge-index card_badge badge_index"></span>
+                <span class="js-card-badge-word_level card_badge badge_word_level badge_word_level_${word.word_level}"></span>
+                <span class="js-card-badge-word_type card_badge badge_word_type"></span>
+
+                <button class="js-previous-card navigation_button navigation_button_prev">
+                    ⮜
+                </button>
+                <button class="js-next-card navigation_button navigation_button_next">
+                    ⮞
+                </button>
+
+                <!-- COMENNTARIES SYNONIMS -->
+                <!-- <div>COMMENTS
+                    ${'SOME COMMENTARY'}
+                </div>
+                <div>
+                    ${'SYNONIMS: ' + word.synonims}
+                </div> -->
+                
+                <div class="cards_wrapper ">
+                    <div class="swiper">
+                        <div class="js-flip-card-container swiper-wrapper"></div>
+                    </div>
+                    
+
+                </div>
+                
+            </div>
+
+            <!-- DEUTCH LIBRARY CARDS CONTAINER -->
+            <div class="js-study-cards-container position-relative  cards_container d-none" data-instance_type="" data-instance_language="DE">
+                <!-- BADGES -->
+                <span class="js-card-badge-index card_badge badge_index"></span>
+                <span class="js-card-badge-word_level card_badge badge_word_level badge_word_level_${word.word_level}"></span>
+                <span class="js-card-badge-word_type card_badge badge_word_type"></span>
+
+                <button class="js-previous-card navigation_button navigation_button_prev">
+                    ⮜
+                </button>
+                <button class="js-next-card navigation_button navigation_button_next">
+                    ⮞
+                </button>
+
+                <!-- COMENNTARIES SYNONIMS -->
+                <!-- <div>COMMENTS
+                    ${'SOME COMMENTARY'}
+                </div>
+                <div>
+                    ${'SYNONIMS: ' + word.synonims}
+                </div> -->
+                
+                <div class="cards_wrapper ">
+                    <div class="swiper">
+                        <div class="js-flip-card-container swiper-wrapper"></div>
+                    </div>
+                    
+
+                </div>
+                
+            </div>
+        </div>                 
+    </div> 
+     <!-- SLIDES -->
+
+{% endblock %}
