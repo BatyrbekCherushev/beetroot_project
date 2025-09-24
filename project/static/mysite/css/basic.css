@@ -78,6 +78,12 @@ h1{
   border-color: var(--interface-color-4);
 }
 
+.collapse_button_flag {
+    width: 50px;
+    margin-right: 10px;
+}
+
+
 
 
 

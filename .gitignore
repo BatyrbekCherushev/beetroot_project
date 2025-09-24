@@ -18,3 +18,9 @@ LOCAL_WORKING_FILES/
 
 #python environment
 myenv/
+
+#DATABASE
+project/db.sqlite3
+
+dev_init.ps1
+dev_init.bat

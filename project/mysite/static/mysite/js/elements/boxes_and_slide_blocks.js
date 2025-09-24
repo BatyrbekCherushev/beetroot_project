@@ -1,67 +1,5 @@
 import {get_statistics, getCookie, getUserInfo} from '../global.js'
-
-export function refresh_instance_statistics(instance_type, instance_language, instance_data){
-    // console.log('REFRESHING STATISTICS for:', instance_type, instance_language)
-    const settings = JSON.parse(localStorage.getItem('settings'))[`${instance_type}_${instance_language}`];
-    if (instance_data && settings) {
-      const vocabulary_header = document.querySelector(`.js-vocabulary-header[data-instance_type="${instance_type}"][data-instance_language="${instance_language}"]`);
-      if (vocabulary_header) {
-        vocabulary_header.textContent = ` ${instance_data['TOTAL']} слів в словнику всього, ${instance_data['NEW']} слів зі статусом НОВЕ`;
-      }
-
-      const categories = ['REPEAT','PROCESS','BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']
-      for (const category of categories){
-            // console.log(category)
-            let text = instance_data[category];
-            const box_element = document.querySelector(`.js-box[data-instance_type="${instance_type}"][data-instance_language="${instance_language}"].box-${category}`);
-            // console.log(box_element)
-
-            if (['BOX_1', 'BOX_2', 'BOX_3', 'LEARNT'].includes(category)) {
-              if (category != 'LEARNT') {
-                text = text + ` / ${settings[`${category.toLowerCase()}_limit`]}`
-              }
-            
-              if (box_element){
-                box_element.querySelector('.js-box-words-testible').dataset.tooltip = instance_data[`${category}_usable`] + " слів доступно для тестування";
-              }
-              
-            }
-              if (box_element){
-                box_element.querySelector(`.js-box-text-${category}`).textContent = text;
-              }
-              
-          }
-      }
-
-      paintBoxes(instance_type, instance_language, instance_data);
-}
-
-
-function paintBoxes(instance_type, instance_language, data){
-  const settings = JSON.parse(localStorage.getItem('settings'))[`${instance_type}_${instance_language}`];
-  // console.log('PAINT_BOXES ---> income settings:', settings)
-  for (const category of ['REPEAT','PROCESS', 'BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']) {
-    // console.log(instance)
-    const currentBox = document.querySelector(`.js-box[data-instance_type="${instance_type}"][data-instance_language="${instance_language}"][data-box="${category}"]`);
-    // console.log(category)
-    // console.log(currentBox)
-    if (currentBox){
-      if (data[category] == 0) {
-        currentBox.classList.add('box_empty');
-      
-      } else {
-        currentBox.classList.remove('box_empty');
-      }
-      if (data[category] >= settings[`${category.toLowerCase()}_limit`]) {
-      currentBox.classList.add('box_overloaded');
-        }
-      else {
-        currentBox.classList.remove('box_overloaded');
-      }
-    }
-  }
-}
-
+import {refresh_instance_statistics} from './boxes_exports.js'
 
 //================================================================================= CLICK ON BOXES BUTTONS =====================================================================================
 
@@ -215,10 +153,10 @@ function createStudyList(instance_type, instance_language) {
       instance_language: instance_language,
       study_list_length: inputStudyListLength.value,
       repeat_words_number: inputRepeatWordsNumber.value,
-      new_words_type: selectWordsType.value,
-      new_words_level: selectWordsLevel.value,
-      new_words_category: selectWordsCategory.value,
-      new_words_subcategory: selectWordsSubCategory.value
+      words_type: selectWordsType.value,
+      words_level: selectWordsLevel.value,
+      words_category: selectWordsCategory.value,
+      words_subcategory: selectWordsSubCategory.value
     })
   })
   .then(response => {
@@ -274,7 +212,14 @@ function fillWords(instance_type, instance_language, wordsList, createDate){
       }
 
       item.innerHTML =`
-      <div class=" card_warpper flip-card" data-index="${index + 1}" data-word_level="${word.word_level}" data-word_type="${word.word_type}">
+      <div class=" card_warpper flip-card"
+        data-index="${index + 1}"
+        data-word_link ="${word.link}"
+        data-word_level="${word.word_level}"
+        data-word_type="${word.word_type}"
+        data-word_comment="${word.comment}"
+        data-word_translations="${word.translation_options}"
+        data-word_categories="Category: ${word.category} -> Subcategory: ${word.subcategory}">
       
             <div class="flip-card-inner js-flip-card">
                 <div class="flip-card-front">${word.article + ' ' + word.word}</div>
@@ -330,6 +275,11 @@ document.addEventListener('create_study_list', (event)=>{
     hide_slide_blocks();
     slideBlockCreateList.dataset.caller_instance_type = event.detail.instance_type;
     slideBlockCreateList.dataset.caller_instance_language = event.detail.instance_language;
+
+    const settings = JSON.parse(localStorage.getItem('settings'))[`${slideBlockCreateList.dataset.caller_instance_type}_${slideBlockCreateList.dataset.caller_instance_language}`];
+    inputStudyListLength.value = settings['study_list_length'];
+    inputRepeatWordsNumber.value = settings['repeat_words_number'];
+
     
     slideBlockCreateList.classList.add('slide_block_show');
     slideBlockCreateList.querySelector('.js-slide-title').textContent = slideBlockCreateList.dataset.caller_instance_type + ' ' + slideBlockCreateList.dataset.caller_instance_language;
@@ -355,6 +305,23 @@ createButton.addEventListener('click', (event) =>{
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STUDY WORDS SLIDE BLOCK
+const study_slide_block_display = document.querySelector('.js-study-display');
+
+function fill_study_slide_block_badges(activeSlide){
+  document.querySelector('.js-card-badge-index').textContent = activeSlide.querySelector('.flip-card').dataset.index;
+  document.querySelector('.js-card-badge-word_type').textContent = activeSlide.querySelector('.flip-card').dataset.word_type;
+  const word_level_element = document.querySelector('.js-card-badge-word_level')
+  word_level_element.textContent = activeSlide.querySelector('.flip-card').dataset.word_level;
+  word_level_element.dataset.word_level = activeSlide.querySelector('.flip-card').dataset.word_level;
+}
+
+function clear_study_slide_block_badges(){
+  document.querySelector('.js-card-badge-index').textContent = '';
+  document.querySelector('.js-card-badge-word_type').textContent = '';
+  const word_level_element = document.querySelector('.js-card-badge-word_level')
+  word_level_element.textContent = '';
+  word_level_element.dataset.word_level = '';
+}
 
 // ---------------------------------- EVENT STUDY BUTTON CLICKED
 document.addEventListener('study_words', (event)=>{
@@ -364,14 +331,23 @@ document.addEventListener('study_words', (event)=>{
   document.querySelectorAll('.js-study-cards-container').forEach(element =>{
     element.classList.add('d-none');
   });
-  document.querySelector(`.js-study-cards-container[data-instance_type="${event.detail.instance_type}"][data-instance_language="${event.detail.instance_language}"]`).classList.remove('d-none');
+
+  const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${event.detail.instance_type}"][data-instance_language="${event.detail.instance_language}"]`);
+  const active_word_card = parent_container.querySelector('.swiper-slide-active');
+  parent_container.classList.remove('d-none');
+
+  if (active_word_card) {
+    fill_study_slide_block_badges(active_word_card);
+  } else {
+    clear_study_slide_block_badges();
+  }
+
   hide_slide_blocks();
   slideBlockStudy.classList.add('slide_block_show');
+  study_slide_block_display.textContent = '';
 });
 
 //------------------------------------------- WORD STUDY SLIDES FOR EVERY LANGUAGE INSTANCE
-
-
 const instance_types = ['basic', 'custom'];
 const instance_languages = ['EN', 'DE']
 const swipers_list = {}
@@ -410,14 +386,12 @@ function activate_swipers(){
         const swiper = swipers_list[type][language];
         // слухаємо зміну слайда
         swiper.on('slideChange', () => {
+          study_slide_block_display.textContent='';
 
-          // const activeIndex = swiper.realIndex; // реальний індекс (без loop-клонів)
+          const activeIndex = swiper.realIndex; // реальний індекс (без loop-клонів)
           const activeSlide = swiper.slides[swiper.activeIndex]; // сам DOM-елемент\
             if (activeSlide) {
-              parent_container.querySelector('.js-card-badge-index').textContent = activeSlide.querySelector('.flip-card').dataset.index;
-              parent_container.querySelector('.js-card-badge-word_type').textContent = activeSlide.querySelector('.flip-card').dataset.word_type;
-              parent_container.querySelector('.js-card-badge-word_level').textContent = activeSlide.querySelector('.flip-card').dataset.word_level;
-              // console.log(activeSlide.querySelector('.flip-card').dataset.word_level)
+              fill_study_slide_block_badges(activeSlide);              
             }
 
         });
@@ -426,8 +400,51 @@ function activate_swipers(){
 }
 }
 
+//--------------------------------------------------------- CLICK ON BADGES OF A WORD CARD
+// categories badge CLICK
+document.querySelector('.js-card-badge-categories').addEventListener('click', ()=>{
+  const instance = slideBlockStudy.dataset.caller_instance_type;
+  const language = slideBlockStudy.dataset.caller_instance_language;
+  const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
+  const active_word_card = parent_container.querySelector('.swiper-slide-active .flip-card');
+  if (active_word_card) {
+    study_slide_block_display.textContent = `${active_word_card.dataset.word_categories}`;
+  }
+  
+});
 
+// comment badge CLICK
+document.querySelector('.js-card-badge-comment').addEventListener('click', ()=>{
+  const instance = slideBlockStudy.dataset.caller_instance_type;
+  const language = slideBlockStudy.dataset.caller_instance_language;
+  const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
+  const active_word_card = parent_container.querySelector('.swiper-slide-active .flip-card');
+  if (active_word_card) {
+    study_slide_block_display.textContent = `${active_word_card.dataset.word_comment}`;
+  }
+});
 
+// translations badge CLICK
+document.querySelector('.js-card-badge-translations').addEventListener('click', ()=>{
+  const instance = slideBlockStudy.dataset.caller_instance_type;
+  const language = slideBlockStudy.dataset.caller_instance_language;
+  const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
+  const active_word_card = parent_container.querySelector('.swiper-slide-active .flip-card');
+  if (active_word_card) {
+    study_slide_block_display.innerHTML = `${active_word_card.dataset.word_translations}`;
+  }
+});
+
+// LINK badge CLICK
+document.querySelector('.js-card-badge-link').addEventListener('click', ()=>{
+  const instance = slideBlockStudy.dataset.caller_instance_type;
+  const language = slideBlockStudy.dataset.caller_instance_language;
+  const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
+  const active_word_card = parent_container.querySelector('.swiper-slide-active .flip-card');
+  if (active_word_card) {
+    study_slide_block_display.innerHTML = `<a href="${active_word_card.dataset.word_link}" target="_blank" style="text-decoration: none;">${active_word_card.dataset.word_link}</a>`;
+  }
+});
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEST WORD SLIDE BLOCK
 
 // -------------------------------- EVENT that test words butoon on some box was pressed
@@ -440,6 +457,8 @@ document.addEventListener('test_words', (event)=>{
 
   slideBlockTesting.classList.add('slide_block_show');
   document.querySelector('.js-feedback').innerHTML = '';
+  document.querySelector('.js-show-word').textContent = '';
+  document.querySelector('.js-test-answer').disabled = true;
   slideBlockTesting.querySelector('.js-slide-title').textContent = slideBlockTesting.dataset.caller_instance_type + ' ' + slideBlockTesting.dataset.caller_instance_language + ' ' + slideBlockTesting.dataset.caller_box;
 });
 

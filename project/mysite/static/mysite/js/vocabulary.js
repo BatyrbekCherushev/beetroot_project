@@ -24,6 +24,24 @@ const search_feedback = document.querySelector('.js-search-feedbcak');
 
 
 //============================================================================================ SEARCH WORD  ======================================================================================
+//-------------------------------------------------------- ПОКАЗАТИ ДОДАТКОВЫ КНОПКИ БЫЛЯ ПОЛЯ ВВОДУ СЛОВА ЯКЩО ОБРАНА НЫМЕЦЬКА МОВА
+input_edit_language.addEventListener('change', ()=>{
+  // console.log('CHANGED LANGUAGE', input_edit_language.value);
+  const umlaut_block = document.querySelector('.js-umlaut');
+  if (input_edit_language.value == 'DE') {
+    umlaut_block.classList.remove('d-none');
+  }else {
+    umlaut_block.classList.add('d-none');
+  }
+});
+
+document.querySelectorAll('.js-umlaut-letter').forEach(umlaut_letter =>{
+  umlaut_letter.addEventListener('click', ()=>{
+    input_edit_word.value += umlaut_letter.textContent;
+  })
+});
+
+
 //--------------------------------------------------------------------------------- EDIT CATEGORIES AUTOCHANGE
 const select_search_category = document.querySelector('.js-edit-category');
 const select_search_subcategory = document.querySelector('.js-edit-subcategory');
@@ -98,7 +116,7 @@ document.querySelector('.js-btn-search-word').addEventListener('click', async ()
       const tableItem = document.createElement("tr");
       
       tableItem.classList.add('js-found-word', 'search_word_item');
-      for (let property in word){
+      for (const property in word){
         tableItem.setAttribute(`data-${property}`, word[property]);
       }
       //number
@@ -107,6 +125,7 @@ document.querySelector('.js-btn-search-word').addEventListener('click', async ()
       tableItem.appendChild(cell_number);
 
       // LANGUAGE
+      console.log(word.language)
       if (word['language']) {
         const cell_language = document.createElement("td"); 
         cell_language.textContent = word['language'];

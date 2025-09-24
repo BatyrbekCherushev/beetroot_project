@@ -26,9 +26,14 @@ h1{
   text-decoration: none;
 }
 
-.nav_link:hover {
-  color: gray;
+/* .nav_link:hover .nav_icon_text {
+  color: green;
 }
+
+.nav_link:active .nav_icon_text{
+  color: var(--interface-color-4);
+} */
+
 
 .nav_icon_wrapper {
   margin-bottom: 30px;
@@ -38,37 +43,57 @@ h1{
   display: none;
 }
 
-.nav_icon_wrapper:hover .nav_icon_text {
+/* .nav_icon_wrapper:hover .nav_icon_text {
+  
+} */
+
+.nav_icon_wrapper:active .nav_icon_text {
   display: block;
-  color: var(--interface-color-2);
+  color: var(--interface-color-4);
 }
+
 
 .nav_icon {
     width: 100px;
     height: 100px;
     margin-bottom: 0;
     padding-bottom: 0;
-    /* transition: 3s ; */
+    transition: 1s ;
 }
 
 .nav_icon:hover {
-     fill: var(--interface-color-2);
-     stroke: var(--interface-color-2);
-    /* box-shadow: 5px 5px 10px rgba(173, 216, 230, 0.3); */
+     fill: var(--interface-color-5);
+     stroke: var(--interface-color-5);
     cursor: pointer;
-    transform: rotatez(5deg);
+    transform: rotatez(-15deg );
+    transition: 0.5s all ease;
+}
+
+.nav_icon:hover + .nav_icon_text {
+  display: block;
+  color: var(--interface-color-5);
+  transition: 2s all ease;
 }
 
 .nav_icon:active {
-    fill: var(--interface-color-1)
+    fill: white;
+    stroke: white;
+    /* transform: rotatez(-20deg); */
     
 }
 
 .nav_icon_open {
     fill: var(--interface-color-2);
     stroke: var(--interface-color-2);
-    fill: var(--interface-color-2);
-     stroke: rgb(--interface-color-2);
+    /* transform: rotatez(-25deg); */
+}
+
+.nav_icon_open:hover {
+  transform: rotatez(-15deg) !important;
+}
+
+.nav_icon_open:hover + .nav_icon_text {
+  display: none;
 }
 
 /*============================= */
@@ -76,6 +101,50 @@ h1{
 /* BOOTSRAP ACCORDIONS */
 .accordion-item {
   border-color: var(--interface-color-4);
+}
+
+.collapse_button_flag {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.collapse_button_icon {
+  width: 50px;
+  margin-right: 10px;
+  stroke: var(--interface-color-1);
+  fill: var(--interface-color-1);
+}
+
+.accordion-button:hover {
+  color: var(--interface-color-4);
+}
+
+.accordion-button:hover .collapse_button_icon {
+  fill: var(--interface-color-4);
+  stroke: var(--interface-color-4);
+}
+
+.accordion-button:active {
+  color: var(--interface-color-4);
+}
+
+.accordion-button:active .collapse_button_icon{
+  fill: var(--interface-color-4);
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--interface-color-4);
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: var(--interface-color-4);
+  color: var(--interface-color-5);
+ 
+}
+
+.accordion-button:not(.collapsed) .collapse_button_icon {
+    fill: var(--interface-color-5);
+  stroke: var(--interface-color-5);
 }
 
 

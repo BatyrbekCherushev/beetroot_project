@@ -13,7 +13,7 @@ DEFAULT_REPS_NUMBER = 10
 # DEFAULT_NEW_NUMBER = 5
 DEFAULT_STUDY_LIST_LENGTH = 20 #20
 
-DEFAULT_TEST_DAYS_LIMIT = 5
+DEFAULT_TEST_DAYS_LIMIT = 3
 
 LANGUAGES = ["EN", "DE", "FR"]  # можна розширювати
 INSTANCE_TYPES = ["basic", 'custom']      # потім додаси "custom" і т.д.
@@ -62,8 +62,8 @@ class WordCategory(models.Model):
         verbose_name="Категорія"
         )
     class Meta:
-        verbose_name = "Категорія"
-        verbose_name_plural = "Категорії"
+        verbose_name = "Категорія слова"
+        verbose_name_plural = "Категорії слів"
 
     def __str__(self):
         return self.name
@@ -76,8 +76,8 @@ class WordSubcategory(models.Model):
     name = models.CharField(max_length=255, verbose_name="Підкатегорія")
 
     class Meta:
-        verbose_name = "Підкатегорія"
-        verbose_name_plural = "Підкатегорії"
+        verbose_name = "Підкатегорія слова"
+        verbose_name_plural = "Підкатегорії слів"
 
     def __str__(self):
         return self.name
@@ -111,8 +111,7 @@ class UserCustomWord(models.Model):
     translation_options = models.TextField(default='')
     synonims = models.TextField(default='NO SYNONIM FOR THIS WORD')
     comment = models.TextField(default='')
-    is_irregular_verb = models.BooleanField(default = True)
-    is_modal_verb = models.BooleanField(default = False)
+    link = models.CharField(default='')
 
     category = models.ForeignKey(
         WordCategory,
@@ -145,20 +144,26 @@ class UserCustomWord(models.Model):
     status_changed_date = models.DateTimeField(auto_now=True)
     repetition_count = models.IntegerField(default=0)
 
+    class Meta:
+        verbose_name = 'КОРИСТУВАЦЬКЕ СЛОВО'
+        verbose_name_plural = "КОРИСТУВАЦЬКІ СЛОВА"
+
 #------------------------------------------------------------------------------------------------- ENGLISH BASIC VOCABULARY WORDS MODEL
 class Word(models.Model):
-    # id = models.AutoField(primary_key=True)
+    id = models.IntegerField(primary_key=True)
     word_level = models.CharField(max_length = 2, default = '')
     word_type = models.CharField(max_length=20, default = '')
     article = models.CharField(max_length=4, default='')
     word = models.CharField(max_length=100)
     transcription = models.CharField(max_length=100, default='')
     translation = models.CharField(max_length=100, default='')
-    translation_options = models.TextField(max_length=200, default='')
-    synonims = models.TextField(max_length=200, default='NO SYNONIM FOR THIS WORD')
-    comment = models.TextField(max_length=200, default='')
+    translation_options = models.TextField(default='')
+    synonims = models.TextField(max_length=200, default='NO SYNONIMS')
+    comment = models.TextField(max_length=200, default='NO COMMENTS')
+    link = models.CharField(default='https://www.oxfordlearnersdictionaries.com/wordlists/oxford3000-5000')
     
-    is_irregular_verb = models.BooleanField(default = True)
+    # specific verb forms
+    is_irregular_verb = models.BooleanField(default = False)
     is_modal_verb = models.BooleanField(default = False)
 
     category = models.ForeignKey(
@@ -180,7 +185,46 @@ class Word(models.Model):
         verbose_name = 'ENGLISH: Слово'
         verbose_name_plural = "ENGLISH: Слова"
 
-#------------------------------------------------------------------------------------- ENGLISH BASIC VOCABULARY WORDS STATUSES
+
+#------------------------------------------------------------------------------------- DEUTCH BASIC VOCABULARY WORDS MODEL
+class WordDeutch(models.Model):
+    id = models.AutoField(primary_key=True)
+    word_level = models.CharField(max_length = 2, default = '')
+    word_type = models.CharField(max_length=20, default = '')
+    article = models.CharField(max_length=4, default='')
+    word = models.CharField(max_length=30)
+    transcription = models.CharField(max_length=30, default='')
+    translation = models.CharField(max_length=30, default='')
+    translation_options = models.TextField(default='')
+    synonims = models.TextField(default='NO SYNONIM FOR THIS WORD')
+    comment = models.TextField(default='')
+    link = models.CharField(default='https://www.verbformen.net/')
+    
+    # specific verb forms
+    is_trennbar_verb = models.BooleanField(default = False)
+    is_vokalwechsel_verb = models.BooleanField(default=False)
+    is_modal_verb = models.BooleanField(default = False)
+
+    category = models.ForeignKey(
+        WordCategory,
+        null=False,
+        on_delete=models.SET_DEFAULT,
+        default=get_default_category
+    )
+    
+    sub_category = models.ForeignKey(
+        WordSubcategory,
+        on_delete=models.SET_DEFAULT,
+        null=False,
+        default=get_default_subcategory,
+        verbose_name="Підкатегорія"
+    )
+    
+    class Meta:
+        verbose_name = 'DEUTCH: Слово'
+        verbose_name_plural = "DEUTCH: Слова"
+
+#------------------------------------------------------------------------------------- WORDS STATUSES
 class UserWordsProgress(models.Model):
     STATUS_CHOICES = [
     ('NEW', 'New'),
@@ -203,42 +247,7 @@ class UserWordsProgress(models.Model):
         verbose_name = 'ENGLISH: Статус слова'
         verbose_name_plural = "ENGLISH: Статуси слів"
 
-#------------------------------------------------------------------------------------- DEUTCH BASIC VOCABULARY WORDS MODEL
-class WordDeutch(models.Model):
-    id = models.AutoField(primary_key=True)
-    word_level = models.CharField(max_length = 2, default = '')
-    word_type = models.CharField(max_length=20, default = '')
-    article = models.CharField(max_length=4, default='')
-    word = models.CharField(max_length=30)
-    transcription = models.CharField(max_length=30, default='')
-    translation = models.CharField(max_length=30, default='')
-    translation_options = models.TextField(default='')
-    synonims = models.TextField(default='NO SYNONIM FOR THIS WORD')
-    comment = models.TextField(default='')
-    
-    is_irregular_verb = models.BooleanField(default = True)
-    is_modal_verb = models.BooleanField(default = False)
 
-    category = models.ForeignKey(
-        WordCategory,
-        null=False,
-        on_delete=models.SET_DEFAULT,
-        default=get_default_category
-    )
-    
-    sub_category = models.ForeignKey(
-        WordSubcategory,
-        on_delete=models.SET_DEFAULT,
-        null=False,
-        default=get_default_subcategory,
-        verbose_name="Підкатегорія"
-    )
-    
-    class Meta:
-        verbose_name = 'DEUTCH: Слово'
-        verbose_name_plural = "DEUTCH: Слова"
-
-#------------------------------------------------------------------------------------- DEUTCH BASIC VOCABULARY WORDS STATUSES
 class UserWordsDeutchProgress(models.Model):
     STATUS_CHOICES = [
     ('NEW', 'New'),

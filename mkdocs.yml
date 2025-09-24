@@ -5,11 +5,16 @@ repo_url: https://github.com/BatyrbekCherushev/beetroot_project
 
 nav:
 - ІНТРО: index.md
-- Документація проекта:  
-  - Сторінка "профіль": DOCUMENTATION/page_profile.md
-  - Сторінка "словник": DOCUMENTATION/page_vocabulary.md
-  - Сторінка "зброярня": DOCUMENTATION/page_armory.md
-  - Сторінка "арена": DOCUMENTATION/page_arena.md
+- Документація проекта:
+  - АДМІНКА ПРОЕКТУ: DOCUMENTATION/admin.md
+  - МОДЕЛІ: DOCUMENTATION/models.md
+  - VOCABULARIES: DOCUMENTATION/vocabularies.md
+  - FRONTEND: DOCUMENTATION/frontend.md
+  - Vocabulary: DOCUMENTATION/page_vocabulary.md
+  - Library: DOCUMENTATION/library.md
+  - Profile: DOCUMENTATION/page_profile.md
+  - Armory: DOCUMENTATION/page_armory.md
+  - Arena: DOCUMENTATION/page_arena.md
     
 
 - Команди: 

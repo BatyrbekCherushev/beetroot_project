@@ -1,4 +1,4 @@
-import {refresh_instance_statistics} from  './elements/boxes_and_slide_blocks.js'
+import {refresh_instance_statistics} from  './elements/boxes_exports.js'
 
 //================================================================================================= GLOBAL VARIABLES ====================================================================
 

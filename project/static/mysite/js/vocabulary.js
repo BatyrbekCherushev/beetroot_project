@@ -24,6 +24,24 @@ const search_feedback = document.querySelector('.js-search-feedbcak');
 
 
 //============================================================================================ SEARCH WORD  ======================================================================================
+//-------------------------------------------------------- ПОКАЗАТИ ДОДАТКОВЫ КНОПКИ БЫЛЯ ПОЛЯ ВВОДУ СЛОВА ЯКЩО ОБРАНА НЫМЕЦЬКА МОВА
+input_edit_language.addEventListener('change', ()=>{
+  // console.log('CHANGED LANGUAGE', input_edit_language.value);
+  const umlaut_block = document.querySelector('.js-umlaut');
+  if (input_edit_language.value == 'DE') {
+    umlaut_block.classList.remove('d-none');
+  }else {
+    umlaut_block.classList.add('d-none');
+  }
+});
+
+document.querySelectorAll('.js-umlaut-letter').forEach(umlaut_letter =>{
+  umlaut_letter.addEventListener('click', ()=>{
+    input_edit_word.value += umlaut_letter.textContent;
+  })
+});
+
+
 //--------------------------------------------------------------------------------- EDIT CATEGORIES AUTOCHANGE
 const select_search_category = document.querySelector('.js-edit-category');
 const select_search_subcategory = document.querySelector('.js-edit-subcategory');

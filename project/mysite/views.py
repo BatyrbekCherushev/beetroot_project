@@ -1,6 +1,6 @@
 import json
 from django.shortcuts import render
-from mysite.models import UserCustomWord, Word, WordDeutch, UserWordsProgress, UserWordsDeutchProgress, User, UserSettings, WordCategory, WordSubcategory
+from mysite.models import UserCustomWord, Word, WordDeutch, UserWordsProgress, UserWordsDeutchProgress, User, UserSettings, WordCategory, WordSubcategory, UserProfile
 
 from django.http import JsonResponse
 
@@ -13,6 +13,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import login, authenticate
 from .models import UserSettings, get_default_category, get_default_subcategory
+from django.db.models import F
 
 from datetime import timedelta
 
@@ -196,11 +197,16 @@ def serialize_word(word): # utilit
         'id': word.id,
         'word': word.word,
         'translation': word.translation,
+        'translation_options': word.translation_options,
+        'comment': word.comment,
         'synonims': word.synonims,
         'word_type': word.word_type,
         'word_level': word.word_level,
-        'word_category': word.category.name,
-        'word_subcategory': word.sub_category.name
+        'category': word.category.name,
+        'subcategory': word.sub_category.name,
+        "link":word.link
+        
+        
    }
 
 
@@ -209,60 +215,91 @@ def create_custom_study_list(user, data):
     study_list_length = int(data['study_list_length'])
     repeat_words_number = int(data['repeat_words_number'])
 
+    filters = {}
+    if data.get('words_type') not in (None, '', 'RANDOM'):
+        filters['word_type'] = data['new_words_type']
+    if data.get('words_level') not in (None, '', 'RANDOM'):
+        filters['word_level'] = data['new_words_level']
+    if data.get('words_category') not in (None, '', 'RANDOM'):
+        filters['category'] = int(data['new_words_category'])
+    if data.get('words_subcategory') not in (None, '', 'RANDOM'):
+        filters['sub_category'] = int(data['new_words_subcategory'])
+
     words_qs = UserCustomWord.objects.filter(user=user, language=instance_language)
-
-    # GET IDs of all words, that have some status excluding 'NEW' status
-    in_process_word_ids = list(words_qs.filter(
-        status__in=[
-            'REPEAT',
-            'PROCESS',
-            'BOX_1',
-            'BOX_2',
-            'BOX_3',
-            'LEARNT'
-        ]
-    ).values_list('id', flat=True))
-
-    # 1️⃣ Переводимо PROCESS → BOX_1
+    
+    #  Переводимо PROCESS → BOX_1
     words_qs.filter(status='PROCESS').update(status='BOX_1')
 
     words_list = []
 
-    # 2️⃣ Беремо слова для повторення (REPEAT)
-    rep_words_ids = list(
-        words_qs.filter(status='REPEAT')
-        .order_by('?')
-        .values_list('id', flat=True)[:repeat_words_number]
-    )
-    words_qs.filter(id__in=rep_words_ids).update(status='PROCESS')
+    #--------------------- REPEAT WORTS with FILTERS and without them
+    if repeat_words_number > 0:
 
-    rep_words = words_qs.filter(id__in=rep_words_ids)
-    words_list.extend([serialize_word(w) for w in rep_words])
+        # Беремо слова для повторення (REPEAT) WITH FILTERS
+        rep_words_ids = list(
+            words_qs.filter(**filters, status='REPEAT')
+            .order_by('?')
+            .values_list('id', flat=True)[:repeat_words_number]
+        )
+        words_qs.filter(id__in=rep_words_ids).update(status='PROCESS')
 
-    # 3️⃣ Добираємо нові слова згідно з фільтрами
-    new_words_number = study_list_length - len(words_list)
+        rep_words = words_qs.filter(id__in=rep_words_ids)
+        words_list.extend([serialize_word(w) for w in rep_words])
 
-    filters = {}
-    if data.get('new_words_type') not in (None, '', 'RANDOM'):
-        filters['word_type'] = data['new_words_type']
-    if data.get('new_words_level') not in (None, '', 'RANDOM'):
-        filters['word_level'] = data['new_words_level']
-    if data.get('new_words_category') not in (None, '', 'RANDOM'):
-        filters['category'] = int(data['new_words_category'])
-    if data.get('new_words_subcategory') not in (None, '', 'RANDOM'):
-        filters['sub_category'] = int(data['new_words_subcategory'])
+        if len(words_list) < repeat_words_number:
+            repeat_words_number_last = repeat_words_number - len(words_list)
+            
+            #----------- Беремо слова для повторення (REPEAT) WITHOUT FILTERS
+            rep_words_ids = list(
+                words_qs.filter(status='REPEAT')
+                .order_by('?')
+                .values_list('id', flat=True)[:repeat_words_number_last]
+            )
+            words_qs.filter(id__in=rep_words_ids).update(status='PROCESS')
 
-    new_words = list(
-        words_qs.filter(**filters)
-        .exclude(id__in=in_process_word_ids)
-        .order_by('?')[:new_words_number]
-    )
+            rep_words = words_qs.filter(id__in=rep_words_ids)
+            words_list.extend([serialize_word(w) for w in rep_words])
 
-    if new_words:
-        words_qs.filter(id__in=[w.id for w in new_words]).update(status='PROCESS')
-        words_list.extend([serialize_word(w) for w in new_words])
+    #--------------------- NEW WORDS WITH FILTERS
+    if len(words_list) < study_list_length:
+        # GET IDs of all words, that have some status excluding 'NEW' status
+        in_process_word_ids = list(words_qs.filter(
+            status__in=[
+                'REPEAT',
+                'PROCESS',
+                'BOX_1',
+                'BOX_2',
+                'BOX_3',
+                'LEARNT'
+            ]
+            ).values_list('id', flat=True))
 
-    # 4️⃣ Fallback: якщо ще не вистачає — добираємо будь-які NEW
+        # Добираємо нові слова згідно з фільтрами
+        new_words_number = study_list_length - len(words_list)
+        
+        new_words = list(
+            words_qs.filter(**filters)
+            .exclude(id__in=in_process_word_ids)
+            .order_by('?')[:new_words_number]
+        )
+
+        if new_words:
+            words_qs.filter(id__in=[w.id for w in new_words]).update(status='PROCESS')
+            words_list.extend([serialize_word(w) for w in new_words])
+    
+    #--------------------- NEW WORDS without FILTERS
+    if len(words_list) < study_list_length:
+         # Добираємо нові слова БЕЗ ФІЛЬТРУ
+        new_words_number = study_list_length - len(words_list)
+
+        new_words = list(
+            words_qs.filter(**filters)
+            .exclude(id__in=in_process_word_ids)
+            .order_by('?')[:new_words_number]
+        )
+
+
+    # Fallback: якщо ще не вистачає — добираємо будь-які REPEAT
     if len(words_list) < study_list_length:
         rest_words_number = max(study_list_length - len(words_list),0)
 
@@ -283,7 +320,23 @@ def create_basic_study_list(user, data):
     instance_language = data['instance_language']
     study_list_length = int(data['study_list_length'])
     repeat_words_number = int(data['repeat_words_number'])
+    
 
+    filters = {}
+    words_type = data['words_type'] if data['words_type'] and data['words_type'] != 'RANDOM' else ''
+    words_level = data['words_level'] if data['words_level'] and data['words_level'] != 'RANDOM' else ''
+    if words_type:
+        filters['word_type'] = words_type
+    if words_level:
+        filters['word_level'] = words_level
+    
+    words_category = int(data['words_category']) if data['words_category'] and data['words_category'] != 'RANDOM' else None
+    words_subcategory = int(data['words_subcategory']) if data['words_subcategory'] and data['words_subcategory'] != 'RANDOM' else None
+    if words_category is not None:
+        filters['category'] = words_category
+    if words_subcategory is not None:
+        filters['sub_category'] = words_subcategory
+    
     # MODELS
     statuses_model = INSTANCES_MAP[instance_type][instance_language]['statuses']
     words_model = INSTANCES_MAP[instance_type][instance_language]['words']
@@ -311,62 +364,79 @@ def create_basic_study_list(user, data):
     
         
     words_list = []
-    # CHOOSE 'REPEAT" words
-    rep_words_ids = list(
-        statuses_model.objects.filter(user=user, status='REPEAT')
-        .order_by('?')
-        .values_list('id', flat=True)[:repeat_words_number]
-        )
-    # Масове оновлення статусу на PROCESS
-    statuses_model.objects.filter(id__in=rep_words_ids).update(status='PROCESS')
+
+    if repeat_words_number > 0:       
+
+        rep_words = words_model.objects.filter(
+            **filters,
+            id__in=statuses_model.objects.filter(user=user, status='REPEAT').values_list('word__id', flat=True))[:repeat_words_number]
+        
+        statuses_model.objects.filter(user=user,  word__in=rep_words).update(status="PROCESS")
+
+        for word in rep_words:
+            words_list.append(serialize_word(word))
+        print(f'------------------repeat_words_number={repeat_words_number}, words_list len = {len(words_list)}')
+
+        # If not enough repeat words withe filters were taken, take REAPEAT words with no filters
+        if len(words_list) < repeat_words_number:
+            repeat_words_number_last = repeat_words_number - len(words_list)
+
+            # Отримуємо відповідні слова
+            rep_words = words_model.objects.filter(id__in=statuses_model.objects.filter(user=user, status='REPEAT').values_list('word__id', flat=True))[:repeat_words_number_last]
+            
+            statuses_model.objects.filter(user=user,  word__in=rep_words).update(status="PROCESS")
+            
+            for word in rep_words:
+                words_list.append(serialize_word(word))  
+
+    #---------------------------------------------------
+    if study_list_length > repeat_words_number:
+
+        new_words_number = study_list_length - len(words_list)
+
+        # CHOOSE 'NEW' words
+        # ДОДАВАННЯ нових слів до навчального списку з урахуванням обраних користувачем фільтрів
+        
+        new_words = words_model.objects.filter(**filters).exclude(id__in=in_process_word_ids)[:new_words_number ]
+
+        if new_words.count() > 0:
+            for word in new_words:
+                statuses_model.objects.create(
+                    user=user,
+                    word=word,
+                    status='PROCESS'
+                )
+                words_list.append(serialize_word(word))   
     
-    # Отримуємо відповідні слова
-    rep_words = words_model.objects.filter(
-        id__in=statuses_model.objects.filter(id__in=rep_words_ids)
-        .values_list('word__id', flat=True)
-        )
 
-    for word in rep_words:
-        words_list.append(serialize_word(word))
-
-    
-    new_words_number = study_list_length - len(words_list)
-
-    # CHOOSE 'NEW' words
-    # ДОДАВАННЯ нових слів до навчального списку з урахуванням обраних користувачем фільтрів
-    
-    new_words_type = data['new_words_type'] if data['new_words_type'] and data['new_words_type'] != 'RANDOM' else ''
-    new_words_level = data['new_words_level'] if data['new_words_level'] and data['new_words_level'] != 'RANDOM' else ''
-    # new_words_category = int(data['new_words_category'] if data['new_words_category'] and data['new_words_category'] != 'RANDOM' else '')
-    # new_words_subcategory = int(data['new_words_subcategory'] if data['new_words_subcategory'] and data['new_words_subcategory'] != 'RANDOM' else '')
-    new_words_category = int(data['new_words_category']) if data['new_words_category'] and data['new_words_category'] != 'RANDOM' else None
-    new_words_subcategory = int(data['new_words_subcategory']) if data['new_words_subcategory'] and data['new_words_subcategory'] != 'RANDOM' else None
-    
-    filters = {}
-
-
-    if new_words_type:
-        filters['word_type'] = new_words_type
-    if new_words_level:
-        filters['word_level'] = new_words_level
-    if new_words_category is not None:
-        filters['category'] = new_words_category
-    if new_words_subcategory is not None:
-        filters['sub_category'] = new_words_subcategory
-    
-    new_words = words_model.objects.filter(**filters).exclude(id__in=in_process_word_ids)[:new_words_number ]
-
-    if new_words.count() > 0:
-        for word in new_words:
-            statuses_model.objects.create(
+        # ДОДАВАННЯ нових слів до навчального списку без урахування фільтрів користувача, якщо наприклад слів за фільтром більше не було
+        if len(words_list) < study_list_length:
+            new_words_number = study_list_length - len(words_list)
+            # GET IDs of all words, that have some status excluding 'NEW' status
+            in_process_word_ids = list(statuses_model.objects.filter(
                 user=user,
-                word=word,
-                status='PROCESS'
-            )
-            words_list.append(serialize_word(word))   
-    
+                status__in=[
+                    'REPEAT',
+                    'PROCESS',
+                    'BOX_1',
+                    'BOX_2',
+                    'BOX_3',
+                    'LEARNT'
+                ]
+            ).values_list('word__id', flat=True))
 
-    # ДОДАВАННЯ нових слів до навчального списку без урахування фільтрів користувача, якщо наприклад слів за фільтром більше не було
+            new_words = words_model.objects.exclude(id__in=in_process_word_ids)[:new_words_number ]
+
+            if new_words.count() > 0:
+                for word in new_words:
+                    statuses_model.objects.create(
+                        user=user,
+                        word=word,
+                        status='PROCESS'
+                    )
+                    words_list.append(serialize_word(word))   
+
+
     if len(words_list) < study_list_length:
         rest_words_number = study_list_length -  len(words_list) 
 
@@ -374,10 +444,10 @@ def create_basic_study_list(user, data):
         rep_words_ids = list(
             statuses_model.objects.filter(user=user, status='REPEAT')
             .order_by('?')
-            .values_list('id', flat=True)[:repeat_words_number]
+            .values_list('id', flat=True)[:rest_words_number]
             )
 
-        rest_words = rep_words = words_model.objects.filter(id__in=statuses_model.objects.filter(id__in=rep_words_ids).values_list('word__id', flat=True))[:rest_words_number]
+        rest_words = words_model.objects.filter(id__in=statuses_model.objects.filter(id__in=rep_words_ids).values_list('word__id', flat=True))[:rest_words_number]
 
         for word in rest_words:
             statuses_model.objects.update_or_create(
@@ -397,7 +467,7 @@ def create_study_list(request):
 
     data = json.loads(request.body)
     instance_type = data['instance_type']
-    
+        
     if instance_type not in INSTANCES_MAP:
         return JsonResponse({'error': 'Invalid instance_type'}, status=400)
     
@@ -405,6 +475,7 @@ def create_study_list(request):
     if instance_language not in INSTANCES_MAP[instance_type]:
         return JsonResponse({'error': 'Invalid instance_language'}, status=400)
 
+    print(f'-------------CREATING STUDY LIST. instance = {instance_type}, language = {instance_language}', data)
     if instance_type == 'custom':
         words_list = create_custom_study_list(user, data)
     elif instance_type == 'basic':
@@ -523,17 +594,19 @@ def test_word(request):
             progress = Status_Model.objects.get(user=user, word_id=word_id)
         except Status_Model.DoesNotExist:
             return JsonResponse({'error': 'Word not found'}, status=404)
+        correct_answer = progress.word.translation.strip().lower()
     elif instance_type == 'custom':
         try:
             progress = UserCustomWord.objects.get(
                 user = user,
                 language = instance_language,
-                word_id=word_id           
+                id=word_id           
             )
         except UserCustomWord.DoesNotExist:
             return JsonResponse({'error': 'Word not found'}, status=404)
+        correct_answer = progress.translation.strip().lower()
     
-    correct_answer = progress.word.translation.strip().lower()
+    
     user_answer = answer.strip().lower()
 
     is_correct = user_answer == correct_answer
@@ -554,6 +627,7 @@ def test_word(request):
         progress.status = next_status_map.get(progress.status, progress.status)
         if progress.status =='LEARNT' and instance_type== 'basic' and not progress.was_learnt_once:
             progress.was_learnt_once = True
+            UserProfile.objects.filter(user = user).update(currency=F('currency') + 20)
     else:
         # Скидаємо прогрес, якщо помилка
         progress.status = 'REPEAT'
@@ -569,7 +643,7 @@ def test_word(request):
         'repetition_count': progress.repetition_count
     })
 
-#---------------------------------------- VOCABULARY, LIBRARY -> CLEAN BOX of words 
+#------------------------------------------------------------------------------------- VOCABULARY, LIBRARY -> CLEAN BOX of words 
 @require_POST
 @login_required
 def clean_box(request):
@@ -600,7 +674,7 @@ def clean_box(request):
         
         
     else:
-        words_for_clean = UserCustomWord.object.filter(
+        words_for_clean = UserCustomWord.objects.filter(
             user = user,
             language = instance_language, 
             status = box_for_clean
@@ -702,10 +776,10 @@ def change_settings(request):
     new_settings = {
         'study_list_length': to_int(request.POST.get('study_list_length'), 20),
         'repeat_words_number': to_int(request.POST.get('repeat_words_number'), 10),
-        'box_1_limit': to_int(request.POST.get('BOX_1_limit'), 90),
-        'box_2_limit': to_int(request.POST.get('BOX_2_limit'), 150),
-        'box_3_limit': to_int(request.POST.get('BOX_3_limit'), 150),
-        'testing_days_limit': to_int(request.POST.get('testing_days_limit'), 5),
+        # 'box_1_limit': to_int(request.POST.get('BOX_1_limit'), 90),
+        # 'box_2_limit': to_int(request.POST.get('BOX_2_limit'), 150),
+        # 'box_3_limit': to_int(request.POST.get('BOX_3_limit'), 150),
+        # 'testing_days_limit': to_int(request.POST.get('testing_days_limit'), 5),
     }
 
     settings.update(new_settings)
@@ -729,9 +803,8 @@ def serialize_custom_word(word): # utilit
         'word_type': word.word_type,
         'word_level': word.word_level,
         'word_category': word.category.id,
-        'word_subcategory': word.sub_category.id}
-
-
+        'word_subcategory': word.sub_category.id,
+        'word_link': word.link}
 
 @login_required
 def vocabulary_page(request):
@@ -788,22 +861,28 @@ def add_custom_word(request):
 
     user = request.user
     language = data.get("language")
+    if not language:
+        return JsonResponse({"status": "error", "message": "Поле 'language' обов'язкове"}, status=400)
     word = data.get("word")
+    if not word:
+        return JsonResponse({"status": "error", "message": "Поле 'word' обов'язкове"}, status=400)
     word_level = data.get("word_level", "")
     word_type = data.get("word_type", "")
     article = data.get("article", "")
     transcription = data.get("transcription", "")
     translation = data.get("translation", "")
     translation_options = data.get("translation_options", "")
-    category = data.get("category", "")
-    sub_category = data.get("sub_category", "")
     synonims = data.get("synonims", "NO SYNONIM FOR THIS WORD")
     comment = data.get("comment", "")
-
-    if not language:
-        return JsonResponse({"status": "error", "message": "Поле 'language' обов'язкове"}, status=400)
-    if not word:
-        return JsonResponse({"status": "error", "message": "Поле 'word' обов'язкове"}, status=400)
+    
+    category = data.get("category", "")
+    if category in (None, '', 'RANDOM'):
+        category = get_default_category()
+    sub_category = data.get("sub_category", "")
+    if sub_category in (None, '', 'RANDOM'):
+        sub_category = get_default_subcategory()
+    
+    
 
     exists = UserCustomWord.objects.filter(user=user, language=language, word=word, word_type = word_type).exists()
     if exists:

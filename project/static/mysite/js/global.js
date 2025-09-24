@@ -1,7 +1,7 @@
-import {refresh_instance_statistics} from  './elements/boxes_and_slide_blocks.js'
+import {refresh_instance_statistics} from  './elements/boxes_exports.js'
 
 //================================================================================================= GLOBAL VARIABLES ====================================================================
-export let gl_category_map
+
 
 export function getCookie(name) {
   let cookieValue = null;

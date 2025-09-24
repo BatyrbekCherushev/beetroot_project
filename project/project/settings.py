@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#%dd-&t0w^)(&mgyb*pi-53k@n8b0pc+p*+eoiql)5(urnl-ba'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['batyrbekcherushev.pythonanywhere.com',
                  '127.0.0.1',
@@ -135,4 +135,6 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 import mimetypes
 mimetypes.add_type("application/javascript", ".js", True)
 
+
+# for IMPORT EXPORT SETTINGS
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000

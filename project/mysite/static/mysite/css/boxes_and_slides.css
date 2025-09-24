@@ -1,15 +1,15 @@
-.collapse_button_flag {
-    width: 50px;
-    margin-right: 10px;
-}
 
 
 /* BOXES */
-
-.box:hover  {
-    stroke: lightgoldenrodyellow !important; 
-    /* stroke: var(--interface-color-1); */
+.box:hover {
     cursor: pointer;
+}
+
+.box:hover  .box_painted_out{
+    fill: var(--interface-color-4) !important;
+}
+.box:hover  .box_painted_inside{
+    fill: var(--interface-color-2) !important;
 }
 
 .box:active,
@@ -31,37 +31,36 @@
 
 }
 
-.box_empty .box_painted_svg,
-.box_empty .box_painted_out,
-.box_empty .box_painted_inside,
+
 .box_empty .box_painted_card_1,
 .box_empty .box_painted_card_3,
 .box_empty .box_painted_card_2 {
-    stroke-width: 1px;
-    stroke: black !important; 
-    fill: white !important;
+    fill: transparent !important;
+}
+.box_empty .box_painted_svg {
+    fill: var(--interface-color-4) !important;
+}
+.box_empty .box_painted_out{
+    fill: darkgrey !important;
 }
 
-.box_empty:hover .box_painted_svg,
-.box_empty:hover .box_painted_out,
-.box_empty:hover .box_painted_inside,
-.box_empty:hover .box_painted_card_1,
-.box_empty:hover .box_painted_card_3,
-.box_empty:hover .box_painted_card_2 {
-    stroke-width: 1px;
-    stroke: var(--interface-color-2) !important; 
-    /* fill: var(--interface-color-1) !important; */
+.box_empty .box_painted_inside
+{
+    /* stroke-width: 1px; */
+    /* stroke: black !important;  */
+    fill: grey !important;
 }
+
 
 .box_overloaded .box_painted_svg,
 .box_overloaded .box_painted_out,
 .box_overloaded .box_painted_inside {
-    stroke: rgb(83, 16, 16) !important;
-    fill: red !important;
+    /* stroke: rgb(83, 16, 16) !important; */
+    fill: darkred !important;
 }
 
 .box_overloaded .box_painted_inside {
-    fill: darkred !important;
+    fill: rgb(83, 16, 16) !important;
 }
 
 .box-active.box_overloaded .box_painted_svg,
@@ -70,7 +69,7 @@
 .box_overloaded:hover .box_painted_svg,
 .box_overloaded:hover .box_painted_out,
 .box_overloaded:hover .box_painted_inside {
-    stroke: lightcoral !important;
+    stroke: darkred !important;
 }
 
 .box_badge_item {
@@ -144,9 +143,9 @@
 }
 
 .block_badge {
-    position: absolute;
+    position: fixed;
     z-index: 100;
-    top: 2%;
+    top: 15%;
     left: 50%;
     opacity: 0;
     transition: all 0.3s ease;
@@ -182,11 +181,11 @@
   text-align: center;
   padding: 20px 0;
   box-shadow: 0 -2px 10px var(--interface-color-3);
-  transition:0.7s ease; /* плавний ефект */
+  transition:2s ease; /* плавний ефект */
   border: 1px solid var(--interface-color-2);
   border-left: none;
   border-top: none;
-  height: 400px;
+  /* height: 400px; */
   border-radius: 0 0 30px;
 }
 
@@ -209,6 +208,7 @@
     align-items: flex-end;
     width: 100%;
     height: 100%;
+    margin-top: 50px;
 }
 
 .slide_block_btn_close  {
@@ -248,6 +248,25 @@
 /* =========================================================================================== STUDY LIST ================================================================================================ */
 
 /* CARDS - START */
+.slides_display {
+  height: 200px;
+  margin: 0 20px;
+  border: 1px solid black;
+  border-radius: 50px;
+  background-color: var(--interface-color-2);
+  color: white;
+  padding: 15px;
+  text-align: left;
+
+  overflow-y: auto;       /* вертикальний скрол */
+  overflow-x: hidden;     /* горизонтального не буде */
+
+  white-space: normal;    /* дозволяє перенос рядків */
+  word-wrap: break-word;  /* переносить довгі слова */
+  word-break: break-word; /* додатково для дуже довгих */
+
+}
+
 .cards_container {
     display: flex;
     justify-self: center;
@@ -298,59 +317,152 @@
 
 /* BADGES */
 .card_badge {
-    border: 2px solid var(--interface-color-2);
-    color: var(--interface-color-2);
+    border: 2px solid var(--interface-color-5);
+    color: var(--interface-color-4);
     border-radius: 30px;
     min-width: 36px;
-    background-color: white;
+    background-color: var(--interface-color-2);
     position: absolute;
     top: 0;
     padding: 4px;
-    box-shadow: 5px 5px 10px var(--interface-color-2);
+    box-shadow: 5px 5px 10px var(--interface-color-1);
+}
+.card_badge_clickable {
+    width: 10px;
+    transition: 0.5s all ease;
+    overflow: hidden;
+}
+
+
+
+.card_badge_clickable .card_badge_text {
+    display: none;
+    color: transparent;
+}
+
+.card_badge_clickable:hover .card_badge_text {
+    display: unset;
+    color: black;
+}
+
+.card_badge_clickable:active {
+    color: var(--interface-color-1);
+    border-color: var(--interface-color-4);
+    background-color: var(--interface-color-5);
+    box-shadow: 1px 1px 3px var(--interface-color-2);
 }
 
 .badge_index {    
-    width: 30px;
-    left: 2px;
+    left: 50%;
+    top: 86%;
+    transform: translateX(-50%);
+    width: 60px;
+    font-size: large;
 }
 
 .badge_word_level {
-    left: 40px;
+    left: 0;
+    
 }
 
-.badge_word_level_A1 {
+
+.badge_word_level[data-word_level="A1"] {
     background-color: yellow;
 }
 
-.badge_word_level_A2 {
+.badge_word_level[data-word_level="A2"] {
     background-color: orange;
 }
 
-.badge_word_level_B1 {
+.badge_word_level[data-word_level="B1"] {
     background-color: pink;
     /* color: white; */
 }
 
-.badge_word_level_B2 {
+.badge_word_level[data-word_level="B2"] {
     background-color: blue;
     color: white;
 }
 
-.badge_word_level_C1 {
+.badge_word_level[data-word_level="C1"] {
     background-color: purple;
     color: white;
 }
 
-.badge_word_type {
-left: 80px;
+.badge_word_level[data-word_level="C2"] {
+    background-color: green;
+    color: white;
 }
+
+.badge_word_type {
+left: 40px;
+}
+
+.badge_word_transcription {
+    cursor: pointer;
+    top: 20%;
+    right: 103%;
+}
+
+.badge_word_synonims {
+    cursor: pointer;
+    top: 20%;
+    left: 103%;
+}
+
+.badge_word_translations {
+    cursor: pointer;
+    top: 37%;
+    right: 103%;
+}
+
+.badge_word_comment {
+    cursor: pointer;
+    top: 37%;
+    left: 103%;
+}
+
+.badge_word_link {
+    z-index: 1000;
+    text-decoration: none;
+    top: 55%;
+    right: 103%;
+}
+
+.badge_word_categories {
+    cursor: pointer;
+    top: 55%;
+    left: 103%;
+}
+
+.card_badge_clickable:hover {
+    width: 100px;
+    cursor: pointer;
+    color: var(--interface-color-4);
+    border-color: var(--interface-color-4);
+    background-color: var(--interface-color-2);
+}
+
+@media (max-width: 768px) {
+  .card_badge_clickable:hover.card_badge_left {
+   right: 90%;
+   z-index: 1000;
+}
+    .card_badge_clickable:hover.card_badge_right {
+   left: 90%;
+   z-index: 1000;
+}
+
+}
+
+
 /* BADGES ============== */
 
 /* NAVIGATION */
 .navigation_button {
     width: 60px;
     position: absolute;
-    top: 50%;
+    /* top: 50%; */
     font-size: xx-large;
     /* border: none; */
     /* background-color: transparent; */
@@ -373,29 +485,29 @@ left: 80px;
 }
 
 .navigation_button_prev {
-    top: 90px;
-    left: -22%
+    bottom: -11px;
+    left: 15%;
+    transform: rotate(none);
 }
 
 @media (max-width: 768px) {
   .navigation_button_prev {
-    bottom: -11px;
-    top: unset;
-    left: 20%;
+    /* bottom: -11px; */
+    /* top: unset; */
+    /* left: 20%; */
     transform: rotate(90deg);
   }
 }
 
 .navigation_button_next {
-    top: 90px;
-    right: -22%
+    right: 15%;
+    bottom: -11px;
 }
 
 @media (max-width: 768px) {
   .navigation_button_next {
-        bottom: -11px;
-        top: unset;
-        right: 20%;
+        /* bottom: -11px; */
+        /* right: 20%; */
         transform: rotate(90deg);
   }
 }

@@ -37,7 +37,20 @@
     max-height: 300px;
     overflow: auto;
     scrollbar-width: none;
-    border: 1px solid gray;
+    border: 1px solid lightgray;
     border-radius: 10px;
+}
+
+.umlaut_letter {
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.umlaut_letter:hover {
+    color: red;
+}
+
+.umlaut_letter:active {
+    color: grey;
 }
 
