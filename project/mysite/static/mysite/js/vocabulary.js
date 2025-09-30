@@ -1,4 +1,4 @@
-import { getCookie } from './global.js';
+import { getCookie, show_modal_message } from './global.js';
 import * as boxes_and_slides from  './elements/boxes_and_slide_blocks.js'
 
 //=============================================================================================== EDIT or ADD WORD ===============================================================================
@@ -74,7 +74,7 @@ select_search_category.addEventListener('change', (event) =>{
 }); 
 
 
-
+//---------------------------------------------------------------------------- SEARCH WORDS
 
 document.querySelector('.js-btn-search-word').addEventListener('click', async () =>{
     input_edit_ID.value = '';
@@ -109,12 +109,12 @@ document.querySelector('.js-btn-search-word').addEventListener('click', async ()
   tableSearchResults.innerHTML = '';
   
   search_feedback.textContent = '';
-  console.log(data);
+  // console.log(data);
 
   if (data['words']) {
     data['words'].forEach((word,index)  =>{
       const tableItem = document.createElement("tr");
-      
+      // console.log(word)
       tableItem.classList.add('js-found-word', 'search_word_item');
       for (const property in word){
         tableItem.setAttribute(`data-${property}`, word[property]);
@@ -125,7 +125,7 @@ document.querySelector('.js-btn-search-word').addEventListener('click', async ()
       tableItem.appendChild(cell_number);
 
       // LANGUAGE
-      console.log(word.language)
+      // console.log(word.language)
       if (word['language']) {
         const cell_language = document.createElement("td"); 
         cell_language.textContent = word['language'];
@@ -204,6 +204,8 @@ document.querySelector('.js-btn-search-word').addEventListener('click', async ()
     search_feedback.textContent = 'NO WORDS FOUND WITH SUCH A FILTER CONDITIONS';
     search_feedback.classList.add('text-danger');
     tableSearchResults.innerHTML = '';
+
+    show_modal_message('danger', 'NO WORDS FOUND', 'NO WORDS FOUND WITH SUCH A FILTER CONDITIONS')
   }
 });
 
@@ -258,8 +260,8 @@ btn_add_word.addEventListener('click', () =>{
     return response.json(); // успішна відповідь
   })
   .then(data => {
-    console.log('Success:', data);
-    
+    show_modal_message('success', "СЛОВО ДОДАНО",`Нове слово успішно додано до  ${input_edit_language.value} словника`);
+    search_feedback.textContent = '';
     
       
   })

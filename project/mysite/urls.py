@@ -13,7 +13,8 @@ urlpatterns = [
     path('get-settings/', views.get_settings, name='get_settings'),
     path('get-study-list/', views.get_study_list, name='get_study_list'),
     path('get-categories/', views.get_categories, name = 'get_categories'),
-    path('create-list/', views.create_study_list, name ='create_list'),
+    path('create-study-list/', views.create_study_list, name ='create_list'),
+    path('clear-study-list/', views.clear_study_list, name = 'clear_study_list'),
     path('get-box-word/', views.get_box_word, name='get_box_word'),
     path('test-word/', views.test_word, name='test_word'),
     path('clean-box/', views.clean_box, name="clean_box"),
@@ -44,7 +45,10 @@ urlpatterns = [
     path('armory/', views.armory_page, name = 'armory'),
     
     #arena
-    path('arena/', views.arena_page, name = 'arena'),    
+    path('arena/', views.arena_page, name = 'arena'),   
+    path('find-pvp-battle/', views.find_pvp_battle, name='find_battle'),
+    path('close-battles/', views.close_battles, name='close_battles'),
+    path('fight-pvp/', views.fight_pvp, name='fight_action'),
     
     #pygame
     path("api/word/", views.minigame_get_word, name="get_word")    

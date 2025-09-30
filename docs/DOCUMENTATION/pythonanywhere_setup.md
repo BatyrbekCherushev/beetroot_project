@@ -1,3 +1,67 @@
+## ЗАЛИВКА НА ПАЙТОНЕІВЕР
+
+* створюємо консоль
+* git clone in bash console `git clone https://github.com/BatyrbekCherushev/beetroot_project.git`
+* python environment setup:
+    * `python3 -m venv myenv`
+    * `source myenv/bin/activate`
+    * `pip install --upgrade pip`
+    * `pip install -r requirements.txt` - u need to have `requirements.txt` in root project directory
+```mkdocs
+<!-- requirements.txt -->
+asgiref==3.9.1
+diff-match-patch==20241021
+Django==5.2.5
+django-import-export==4.3.9
+et_xmlfile==2.0.0
+openpyxl==3.1.5
+sqlparse==0.5.3
+tablib==3.8.0
+tzdata==2025.2
+```
+* в каталозі beetroot_project/project виконуємо `rm -rf static/*` для очищення папки з сатичним файлами
+* `python manage.py collectstatic` - для перезбірки статичних файлів
+* `python manage.py makemigrations`
+* `python manage.py migrate`
+* `python manage.py createsuperuser`
+
+
+В панелі PythonAnywhere:
+
+* Зайти у Web → Add a new web app
+* Вибрати Manual configuration → Django
+* Вказати шлях до свого проєкту (/home/username/beetroot_project/)
+
+PYTHONANYWHERE -> WEB ->
+
+* Source code: `/home/Heroesofwords/beetroot_project/project `
+* Working directory: `/home/Heroesofwords/`
+* WSGI SETTINGS:
+```
+# +++++++++++ DJANGO +++++++++++
+# To use your own django app use code like this:
+import os
+import sys
+#
+## assuming your django settings file is at '/home/BatyrbekCherushev/mysite/mysite/settings.py'
+## and your manage.py is is at '/home/BatyrbekCherushev/mysite/manage.py'
+path = '/home/Heroesofwords/beetroot_project/project'
+if path not in sys.path:
+    sys.path.append(path)
+#
+os.environ['DJANGO_SETTINGS_MODULE'] = 'project.settings'
+#
+## then:
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+```
+* Python version: `3.13`
+* Virtualenv: `/home/Heroesofwords/beetroot_project/myenv`
+* Static files:
+    * URL	`/static/`
+    * Directory		`/home/Heroesofwords/beetroot_project/project/static`
+* вкладка  Files -> project -> project -> settings.py
+```python
 import os
 """
 Django settings for project project.
@@ -138,3 +202,16 @@ mimetypes.add_type("application/javascript", ".js", True)
 
 # for IMPORT EXPORT SETTINGS
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000
+```
+    * змінити параметр `DEBUG=False`
+* вкладка WEB -> Натиснути Reload веб-додатка.
+
+Налаштування проекту 
+* В АДМІНЦІ ПРОЕКТУ:
+    * імпортимо категорії
+    * імпортимо підкатегорії
+    * імпортимо профайли босів
+    * імпортимо скіли
+    * імпортимо екіпіровку
+    * імпортимо англійський словник
+    * імпортимо німецький словник

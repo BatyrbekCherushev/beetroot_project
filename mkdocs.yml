@@ -6,17 +6,15 @@ repo_url: https://github.com/BatyrbekCherushev/beetroot_project
 nav:
 - ІНТРО: index.md
 - Документація проекта:
+  - Заливка проекту на PYTHONANYWHERE: DOCUMENTATION/pythonanywhere_setup.md
   - АДМІНКА ПРОЕКТУ: DOCUMENTATION/admin.md
   - МОДЕЛІ: DOCUMENTATION/models.md
   - VOCABULARIES: DOCUMENTATION/vocabularies.md
   - FRONTEND: DOCUMENTATION/frontend.md
-  - Vocabulary: DOCUMENTATION/page_vocabulary.md
-  - Library: DOCUMENTATION/library.md
-  - Profile: DOCUMENTATION/page_profile.md
-  - Armory: DOCUMENTATION/page_armory.md
-  - Arena: DOCUMENTATION/page_arena.md
-    
-
+  - Pages: DOCUMENTATION/pages.md
+  - GAME: DOCUMENTATION/game.md
+  - MINI-GAMES: DOCUMENTATION/mini_games.md
+  - Ideas: DOCUMENTATION/ideas.md
 - Команди: 
   - DJANGO: COMMANDS/commands_django.md
   - MKDOCS: COMMANDS/commands_mkdocs.md

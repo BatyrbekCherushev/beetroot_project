@@ -1,10 +1,157 @@
  <!-- templates/armory.html -->
-{% extends 'nav.html' %}
 
+{% extends 'nav.html' %}
+  {% load static %}
 {% block title %}ARENA{% endblock %}
 
 {% block content %}
     <h1>{{page_name}}</h1>
     <h2>WELCOME TO ARENA</h2>
     <p>YOU CAN FIGHT WITH OTHER HEROES HERE</p>
+
+    <div class="container">
+        <div class="row">
+            <div class="col arena_type_container">
+                <div class="arena_type">
+                    <p>PVE</p>
+                </div>
+                <div>
+                    <button class="js-find-battle">FIND BATTLE</button>
+                    <button class="js-stop-search-battles">STOP SEARCh</button>
+                    <button class="js-close-battles">CLOSE MY BATTLES</button>
+                    <br><br>
+                    <div class="js-spinner spinner-border text-primary d-none" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    
+                </div>
+                <div class="arena_type">
+                    <p>PVP</p>
+                </div>
+            </div>            
+        </div>
+        <div class="js-arena-container row d-none">
+
+            <!-- PLAYER PANEL -->
+            <div class="js-character-player arena_player character_panel col">
+                <div class="inventory_main">
+                    <div class="inventory_left">
+                        <div class="equipment inventory_left_head">
+                            <img src="{% static 'mysite/images/armor_images/test_set/armor_head.jpg' %}" alt="">
+                        </div>
+                        <div class="equipment  inventory_left_armor"></div>
+                        <div class="equipment inventory_left_shoes"></div>
+                        <div class="equipment inventory_left_shoes"></div>
+                    </div>
+                    <div class="avatar">
+
+                    </div>
+                    <div class="inventory_right">
+                        <div class="equipment"></div>
+                        <div class="equipment"></div>
+                        <div class="equipment"></div>
+                        <div class="equipment"></div>
+                        
+                    </div>
+                </div>
+                <div class="inventory_belt">
+                    <div class="inventory_belt_slot"></div>
+                    <div class="inventory_belt_slot"></div>
+                    <div class="inventory_belt_slot"></div>
+                    <div class="inventory_belt_slot"></div>
+                </div>
+                <div class="stats">
+                    <div class="stats_name"></div>
+                    <div class="stats_hitpoints progress" role="progressbar" aria-label="Danger example" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-danger" style="width: 90%"></div>
+                    </div>
+                    <div class="stats_endurance progress" role="progressbar" aria-label="Warning example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-warning" style="width: 75%"></div>
+                    </div>
+                    <div class="stats_mana progress" role="progressbar" aria-label="Info example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-info" style="width: 50%"></div>
+                    </div>
+                        
+                        
+                </div>
+            </div>   
+
+            <!-- ARENA -->
+            <div class="arena_fight col">
+                <p class="js-arena-title"></p>
+                <button class="js-fight">FIGHT</button>
+                
+                <div class="arena_attack">
+                    <p>CHOOSE WHERE TO STRIKE</p>
+                    <label for=""> HEAD
+                        <input name="my_strike" type="radio" checked value="1">
+                    </label><br>
+                    <label for=""> BODY
+                        <input name="my_strike" type="radio" value="2">
+                    </label><br>
+                    <label for=""> LEGS
+                        <input name="my_strike" type="radio" value="3">
+                    </label>
+                </div>  
+                <div class="arena_defence">
+                    <p>CHOOSE WHERE ENEMY WILL STRIKEE</p>
+                    <label for=""> HEAD
+                        <input name="enemy_strike" type="radio" checked value="1">
+                    </label><br>
+                    <label  for=""> BODY
+                        <input name="enemy_strike" type="radio" value="2">
+                    </label><br>
+                    <label for=""> LEGS
+                        <input name="enemy_strike" type="radio" value="3">
+                    </label>
+                </div>
+                <div class="js-player-skills col"></div>
+            
+            </div>   
+
+            <!-- ENEMY PANEL -->         
+            <div class="js-character-enemy arena_enemy character_panel col">
+                <div class="inventory_main">
+                    <div class="inventory_left">
+                        <div class="equipment inventory_left_head">
+                            <img src="{% static 'mysite/images/armor_images/test_set/armor_head.jpg' %}" alt="">
+                        </div>
+                        <div class="equipment  inventory_left_armor"></div>
+                        <div class="equipment inventory_left_shoes"></div>
+                        <div class="equipment inventory_left_shoes"></div>
+                    </div>
+                    <div class="avatar">
+
+                    </div>
+                    <div class="inventory_right">
+                        <div class="equipment"></div>
+                        <div class="equipment"></div>
+                        <div class="equipment"></div>
+                        <div class="equipment"></div>
+                        
+                    </div>
+                </div>
+                <div class="inventory_belt">
+                    <div class="inventory_belt_slot"></div>
+                    <div class="inventory_belt_slot"></div>
+                    <div class="inventory_belt_slot"></div>
+                    <div class="inventory_belt_slot"></div>
+                </div>
+                <div class="stats">
+                    <div class="stats_name"></div>
+                    <div class="stats_hitpoints progress" role="progressbar" aria-label="Danger example" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-danger" style="width: 90%"></div>
+                    </div>
+                    <div class="stats_endurance progress" role="progressbar" aria-label="Warning example" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-warning" style="width: 75%"></div>
+                    </div>
+                    <div class="stats_mana progress" role="progressbar" aria-label="Info example" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-info" style="width: 50%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
 {% endblock %}

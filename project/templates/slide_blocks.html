@@ -30,7 +30,9 @@
                     max="40"> <strong>(РЕКОМЕНДОВАНО - 20, МІНІМУМ - 10, МАКСИМУМ - 40)</strong>
                 </label><br>
                 <label for="">* Кількість слів для навчання із коробки ПОВТОР
-                    <input class="js-rep-words-number" id="number_rep_words" type="number" value="{{user_info.settings.basic_EN.repeat_words_number}}" > <strong> (Решта слів береться із НОВИХ)</strong>
+                    <input class="js-rep-words-number" id="number_rep_words" type="number"
+                    value="{{user_info.settings.basic_EN.repeat_words_number}}"
+                    max="{{user_info.settings.basic_EN.study_list_length}}" > <strong> (Решта слів береться із НОВИХ)</strong>
                 </label><br>
                 <!-- <label for="">* Кількість слів для навчання із числа НОВИХ 
                     <input class="js-new-words-number" id="number_new_words" type="number" value="{{user_info.settings.new_words_number}}"> 
@@ -71,7 +73,7 @@
                         
                     </select><strong> (підвантажується динамічно при зміні категорії)</strong>
                 </label><br>
-                <button  class="js-create-new-list " >Створити список</button>
+                <button  class="js-create-new-list " >Оновити список</button>
             </div>
                 </div>
             </div>
@@ -132,6 +134,7 @@
 
      <!-- SLIDE BLOCK STUDY ====================================================================================================================================================================-->
     <div class="js-slide-block-study slide_block justify-content-center" data-caller_instance_type="" data-caller_instance_language="">
+        <button class="js-clear-study_list">ОЧИСТИТИ СПИСОК </button>
         <div class="js-study-display slides_display"></div>
         <div class="slide_block_wrapper">
             
@@ -186,5 +189,7 @@
         </div>                 
     </div> 
      <!-- SLIDES -->
+
+     
 
 {% endblock %}

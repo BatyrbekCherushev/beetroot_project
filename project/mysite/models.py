@@ -13,7 +13,9 @@ DEFAULT_REPS_NUMBER = 10
 # DEFAULT_NEW_NUMBER = 5
 DEFAULT_STUDY_LIST_LENGTH = 20 #20
 
-DEFAULT_TEST_DAYS_LIMIT = 3
+DEFAULT_TEST_DAYS_LIMIT = 0
+
+DEFAULT_PLAYER_MAX_LEVEL = 100
 
 LANGUAGES = ["EN", "DE", "FR"]  # можна розширювати
 INSTANCE_TYPES = ["basic", 'custom']      # потім додаси "custom" і т.д.
@@ -47,18 +49,222 @@ class UserSettings(models.Model):
         verbose_name = 'Налаштування користувача'
         verbose_name_plural = "Налаштування користувача"
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+
+#****************************************************************************************** GAME MODELS *************************************************************************************************************
+
+#------------------------------------------------------------------------------------------- PLAYER PROFILE
+class PlayerProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='player_profile')
+    name = models.CharField(max_length=200, blank=True, default='STRANGER')
     level = models.IntegerField(default=0)
+    max_level = models.IntegerField(default = DEFAULT_PLAYER_MAX_LEVEL)
     current_exp = models.IntegerField(default=0)
+    next_level_exp =models.IntegerField(default=100)
     currency = models.IntegerField(default=0)  # ігрова валюта
+
+    # #abilities
+    strength = models.IntegerField(default=1)
+    dexterity = models.IntegerField(default=1)
+    intelligence = models.IntegerField(default=1)
+    
+    # #characteristics
+    damage_physical = models.IntegerField(default=10) # strength
+    hitpoints = models.IntegerField(default=100) # strength
+    endurance = models.IntegerField(default=100) # strength
+
+    damage_magical = models.IntegerField(default=10) # intelligence
+    mana = models.IntegerField(default=10) # intelligence
+
+    dodge = models.FloatField(default=0) #dexterity
+    accuracy = models.IntegerField(null=True, blank=True)
+    critical_chance = models.FloatField(default=0) #dexterity
+    
+    armor = models.IntegerField(default=0)
+    fire_defence = models.IntegerField(default=0)
+    earth_defence = models.IntegerField(default=0)
+    water_defence = models.IntegerField(default=0)
+    earth_defence = models.IntegerField(default=0)
+
+    # INVENTORY
+    # slot_head
+    #slot_body
+    #slot_legs
+    #slot_right_hand
+    #slot_left_hand
+    #slot_belt_1
+    #slot_belt_2
+    #slot_belt_3
+
+    def __str__(self):
+        return self.name
+
+
+#------------------------------------------------------------------------------------------- BOSS PROFILE
+class BossProfile(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=200, blank=True)
+    level = models.IntegerField(default=0)
+
+    # # #abilities
+    # strength = models.IntegerField(default=1)
+    # dexterity = models.IntegerField(default=1)
+    # intelligence = models.IntegerField(default=1)
+
+    # #characteristics
+    damage_physical = models.IntegerField(default=10) # strength
+    hitpoints = models.IntegerField(default=100) # strength
+    endurance = models.IntegerField(default=100)
+
+    damage_magical = models.IntegerField(default=10) # intelligence
+    mana = models.IntegerField(default=10) # intelligence
+
+    dodge = models.FloatField(default=0) #dexterity
+    accuracy = models.IntegerField(null=True, blank=True)
+    critical_chance = models.FloatField(default=0) #dexterity
+
+    #defence
+    armor = models.IntegerField(default=0)
+    defence_fire = models.IntegerField(default=0)
+    defence_water = models.IntegerField(default=0)
+    defence_earth = models.IntegerField(default=0)
+    defence_wind = models.IntegerField(default=0)
+
+
+#------------------------------------------------------------------------------------------- SKILLS
+class Skill(models.Model):
+    SKILL_TYPES = [
+        ("PHYSICAL_DAMAGE", "Physical damage"),
+        ("PHYSICAL_DEFENCE", "Physical defence"),
+        ("MAGICAL_DAMAGE", 'Magical damage'),
+        ("MAGICAL_DEFENCE", "Magical defence"),
+        ('BUFF', 'Buff'),
+        ('HEALING', 'Healing')         
+    ]
+    id = models.IntegerField(primary_key=True)
+    type = models.CharField(max_length=20, choices=SKILL_TYPES)
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+
+    # cost
+    mana_cost = models.IntegerField(default=0)
+    endurance_cost = models.IntegerField(default=0)
+
+    #damage
+    damage_physical = models.IntegerField(default=0)
+    damage_fire = models.IntegerField(default=0)
+    damage_water = models.IntegerField(default=0)
+    damage_earth = models.IntegerField(default=0)
+    damage_wind = models.IntegerField(default=0)
+    # buffs
+
+    def __str__(self):
+        return self.name
+
+
+class PlayerSkill(models.Model):
+    profile = models.ForeignKey(PlayerProfile, on_delete=models.CASCADE, related_name="skills")
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    skill_level = models.IntegerField(default=1)
+    unlocked = models.BooleanField(default=True)
+
+
+class BossSkill(models.Model):
+    boss = models.ForeignKey(BossProfile, on_delete=models.CASCADE, related_name="skills")
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+    difficulty_level = models.IntegerField(default=1)  # наприклад, скільки шкоди наносить бос
+
+#------------------------------------------------------------------------------------------- EQUIPMENT
+class Items(models.Model):
+    ITEM_TYPES = [
+        ("ARMOR", "Armor"),
+        ("WEAPON", "Weapon"),
+        ("USABLE", 'Usable'),
+        ("SHIELD", "Shield"),            
+    ]
+
+    name = models.CharField(max_length=100)
+    item_type = models.CharField(max_length=10, choices=ITEM_TYPES)
+    price = models.IntegerField(default=0)
+
+    # характеристики для броні
+    armor = models.IntegerField(null=True, blank=True)
+    defence_fire = models.IntegerField(null=True, blank=True)
+    defence_earth = models.IntegerField(null=True, blank=True)
+
+    # характеристики для зброї
+    damage = models.IntegerField(null=True, blank=True)
+    is_damage_physical = models.BooleanField(default=False)
+    is_damage_magical = models.BooleanField(default=False)
+    is_damage_ice = models.BooleanField(default=False)
+    is_damage_earth = models.BooleanField(default=False)
+    
+    accuracy = models.IntegerField(null=True, blank=True)
+
+#------------------------------------------------------------------------------------------------------ BATTLES
+class Battle(models.Model):
+    BATTLE_TYPES = [
+        ('PVE', 'Player vs Environment'),
+        ('PVP', 'Player vs Player')
+    ]
+    #battle_info
+    battle_type = models.CharField(max_length=3, choices=BATTLE_TYPES)
+    player_1 = models.ForeignKey(PlayerProfile, null=True, blank=True, on_delete=models.CASCADE, related_name='battles_as_player1')
+    
+    player_2 = models.ForeignKey(PlayerProfile, null=True, blank=True, on_delete=models.CASCADE, related_name='battles_as_player2')
+    
+    boss = models.ForeignKey(BossProfile, null=True, blank=True, on_delete=models.CASCADE)
+    
+    battle_status = models.IntegerField(default=0)
+
+    # battle statuses
+    is_active = models.BooleanField(default=True)
+    
+    # ROUND
+    round_status = models.IntegerField(default=0)
+    round_number = models.IntegerField(default=1)
+    player_1_finished_round = models.BooleanField(default=False)
+    player_2_finished_round = models.BooleanField(default=False)
+    notified_player = models.ForeignKey(PlayerProfile, null=True, blank=True, on_delete=models.CASCADE)
+    winner = models.ForeignKey(PlayerProfile, on_delete=models.CASCADE, related_name='winner', null=True)
+    
+  
+class BattleTurn(models.Model):
+    player_profile = models.ForeignKey(PlayerProfile, on_delete=models.CASCADE, related_name='battle_turn')
+    battle = models.ForeignKey(Battle, on_delete=models.CASCADE, related_name='battle_turn')
+    round_number = models.IntegerField(default=1)
+
+    # player_choice
+    player_attack = models.IntegerField(default=0)
+    enemy_attack = models.IntegerField(default=0)
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed = models.BooleanField(default=False)
+
+
+class BattleRound(models.Model):
+    battle = models.ForeignKey(Battle, on_delete=models.CASCADE, related_name='rounds')
+    number = models.PositiveIntegerField()
+    status = models.IntegerField(choices=[
+        (0, "NEW"),
+        (1, "STARTED"),
+        (2, "INFO_COUNTED"),
+        (3, "INFO_SENT"),
+    ], default=0)
+    player_1_got_update = models.BooleanField(default=False)
+    player_2_got_update = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+# ********************************************************************************************** WORDS MODELS ********************************************************************************************
 
 #------------------------------------------------------------------------------------- КАТЕГОРІЇ СЛІВ
 class WordCategory(models.Model):
+    id = models.IntegerField(primary_key=True)
     name = models.CharField(
         max_length=255,
         unique=True,
-        default='БЕЗ КАТЕГОРІЇ',
+        # default='БЕЗ КАТЕГОРІЇ',
         verbose_name="Категорія"
         )
     class Meta:
@@ -69,6 +275,7 @@ class WordCategory(models.Model):
         return self.name
 
 class WordSubcategory(models.Model):
+    id = models.IntegerField(primary_key=True)
     category = models.ForeignKey(
         WordCategory,
         on_delete=models.CASCADE,
@@ -117,14 +324,14 @@ class UserCustomWord(models.Model):
         WordCategory,
         null=False,
         on_delete=models.SET_DEFAULT,
-        default=get_default_category
+        default='БЕЗ КАТЕГОРІЇ'
     )
     
     sub_category = models.ForeignKey(
         WordSubcategory,
         on_delete=models.SET_DEFAULT,
         null=False,
-        default=get_default_subcategory,
+        default='БЕЗ ПІДКАТЕГОРІЇ',
         verbose_name="Підкатегорія"
     )
 
@@ -137,10 +344,11 @@ class UserCustomWord(models.Model):
             ("BOX_1", 'Box 1'),
             ("BOX_2", "Box 2"),
             ("BOX_3", "Box 3"),
-            ("LEARNED", "Learned")            
+            ("LEARNT", "Learnt"),            
         ],
         default="NEW"
     )
+    is_freezed = models.BooleanField(default=False)
     status_changed_date = models.DateTimeField(auto_now=True)
     repetition_count = models.IntegerField(default=0)
 
@@ -238,10 +446,11 @@ class UserWordsProgress(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     word = models.ForeignKey(Word, on_delete=models.CASCADE, null=True)
-    status = models.CharField(max_length=10, choices = STATUS_CHOICES, default='NEW')
+    status = models.CharField(max_length=20, choices = STATUS_CHOICES, default='NEW')
     repetition_count = models.IntegerField(default=0)
     status_changed_date = models.DateTimeField(auto_now=True)
     was_learnt_once = models.BooleanField(default=False)
+    is_freezed = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'ENGLISH: Статус слова'
@@ -261,11 +470,11 @@ class UserWordsDeutchProgress(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     word = models.ForeignKey(WordDeutch, on_delete=models.CASCADE, null=True)
-    status = models.CharField(max_length=10, choices = STATUS_CHOICES, default='NEW')
+    status = models.CharField(max_length=20, choices = STATUS_CHOICES, default='NEW')
     repetition_count = models.IntegerField(default=0)
     status_changed_date = models.DateTimeField(auto_now=True)
     was_learnt_once = models.BooleanField(default=False)
-
+    is_freezed = models.BooleanField(default=False)
     class Meta:
         verbose_name = 'DEUTCH: Статус слова'
         verbose_name_plural = "DEUTCH: Статуси слів"

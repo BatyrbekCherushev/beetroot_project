@@ -1,5 +1,8 @@
-import {get_statistics, getCookie, getUserInfo} from '../global.js'
+import {get_statistics, getCookie, getUserInfo, show_modal_message} from '../global.js'
 import {refresh_instance_statistics} from './boxes_exports.js'
+
+
+  
 
 //================================================================================= CLICK ON BOXES BUTTONS =====================================================================================
 
@@ -142,7 +145,7 @@ selectWordsCategory.addEventListener('change', (event) =>{
 function createStudyList(instance_type, instance_language) {
   
 
-  fetch('/create-list/', {
+  fetch('/create-study-list/', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -200,7 +203,7 @@ function fillWords(instance_type, instance_language, wordsList, createDate){
   const dateItem = document.querySelector(`.js-box[data-box="PROCESS"][data-instance_type="${instance_type}"][data-instance_language="${instance_language}"] .js-study_list_date_container`);
   const container = parent_container.querySelector('.js-flip-card-container');
   
-  dateItem.dataset.tooltip = `Список створено: ${createDate}`;
+  dateItem.dataset.tooltip = `Список оновлено: ${createDate}`;
 
   container.innerHTML = '';
   wordsList.forEach((word, index) => {     
@@ -292,13 +295,14 @@ createButton.addEventListener('click', (event) =>{
     const instance_type = slideBlockCreateList.dataset.caller_instance_type;
     const instance_language = slideBlockCreateList.dataset.caller_instance_language;
 
-    console.log(instance_language, instance_type);
-    if (document.querySelector(`.js-box[data-instance_type="${instance_type}"][data-instance_language="${instance_language}"][data-box="BOX_1"]`).classList.contains('box_overloaded')){
-      alert('BOX-1 does not have place')
-    } else {
+    // console.log(instance_language, instance_type);
+    createStudyList(instance_type, instance_language);
+    // if (document.querySelector(`.js-box[data-instance_type="${instance_type}"][data-instance_language="${instance_language}"][data-box="BOX_1"]`).classList.contains('box_overloaded')){
+    //   alert('BOX-1 does not have place')
+    // } else {
       
-      createStudyList(instance_type, instance_language);
-    }
+    //   createStudyList(instance_type, instance_language);
+    // }
     
    
 });
@@ -321,6 +325,12 @@ function clear_study_slide_block_badges(){
   const word_level_element = document.querySelector('.js-card-badge-word_level')
   word_level_element.textContent = '';
   word_level_element.dataset.word_level = '';
+}
+
+function clear_study_list(instance_type, instance_language){
+  const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance_type}"][data-instance_language="${instance_language}"]`);
+  const container = parent_container.querySelector('.js-flip-card-container');
+  container.innerHTML = '';
 }
 
 // ---------------------------------- EVENT STUDY BUTTON CLICKED
@@ -420,7 +430,7 @@ document.querySelector('.js-card-badge-comment').addEventListener('click', ()=>{
   const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
   const active_word_card = parent_container.querySelector('.swiper-slide-active .flip-card');
   if (active_word_card) {
-    study_slide_block_display.textContent = `${active_word_card.dataset.word_comment}`;
+    study_slide_block_display.innerHTML = `<span><strong>Коментарі до слова: </strong> </span><br>${active_word_card.dataset.word_comment}`;
   }
 });
 
@@ -431,7 +441,7 @@ document.querySelector('.js-card-badge-translations').addEventListener('click', 
   const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
   const active_word_card = parent_container.querySelector('.swiper-slide-active .flip-card');
   if (active_word_card) {
-    study_slide_block_display.innerHTML = `${active_word_card.dataset.word_translations}`;
+    study_slide_block_display.innerHTML = `<span><strong>Варіанти перекладу:</strong> </span><br>${active_word_card.dataset.word_translations.split('&').map(s => s.trim()).join(', ')}`;
   }
 });
 
@@ -444,6 +454,61 @@ document.querySelector('.js-card-badge-link').addEventListener('click', ()=>{
   if (active_word_card) {
     study_slide_block_display.innerHTML = `<a href="${active_word_card.dataset.word_link}" target="_blank" style="text-decoration: none;">${active_word_card.dataset.word_link}</a>`;
   }
+});
+
+//-------------------------------------------------------------- CLICK CLEAR STUDY LIST BUTTON
+
+document.querySelector('.js-clear-study_list').addEventListener('click', async ()=>{
+  const instance = slideBlockStudy.dataset.caller_instance_type;
+  const language = slideBlockStudy.dataset.caller_instance_language;
+  const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
+  const container = parent_container.querySelector('.js-flip-card-container');
+  
+  if (container.innerHTML == '') {
+    show_modal_message('danger', 'NO WORDS', 'Thera are no words in your study list...')
+    return;
+  }
+  try {
+        const response = await fetch('/clear-study-list/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // функція getCookie повинна бути визначена
+            },
+            body: JSON.stringify({
+                instance_type: instance,
+                instance_language: language,
+                
+            })
+        });
+        if (!response.ok) {
+            // Сервер повернув помилку (400, 404 тощо)
+            const errorText = await response.text();  // отримуємо тіло відповіді як текст
+            show_modal_message('danger', 'ПОМИЛКА', errorText)
+            // console.error(`Помилка сервера ${response.status}:`, errorText);
+            return;
+        }
+
+        const data = await response.json();
+
+        console.log(data);
+        if (data['words']) {
+          fillWords(instance, language, data['words'], new Date().toLocaleString());
+          show_modal_message('warning', 'Не повністю очищено', data['message'])
+        } else {
+          clear_study_list(instance, language);
+          clear_study_slide_block_badges();
+          show_modal_message('success', 'FULLY CLEARED', 'Your study list is fully cleared');
+        }
+
+        
+        
+        get_statistics();
+
+    } catch (err) {
+        show_modal_message('danger', 'ПОМИЛКА', err)
+        // console.error('Помилка при відправці відповіді:', err);
+    }
 });
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEST WORD SLIDE BLOCK
 
@@ -742,5 +807,9 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   console.log(await get_categories_for_new())
   
-});
+  
+
+  });
+
+// -----------------------------modals
 

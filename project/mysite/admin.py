@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Word, WordDeutch, UserSettings, UserWordsProgress,UserWordsDeutchProgress, UserCustomWord, UserProfile, models
+from .models import Word, WordDeutch, UserSettings, UserWordsProgress,UserWordsDeutchProgress, UserCustomWord, models
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
@@ -10,36 +10,151 @@ from import_export import resources
 from django.db import connection
 from django.contrib import messages
 # Register your models here.
-from .models import WordCategory, WordSubcategory
+
+from import_export import fields
+from import_export.widgets import ForeignKeyWidget
+from .models import WordSubcategory, WordCategory
 from django.forms import TextInput, Textarea
 
+# GAME IMPORTS
+from .models import PlayerProfile, BossProfile, Skill, PlayerSkill, BossSkill, Battle, BattleTurn
+
+#============================================================================================= GAME MODELS ADMIN ========================================================================================================
+#------------------------------------------------------------------------- PLAYER PROFILE
+
+@admin.register(PlayerProfile)
+class PlayerProfileAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in PlayerProfile._meta.fields]
+    list_filter = ('user', 'level', 'currency')
+
+#------------------------------------------------------------------------- BOSS PROFILE
+class BossProfileResource(resources.ModelResource):
+    class Meta:
+        model = BossProfile
+        fields = [field.name for field in BossProfile._meta.fields]
+
+        export_order = fields
+
+        import_id_fields = ("id",)  
+        """означає, що під час імпорту система буде шукати існуючі записи у базі за полем id.
+            Якщо запис з таким id існує → він оновлюється. 
+            Якщо запису з таким id немає → створюється новий запис."""
+        
+
+@admin.register(BossProfile)
+class BossProfileAdmin(ImportExportModelAdmin):
+    resource_class = BossProfileResource
+    list_display = [field.name for field in BossProfile._meta.fields ]
+
+    list_editable = [field.name for field in BossProfile._meta.fields if field.name != 'id']
+
+    list_filter = [field.name for field in BossProfile._meta.fields ]
+    search_fields = ('name',)
+
+
+#----------------------------------------------------------------------- SKILLS
+class SkillResource(resources.ModelResource):
+    class Meta:
+        model = Skill
+        fields = (
+            'id',
+        'type', 'name', 'description',
+        'endurance_cost','damage_physical', 
+        'mana_cost', 'damage_fire', 'damage_water', 'damage_earth', 'damage_wind',
+        )
+
+        export_order = fields
+
+        import_id_fields = ("id",)  
+        """означає, що під час імпорту система буде шукати існуючі записи у базі за полем id.
+            Якщо запис з таким id існує → він оновлюється. 
+            Якщо запису з таким id немає → створюється новий запис."""
+
+@admin.register(Skill)
+class SkillAdmin(ImportExportModelAdmin):
+    resource_class = SkillResource
+
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'style': 'width: 50px;'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':20})},
+    }
+
+    list_display = (
+        'id',
+        'type', 'name', 'description',
+        'endurance_cost','damage_physical', 
+        'mana_cost', 'damage_fire', 'damage_water', 'damage_earth', 'damage_wind',  )
+    list_editable = ( 'type', 'name', 'description',
+        'endurance_cost','damage_physical', 
+        'mana_cost', 'damage_fire', 'damage_water', 'damage_earth', 'damage_wind',)
+
+@admin.register(PlayerSkill)
+class PlayerSkillAdmin(admin.ModelAdmin):
+    list_display = ('id',
+        'profile', 'skill')
+    list_editable = ('skill',)
+
+#--------------------------------------------------------------------- BATTLES
+@admin.register(Battle)
+class BattleAdmin(admin.ModelAdmin):
+    formfield_overrides = {
+        models.CharField: {'widget': TextInput(attrs={'style': 'width: 100px;'})},
+        models.TextField: {'widget': Textarea(attrs={'rows':4, 'cols':40})},
+    }
+
+    list_display = [field.name for field in Battle._meta.fields]
+    # list_display=('id', 'battle_type', 'player_1_name', 'player_1_hitpoints', 'boss_name', 'boss_hitpoints')
+
+@admin.register(BattleTurn)
+class BattleTurnAdmin(admin.ModelAdmin):
+    list_display = [field.name for field in BattleTurn._meta.fields]
+    # list_display = (
+    #     'id', 'player_profile', 'battle', 'round', 'skill', 'created_at', 'processed'
+    # )
+# ============================================================================================== VOCABULARIES MOELS ADMINS =====================================================================================================================
 #============================================================================================= CATEGORIES ADMIN
+class WordCategoryResource(resources.ModelResource):
+    class Meta:
+        model = WordCategory
+        fields = ('id', 'name')
+        import_id_fields = ('id',)
+
+class WordSubcategoryResource(resources.ModelResource):
+    category = fields.Field(
+        column_name='category_name',
+        attribute='category',
+        widget=ForeignKeyWidget(WordCategory, 'name')  # шукає категорію по name
+    )
+
+    class Meta:
+        model = WordSubcategory
+        fields = ('id', 'name', 'category')
+        import_id_fields = ('id',)
+
 class WordSubcategoryInline(admin.TabularInline):  # або StackedInline
     model = WordSubcategory
     extra = 1  # кількість порожніх рядків для додавання нових
 
-
 @admin.register(WordCategory)
-class WordCategoryAdmin(admin.ModelAdmin):
+class WordCategoryAdmin(ImportExportModelAdmin):
+    resource_class = WordCategoryResource
+
     list_display = ("id", "name")
     search_fields = ('name',)
     list_editable = ('name',)
-    inlines = [WordSubcategoryInline]  # щоб додавати підкатегорії прямо в категорії
+
+    inlines = [WordSubcategoryInline]  # додаємо inline
 
 
 @admin.register(WordSubcategory)
-class WordSubcategoryAdmin(admin.ModelAdmin):
+class WordSubcategoryAdmin(ImportExportModelAdmin):
+    resource_class = WordSubcategoryResource
+
     list_display = ("id", "name", "category")
     search_fields = ('name',)
     list_editable = ('name',)
     list_filter = ("category",)
 
-#=====================================================================================================================
-
-@admin.register(UserProfile)
-class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'level', 'current_exp', 'currency')
-    list_filter = ('user', 'level', 'currency')
 
 #============================================================================================= CUSTOM WORDS ADMIN
 @admin.register(UserCustomWord)
@@ -216,18 +331,7 @@ class UserWordsDeutchProgressAdmin(admin.ModelAdmin):
 class CustomUserAdmin(DefaultUserAdmin):
     list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff')
 
-# @admin.register(UserSettings)
-# class UserSettingsAdmin(admin.ModelAdmin):
-#     list_display = ('id',
-#                     'user',
-#                     'basic_EN_repeat_words_number',
-#                     'basic_EN_study_list_length',
-#                     'basic_EN_box_1_limit',
-#                     'basic_EN_box_2_limit',
-#                     'basic_EN_box_3_limit',
-#                     'basic_EN_testing_days_limit')
-#     list_editable = ('basic_EN_repeat_words_number', 'basic_EN_study_list_length', 'basic_EN_box_1_limit', 'basic_EN_box_2_limit', 'basic_EN_box_3_limit', 'basic_EN_testing_days_limit')
-#     list_filter = ('user',)
+
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)

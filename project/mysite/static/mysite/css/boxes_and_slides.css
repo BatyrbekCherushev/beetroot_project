@@ -12,11 +12,6 @@
     fill: var(--interface-color-2) !important;
 }
 
-.box:active,
-.box-active:active {
-    stroke: rgb(215, 195, 18);
-}
-
 .box-active  {
     stroke: lightgoldenrodyellow;
 }
@@ -175,13 +170,13 @@
   position: fixed;        /* зафіксований внизу екрана */
   top: -100%; 
   left: -100%;
-  width: 66%;
+  width: 50%;
   background-color: var(--interface-color-4);
   /* color: var(--interface-color-2); */
   text-align: center;
   padding: 20px 0;
   box-shadow: 0 -2px 10px var(--interface-color-3);
-  transition:2s ease; /* плавний ефект */
+  transition:1.5s ease; /* плавний ефект */
   border: 1px solid var(--interface-color-2);
   border-left: none;
   border-top: none;
@@ -560,3 +555,4 @@ left: 40px;
 }
 
 /* CARDS - END */
+

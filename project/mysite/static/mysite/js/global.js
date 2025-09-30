@@ -19,6 +19,24 @@ export function getCookie(name) {
 }
 
 
+//----------------------------------------------------------------------------------- MODAL
+const myModal = new bootstrap.Modal('#myModal', {
+    keyboard: false
+  })
+
+export function show_modal_message(type='secondary', title='NO TITLE', message='NO MESSAGE') {
+  const modalEl = document.getElementById('myModal');
+  const modalTitle = document.querySelector('.my_modal_title');
+  const modalBody = document.querySelector('.my_modal_body');
+  
+  modalBody.innerHTML = `<p class="text-${type}">${message}</p>`;
+  modalTitle.innerHTML = `<span class="text-${type}">${title}</span>`;
+
+  myModal.show();
+}
+
+// show_modal_message();
+
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> GET FULL USER INFO
 export async function getUserInfo(){
   fetch('/get-user-info/')
@@ -29,7 +47,7 @@ export async function getUserInfo(){
       localStorage.setItem('statistics', JSON.stringify(data.statistics))
       localStorage.setItem('player_profile', JSON.stringify(data.player_profile));
       localStorage.setItem('word_categories', JSON.stringify(data.categories));
-      console.log(data)
+      // console.log(data)
       
       document.dispatchEvent(new CustomEvent('user_info_refreshed',{
         detail:{

@@ -2,6 +2,7 @@
 export function refresh_instance_statistics(instance_type, instance_language, instance_data){
     // console.log('REFRESHING STATISTICS for:', instance_type, instance_language)
     const settings = JSON.parse(localStorage.getItem('settings'))[`${instance_type}_${instance_language}`];
+    // console.log(instance_data);
     if (instance_data && settings) {
       const vocabulary_header = document.querySelector(`.js-vocabulary-header[data-instance_type="${instance_type}"][data-instance_language="${instance_language}"]`);
       if (vocabulary_header) {
@@ -19,7 +20,11 @@ export function refresh_instance_statistics(instance_type, instance_language, in
               if (category != 'LEARNT') {
                 text = text + ` / ${settings[`${category.toLowerCase()}_limit`]}`
               }
-            
+              
+              if(category == 'LEARNT') {
+                text = ' ' + text + ` / ${instance_data[`${category}_freezed`]}❄️`
+              }
+
               if (box_element){
                 box_element.querySelector('.js-box-words-testible').dataset.tooltip = instance_data[`${category}_usable`] + " слів доступно для тестування";
               }

@@ -1,0 +1,105 @@
+.arena_type_container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.arena_type {
+    width: 200px;
+    height: 200px;
+    border: 1px solid transparent;
+    background-color: var(--interface-color-4);
+    box-shadow: 2px 2px 2px var(--interface-color-3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.characters_container {
+    width: 100%;
+    min-height: 500px;
+    background-color: var(--interface-color-3);
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-around;
+
+}
+
+
+.arena_fight {
+    width: 20%;
+    background-color: gray;
+}
+
+.arena_attack,
+.arena_defence {
+    width: 50%;
+
+}
+.arena_player {
+    border: 1px solid green;
+}
+.arena_enemy {
+    border: 1px solid green;
+}
+
+/* CHARACTERS PANELS */
+.character_panel {
+    /* border: 1px solid green; */
+}
+
+.inventory_main {
+    display: flex;
+    background-color: green;
+    /* width: 100%;
+    height: 80%; */
+}
+
+.inventory_left,
+.inventory_right {
+    width: 100px;
+    background-color: lightblue;
+    
+}
+
+.equipment {
+    width: 100px;
+    height: 100px;
+    border: 1px solid black;
+    
+}
+
+.avatar {
+    width: 200px;
+    height: 400px;
+    background-color: aqua;
+}
+
+.inventory_belt {
+    height: 100px;
+    width: 400px;
+    background-color: yellow;
+    border: 1px solid black;
+}
+
+/* SKILLS */
+.skill {
+    width: 100px;
+    height: 100px;
+    border: 2px solid darkred;
+    cursor: pointer;
+}
+
+.skill:hover {
+    border-color: rosybrown;
+}
+
+.skill input[type="radio"] {
+  display: none; 
+}
+
+.skill:has(input[type="radio"]:checked) {
+  border-color: gold;
+  box-shadow: 0 0 10px gold;
+}
+
