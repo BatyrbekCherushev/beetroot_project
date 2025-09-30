@@ -2,4 +2,4 @@
 https://batyrbekcherushev.github.io/beetroot_project/
 
 Сайт проекта, розгорнутий на pythonanywhere:
-https://batyrbekcherushev.pythonanywhere.com/profile/
+https://heroesofwords.pythonanywhere.com/library/
