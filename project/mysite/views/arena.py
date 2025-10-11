@@ -11,7 +11,20 @@ from .utils import get_all_info
 @login_required
 def arena_page(request):
     return render(request, 'arena.html', context = {'page_name': 'arena',
-                                                    'user_info': get_all_info(request.user),})
+                                                    'user_info': get_all_info(request.user),
+                                                    'player_profile_info': serialize_player(request.user.player_profile)})
+
+def serialize_player(player_profile):
+    return {
+                'name': player_profile.name,
+                'hitpoints': player_profile.hitpoints,
+                'max_hitpoints': player_profile.max_hitpoints,
+                'max_mana': player_profile.max_mana,
+                'mana': player_profile.mana,
+                'max_endurance': player_profile.max_endurance,
+                'endurance': player_profile.endurance,
+                'skills': list(player_profile.skills.values_list('skill_id', flat=True))
+            }
 
 def serialize_battle(battle):
     result = {'battle_id': battle.id,
@@ -19,21 +32,9 @@ def serialize_battle(battle):
             'round_number': battle.round_number,
             'round_status': battle.round_status}
     if battle.player_1:
-        result['player_1'] = {
-                'name': battle.player_1.name,
-                'hitpoints': battle.player_1.hitpoints,
-                'mana': battle.player_1.mana,
-                'endurance': battle.player_1.endurance,
-                'skills': list(battle.player_1.skills.values_list('skill_id', flat=True))
-            }
+        result['player_1'] = serialize_player(battle.player_1)
     if battle.player_2:
-        result['player_2'] = {
-                'name': battle.player_2.name,
-                'hitpoints': battle.player_2.hitpoints,
-                'mana': battle.player_2.mana,
-                'endurance': battle.player_2.endurance,
-                'skills': list(battle.player_2.skills.values_list('skill_id', flat=True))
-            }
+        result['player_2'] = serialize_player(battle.player_2)
     if battle.boss:
         result['boss'] = {
             'name': battle.boss.name,

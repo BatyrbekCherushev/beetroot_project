@@ -69,11 +69,14 @@ class PlayerProfile(models.Model):
     
     # #characteristics
     damage_physical = models.IntegerField(default=10) # strength
+    max_hitpoints = models.IntegerField(default=100) # strength
     hitpoints = models.IntegerField(default=100) # strength
+    max_endurance = models.IntegerField(default=100) # strength
     endurance = models.IntegerField(default=100) # strength
 
     damage_magical = models.IntegerField(default=10) # intelligence
-    mana = models.IntegerField(default=10) # intelligence
+    max_mana = models.IntegerField(default=100) # intelligence
+    mana = models.IntegerField(default=100) # intelligence
 
     dodge = models.FloatField(default=0) #dexterity
     accuracy = models.IntegerField(null=True, blank=True)

@@ -3,6 +3,7 @@
 /* BOXES */
 .box:hover {
     cursor: pointer;
+    /* transform: scale(1.2); */
 }
 
 .box:hover  .box_painted_out{
