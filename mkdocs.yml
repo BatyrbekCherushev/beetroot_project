@@ -6,7 +6,7 @@ repo_url: https://github.com/BatyrbekCherushev/beetroot_project
 nav:
 - ІНТРО: index.md
 - Документація проекта:
-  - Заливка проекту на PYTHONANYWHERE: DOCUMENTATION/pythonanywhere_setup.md
+  - ДЕПЛОЙ проекту на PYTHONANYWHERE: DOCUMENTATION/pythonanywhere_setup.md
   - АДМІНКА ПРОЕКТУ: DOCUMENTATION/admin.md
   - МОДЕЛІ: DOCUMENTATION/models.md
   - VOCABULARIES: DOCUMENTATION/vocabularies.md

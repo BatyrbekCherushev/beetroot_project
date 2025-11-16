@@ -1,12 +1,16 @@
-## ЗАЛИВКА НА ПАЙТОНЕІВЕР
+## 📍 ЗАЛИВКА НА ПАЙТОНЕІВЕР
 [PYTHONANYWHERE](https://www.pythonanywhere.com/)
 
 * створюємо консоль
-* git clone in bash console `git clone https://github.com/BatyrbekCherushev/beetroot_project.git`
-* python environment setup:
-    * `python3 -m venv myenv`
-    * `source myenv/bin/activate`
+* клонуємо репозиторій з консолі
+    * `git clone https://github.com/BatyrbekCherushev/beetroot_project.git`
+* створення віртуального середовища:
+    * `python3 -m venv .venv`
+* активація віртуального середовища
+    * `source .venv/bin/activate`
+* інсталяція менеджера пакетів пайтона
     * `pip install --upgrade pip`
+* інсталяція бібліотек на основі файла `requirements.txt`
     * `pip install -r requirements.txt` - u need to have `requirements.txt` in root project directory
 ```mkdocs
 <!-- requirements.txt -->
@@ -20,13 +24,16 @@ sqlparse==0.5.3
 tablib==3.8.0
 tzdata==2025.2
 ```
-* в каталозі beetroot_project/project виконуємо `rm -rf static/*` для очищення папки з сатичним файлами
-* `python manage.py collectstatic` - для перезбірки статичних файлів
-* `python manage.py makemigrations`
-* `python manage.py migrate`
-* `python manage.py createsuperuser`
 
+## 📍 НАЛАШТУВАННЯ ПРОЕКТУ
+* в каталозі beetroot_project виконуємо 
+    * `rm -rf static/*` для очищення папки з статичним файлами
+    * `python manage.py collectstatic` - для перезбірки статичних файлів
+    * `python manage.py makemigrations`
+    * `python manage.py migrate`
+    * `python manage.py createsuperuser`
 
+## 📍 НАЛАШТУВАННЯ ПАНЕЛІ PythonAnywhere
 В панелі PythonAnywhere:
 
 * Зайти у Web → Add a new web app
@@ -40,13 +47,12 @@ PYTHONANYWHERE -> WEB ->
 * WSGI SETTINGS:
 ```
 # +++++++++++ DJANGO +++++++++++
-# To use your own django app use code like this:
+
 import os
 import sys
-#
-## assuming your django settings file is at '/home/BatyrbekCherushev/project/settings.py'
-## and your manage.py is is at '/home/BatyrbekCherushev/project/manage.py'
-path = '/home/Heroesofwords/beetroot_project/project'
+
+
+path = '/home/Heroesofwords/beetroot_project/'
 if path not in sys.path:
     sys.path.append(path)
 #
@@ -57,10 +63,10 @@ from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 ```
 * Python version: `3.13`
-* Virtualenv: `/home/Heroesofwords/beetroot_project/myenv`
+* Virtualenv: `/home/Heroesofwords/beetroot_project/.venv`
 * Static files:
     * URL	`/static/`
-    * Directory		`/home/Heroesofwords/beetroot_project/project/static`
+    * Directory		`/home/Heroesofwords/beetroot_project/static`
 * вкладка  Files -> project -> project -> settings.py
 ```python
 import os
@@ -205,15 +211,21 @@ mimetypes.add_type("application/javascript", ".js", True)
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 100000
 ```
     * змінити параметр `DEBUG=False`
+
 * вкладка WEB -> Натиснути Reload веб-додатка.
 
-Налаштування проекту 
+##
 
-* В АДМІНЦІ ПРОЕКТУ:
-    * імпортимо категорії
-    * імпортимо підкатегорії
-    * імпортимо профайли босів
-    * імпортимо скіли
-    * імпортимо екіпіровку
-    * імпортимо англійський словник
-    * імпортимо німецький словник
+## 📍 Налаштування проекту в АДМІНЦІ
+
+ В АДМІНЦІ ПРОЕКТУ -> 
+
+* імпортимо категорії
+* імпортимо підкатегорії
+* імпортимо англійський базовий словник
+* імпортимо німецький словник
+* імпортимо профайли босів
+* імпортимо скіли
+* імпортимо екіпіровку
+    
+    
