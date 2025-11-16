@@ -1,0 +1,61 @@
+@import url("boxes_and_slides.css");
+
+/* =============================================================================================== SEARCH */
+
+.search_filter td {
+    height: 50px;
+}
+
+.search_word_item {
+    cursor: pointer;
+}
+
+.search_word_item.active td{
+    background-color: var(--interface-color-2);
+    color: white;
+}
+
+.search_word_item:hover td{
+    background-color: gray;
+    color: white;
+}
+
+.search_word_item:active td{
+    background-color: white;
+    color: var(--interface-color-2);
+}
+
+.search_word_item_A1 td{
+    background-color: yellow;
+}
+
+.search_word_item_A2 td{
+    background-color: orange;
+}
+
+.table_search_results_wrapper {
+    max-height: 300px;
+    overflow: auto;
+    scrollbar-width: none;
+    border: 1px solid lightgray;
+    border-radius: 10px;
+}
+
+.umlaut_letter {
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.umlaut_letter:hover {
+    color: red;
+}
+
+.umlaut_letter:active {
+    color: grey;
+}
+
+.export_icon {
+    fill: var(--interface-color-6) !important;
+    stroke:  var(--interface-color-6) !important;
+}
+

@@ -1,0 +1,74 @@
+<!-- login.html -->
+{% extends "../base.html" %}
+{% load static %}
+
+{% block local_css %}
+
+<link rel="stylesheet" href="{% static 'app_authentification/css/' %}auth.css">
+
+{% endblock %}
+
+
+{% block content %}
+
+  <div class="container-fluid vh-100">
+      {% include "app_authentification/logo.html" %}
+      <div class="row  justify-content-center align-items-center mb-5">
+        
+          <div class="col-10 col-md-6 col-lg-6">
+            
+            <h3 class="auth_title"> АВТОРИЗАЦІЯ</h2>
+              {% if form.errors %}
+                <p class="text-danger">Логін або пароль не підходять. Спробуйте ще раз.</p>
+              {% endif %}
+
+              {% if next %}
+                {% if user.is_authenticated %}
+                  <p>Your account doesn't have access to this page. To proceed,
+                  please login with an account that has access.</p>
+                {% else %}
+                  <p>Please login to see this page.</p>
+                {% endif %}
+              {% endif %}
+
+              <form method="post" action="{% url 'app_authentification:login' %}">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+
+                {% for field in form %}
+                    <div class="mb-3">
+                        {{ field.label_tag}}
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                    {% endfor %}
+                <!-- <div class="mb-3">
+                  
+                  {{ form.username.label_tag }}
+                  {{ form.username }}
+                  {{ form.username.errors }}
+                </div>
+
+                <div class="mb-3">
+                  {{ form.password.label_tag }}
+                  {{ form.password }}
+                  {{ form.password.errors }}
+                </div> -->
+
+                <input type="hidden" name="next" value="{{ next }}">
+                <button type="submit" class="btn auth_btn mb-4">Увійти</button>
+
+                
+                
+                <p><a class="btn btn-dark mb-1 w-50" href="{% url 'password_reset' %}">Загубили пароль?</a></p>
+                <p><a class="btn btn-secondary mb-1 w-50" href="{% url 'app_authentification:register' %}">Створити користувача</a></p>
+              </form>
+
+              
+          </div>
+      </div>
+
+      {% include "app_authentification/logo_footer.html" %}
+  </div>
+
+{% endblock %}

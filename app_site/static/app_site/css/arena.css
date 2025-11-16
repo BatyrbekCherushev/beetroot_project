@@ -1,0 +1,287 @@
+/* body {
+    font-family: "Antique Quest";
+} */
+
+/* CHARACTERS PANELS */
+.character_panel {
+    /* border: 1px solid green; */
+}
+
+.avatar {
+    width: 200px;
+    height: 300px;
+    /* background-color: lightray; */
+    border: 1px solid gray;
+    justify-self: center;
+    margin-bottom: 20px;
+
+}
+
+.stats {
+    margin-bottom: 20px;
+}
+
+.stats_name {
+    font-family: "Holos-Bold";
+    font-size: 30px;
+}
+
+
+
+.stats_icon {
+    margin-right: 5px;
+}
+
+.stats_hitpoints,
+.stats_endurance,
+.stats_mana {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.accordion_character_info_btn {
+    height: 70px;
+}
+
+
+/* EQUIPMENT */
+
+.equipment_main {
+    display: block;
+    /* background-color: green; */
+    /* width: 100%;
+    height: 80%; */
+}
+
+.equipment_top {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.equipment_chest {
+    display: flex;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+.equipment_middle {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.equipment_bottom {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.equipment {
+    width: 100px;
+    height: 100px;
+    border: 1px solid lightgrey;
+    
+}
+
+.equipment_icon {
+    width: 100px;
+    height: 100px;
+}
+
+
+
+.equipment_belt_slots {
+    width: 100%;
+    display: flex;
+    justify-self: center;
+    height: 100px;
+    width: 400px;
+}
+
+/* SKILLS */
+.skill {
+    width: 100px;
+    height: 100px;
+    border: 2px solid darkred;
+    cursor: pointer;
+}
+
+.skill:hover {
+    border-color: rosybrown;
+}
+
+.skill input[type="radio"] {
+  display: none; 
+}
+
+.skill:has(input[type="radio"]:checked) {
+  border-color: gold;
+  box-shadow: 0 0 10px gold;
+}
+
+.arena_type_container {
+    display: flex;
+    justify-content: space-around;
+}
+
+.arena_type {
+    width: 200px;
+    height: 200px;
+    border: 1px solid transparent;
+    background-color: var(--interface-color-4);
+    box-shadow: 2px 2px 2px var(--interface-color-3);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.characters_container {
+    width: 100%;
+    min-height: 500px;
+    background-color: var(--interface-color-3);
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-around;
+
+}
+
+/* FIGHT */
+.arena_fight {
+    width: 20%;
+}
+
+.arena_attack,
+.arena_defence {
+    margin: 50px 0;
+    width: 50%;
+    font-size: 20px;
+    font-weight: bold;
+
+}
+
+.battle_menu {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.battle_menu_left {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.battle_menu_right {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.arena_button {
+    display: flex;
+    flex-direction: column;
+    height: 150px;
+    width: 150px;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    transition: 1s all ease;
+    overflow: hidden;
+    /* border: 1px solid var(--interface-color-5); */
+    color: var(--interface-color-1);
+    min-width: 36px;
+    background-color: white;
+    padding: 5px;
+    box-shadow: 5px 5px 10px var(--interface-color-1);
+    cursor: pointer;
+    margin: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+.arena_button:active {
+    color: black;
+    box-shadow: 1px 1px 5px var(--interface-color-2);
+    transition: 0.5s all ease;
+}
+
+.arena_button:hover {
+    color: darkred;
+    background-color: darkgray;
+    
+}
+.arena_button:active {
+    color: white;
+    background-color: var(--interface-color-5);
+    
+}
+
+.arena_button:hover svg {
+    stroke: darkred;
+    fill: darkred;
+    transform: scale(1.2);
+    transition: 0.5s all ease;
+}
+
+.arena_button_icon {
+    width: 75px;
+    height: 75px;
+}
+
+.arena_button_icon svg {
+    height: 75px;
+    width: 75px;
+}
+
+
+
+.arena_button .arena_button_text {
+    transition: 1s all ease;
+}
+.fight_choice_icon {
+    width: 75px;
+    height: 75px;
+    cursor: pointer;
+}
+
+.fight_button {
+    justify-self: center;
+}
+
+.fight_button:active {
+    color: darkred;
+    background-color: darkgray;
+} 
+
+.fight_button:active svg{
+    fill: darkred;
+    stroke: darkred;
+}
+
+.fight_choice_icon {
+    transition: 0.6s all ease;
+}
+
+label:has(input[type="radio"]:checked) svg {
+  stroke: olive;
+    fill: olive;
+}
+
+.fight_choice_icon:hover {
+    stroke: rgb(179, 53, 53);
+    fill: darkred;
+    transform: scale(1.3);
+    transition: 0.6s all ease;
+}
+
+.fight_choice_icon:active {
+    stroke: yellow;
+    fill: yellow;
+}
+
+/* BOOTSRAP COMPONENTS CHANGES */
+.accordion-body {
+    padding: unset;
+}

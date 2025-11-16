@@ -17,10 +17,8 @@ LOCAL_WORKING_FILES/
 .DS_Store
 
 #python environment
-myenv/
+.venv/
 
 #DATABASE
-project/db.sqlite3
+db.sqlite3
 
-dev_init.ps1
-dev_init.bat

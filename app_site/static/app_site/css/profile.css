@@ -1,0 +1,8 @@
+.settings_input {
+    width: 80px;
+    padding: 5px;
+    border-radius: 5px;
+    margin:5px;
+    text-align: center;
+    box-shadow: 2px 2px 2px 2px var(--interface-color-2);
+}

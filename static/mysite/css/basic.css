@@ -1,0 +1,99 @@
+:root {
+  --interface-color-1: #283044;
+  /* --interface-color-2: rgb(173, 216, 230); */
+  --interface-color-3: #6b8fa8;
+  --interface-color-2: #5d7d95;
+  --interface-color-4: #c3d5e1;
+  --interface-color-5: #78a1bb;
+
+  
+}
+
+body {
+  min-height: 1000px;
+}
+
+h1{
+  color: var(--interface-color-2) !important;
+}
+
+/* NAVIGATION */
+.nav_icon_container {
+  height: 200px;
+}
+
+.nav_link {
+  text-decoration: none;
+}
+
+.nav_link:hover {
+  color: gray;
+}
+
+.nav_icon_wrapper {
+  margin-bottom: 30px;
+}
+
+.nav_icon_text {
+  display: none;
+}
+
+.nav_icon_wrapper:hover .nav_icon_text {
+  display: block;
+  color: var(--interface-color-2);
+}
+
+.nav_icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    /* transition: 3s ; */
+}
+
+.nav_icon:hover {
+     fill: var(--interface-color-2);
+     stroke: var(--interface-color-2);
+    /* box-shadow: 5px 5px 10px rgba(173, 216, 230, 0.3); */
+    cursor: pointer;
+    transform: rotatez(5deg);
+}
+
+.nav_icon:active {
+    fill: var(--interface-color-1)
+    
+}
+
+.nav_icon_open {
+    fill: #6b0000;
+    stroke: #6b0000;
+    fill: #6b0000;
+     
+}
+
+/*============================= */
+
+/* BOOTSRAP ACCORDIONS */
+.accordion-item {
+  border-color: var(--interface-color-4);
+}
+
+.collapse_button_flag {
+    width: 50px;
+    margin-right: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

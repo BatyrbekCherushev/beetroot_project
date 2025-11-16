@@ -1,0 +1,248 @@
+ <!-- templates/profile.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}PERSONAL ROOM{% endblock %}
+
+{% block local_css %}
+
+<link rel="stylesheet" href="{% static app_name|add:'/css/'|add:page_name|add:'.css' %}">
+
+{% endblock %}
+
+{% block content %}
+    <br><br>
+    <h1>П Р О Ф А Й Л</h1>
+    <p>Тут Ви можете оримати інформацію про персонажа, успіхі внавчанні, змінити налаштування словників.</p><br>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- LOGOUT NAV -->
+
+                <div class="accordion" id="accordion-panel-profile">
+                    <!-- GAME PROFILE -->
+                    <!-- <div class="accordion-item">
+                        <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                            Характеристики вашого персонажа
+                        </button>
+                        </h2>
+                        <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse">
+                        <div class="text-start">
+                            <p>Ігрова валюта (ІВ): <span class="js-player-currency">{{user_info.player_profile.currency}}</span></p>
+                        </div>
+                        <div class="accordion-body text-start">
+                            <p class="">Рівень:</p>
+                            <p class="">Сила:</p>
+                            <p class="">Ловкость:</p>
+                            <p class="">Витривалість:</p>
+                        </div>
+                        </div>
+                    </div> -->
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#EN_collapse" aria-expanded="false" aria-controls="EN_collapse">
+                            <svg class="collapse_button_flag" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 496 496" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path style="fill:#29337A;" d="M496,369.6c0,27.2-21.6,46.4-48,46.4H48c-26.4,0-48-19.2-48-46.4V126.4C0,99.2,21.6,80,48,80h400 c26.4,0,48,19.2,48,46.4V369.6z"></path> <path style="fill:#1B265B;" d="M48,80h400c26.4,0,48,19.2,48,46.4v243.2c0,27.2-25.6,46.4-52,46.4"></path> <g> <path style="fill:#111D49;" d="M48,80h400c26.4,0,48,19.2,48,46.4V216"></path> <path style="fill:#111D49;" d="M496,368.8c0,27.2-21.6,47.2-48,47.2H48c-26.4,0-48-20.8-48-48"></path> </g> <polygon style="fill:#FFFFFF;" points="272,248 442.4,80 394.4,80 248,226.4 101.6,80 53.6,80 224,248 53.6,416 101.6,416 248,269.6 394.4,416 442.4,416 "></polygon> <g> <polygon style="fill:#D9ECED;" points="102.4,368 53.6,416 101.6,416 149.6,368 "></polygon> <polygon style="fill:#D9ECED;" points="346.4,368 394.4,416 442.4,416 393.6,368 "></polygon> <polygon style="fill:#D9ECED;" points="411.2,386.4 272,249.6 442.4,80 394.4,80 248,226.4 101.6,80 53.6,80 85.6,110.4 "></polygon> </g> <polygon style="fill:#FFFFFF;" points="496,216 280,216 280,80 216,80 216,216 0,216 0,280 216,280 216,416 280,416 280,280 496,280 "></polygon> <g> <rect x="216" y="368" style="fill:#D9ECED;" width="64" height="48"></rect> <polygon style="fill:#D9ECED;" points="280,80 216,80 216,216 210.4,216 285.6,280 496,280 496,216 280,216 "></polygon> </g> <polygon style="fill:#E51D35;" points="496,232 264,232 273.6,232 432.8,80 416.8,80 264,232 264,80 232,80 232,232 232,232 77.6,80 63.2,80 216,232 0,232 0,264 216.8,264 67.2,416 81.6,416 232,264 232,416 264,416 264,265.6 418.4,416 432.8,416 280,264 496,264 "></polygon> <g> <rect x="232" y="368" style="fill:#AF0026;" width="32" height="48"></rect> <polygon style="fill:#AF0026;" points="114.4,368 67.2,416 81.6,416 129.6,368 "></polygon> <polygon style="fill:#AF0026;" points="369.6,368 418.4,416 432.8,416 384,368 "></polygon> <polygon style="fill:#AF0026;" points="278.4,232 432.8,80 416.8,80 264,232 264,80 232,80 232,232 232,232 77.6,80 63.2,80 151.2,167.2 343.2,328.8 280,264 496,264 496,232 264,232 "></polygon> </g> </g></svg>
+                            НАЛАШТУВАННЯ АНГЛІЙСЬКИХ СЛОВНИКІВ
+                        </button>
+                        </h2>
+                        <div id="EN_collapse" class="accordion-collapse collapse ">
+                        <div class="accordion-body text-start">
+                            <form class="js-form-settings needs-validation"  method="POST" action="/profile/change-settings/" >
+                                 {% csrf_token %}
+                                 <p><strong>СПИСОК ВИВЧЕННЯ СЛІВ ДЛЯ БАЗОВОГО СЛОВНИКА</strong></p>
+                                <label >* Кількість слів в навчальному списку
+                                    <input  name="study_list_length" class="js-settings-study-list-length settings_input"  type="number" 
+                                        value ="{{user_info.settings.basic_EN.study_list_length}}"
+                                        min="10"
+                                        max="40"
+                                        data-instance="basic"
+                                        data-language="EN">
+                                    
+                                </label>
+                                <br>
+                                <label for="settings-rep_words_number">* Дефолтна кількість слів з коробки "ПОВТОР" при створенні навчального списку. 
+                                    <input  name="repeat_words_number" class="js-settings-rep-num settings_input"  type="number"
+                                        value ="{{user_info.settings.basic_EN.repeat_words_number}}"
+                                        max="{{user_info.settings.basic_EN.study_list_length}}"
+                                        min="0"
+                                        data-instance="basic"
+                                        data-language="EN">
+                                        <strong> (Інші слова беруться із НОВИХ)</strong>
+                                </label>
+                                <br>
+                                
+                                
+                                <input type="text" hidden name="instance_type" value="basic">
+                                <input type="text" hidden name="instance_language" value="EN">
+                                <button type="submit">ЗБЕРЕГТИ</button>
+                                
+                                <hr>
+                            </form>
+
+                            <form class="js-form-settings needs-validation"  method="POST" action="/profile/change-settings/" >
+                                 {% csrf_token %}
+                                 <p><strong>СПИСОК ВИВЧЕННЯ СЛІВ ДЛЯ КОРИСТУВАЦЬКОГО СЛОВНИКА</strong></p>
+                                <label >* Кількість слів в навчальному списку
+                                    <input  name="study_list_length" class="js-settings-study-list-length settings_input"  type="number" 
+                                        value ="{{user_info.settings.custom_EN.study_list_length}}"
+                                        min="10"
+                                        max="40"
+                                        data-instance="custom"
+                                        data-language="EN">
+                                    
+                                </label>
+                                <br>
+                                <label for="settings-rep_words_number">* Дефолтна кількість слів з коробки "ПОВТОР" при створенні навчального списку. 
+                                    <input  name="repeat_words_number" class="js-settings-rep-num settings_input"  type="number"
+                                        value ="{{user_info.settings.custom_EN.repeat_words_number}}"
+                                        max="{{user_info.settings.custom_EN.study_list_length}}"
+                                        min="0"
+                                        data-instance="custom"
+                                        data-language="EN">
+                                        <strong> (Інші слова беруться із НОВИХ)</strong>
+                                </label>
+                                <br>
+                                
+                                
+                                <input type="text" hidden name="instance_type" value="custom">
+                                <input type="text" hidden name="instance_language" value="EN">
+                                <button type="submit">ЗБЕРЕГТИ</button>
+                                
+                                <hr>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#custom_EN_collapse" aria-expanded="false" aria-controls="custom_EN_collapse">
+                            <svg class="collapse_button_flag" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 496 496" xml:space="preserve" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path style="fill:#F8D12E;" d="M0,304v65.6C0,396.8,21.6,416,48,416h400c26.4,0,48-19.2,48-46.4V304H0z"></path> <path style="fill:#333333;" d="M448,80H48C21.6,80,0,99.2,0,126.4V192h496v-65.6C496,99.2,474.4,80,448,80z"></path> <rect y="192" style="fill:#DB2727;" width="496" height="112"></rect> <path style="fill:#DBB30F;" d="M446.4,416c26.4,0,49.6-19.2,49.6-46.4V304H315.2L446.4,416z"></path> <path style="fill:#202121;" d="M448,80H48l132.8,112H496v-65.6C496,99.2,474.4,80,448,80z"></path> <polygon style="fill:#C10E0E;" points="316,304 496,304 496,192 180,192 "></polygon> <path d="M448,80H48l370.4,112H496v-65.6C496,99.2,474.4,80,448,80z"></path> <polygon style="fill:#A00808;" points="496,214.4 496,192 414.4,192 "></polygon> <path style="fill:#D89F12;" d="M496,368.8c0,29.6-21.6,47.2-48,47.2H48c-26.4,0-48-20.8-48-48"></path> </g></svg>
+                            НАЛАШТУВАННЯ НІМЕЦЬКИХ СЛОВНИКІВ
+                        </button>
+                        </h2>
+                        <div id="custom_EN_collapse" class="accordion-collapse collapse">
+                        <div class="accordion-body text-start">
+                            <form class="js-form-settings needs-validation"  method="POST" action="/profile/change-settings/" >
+                                 {% csrf_token %}
+                                 <p><strong>СПИСОК ВИВЧЕННЯ СЛІВ ДЛЯ БАЗОВОГО СЛОВНИКА</strong></p>
+                                <label>* Кількість слів в навчальному списку
+                                    <input  name="study_list_length" class="js-settings-study-list-length settings_input"  type="number" 
+                                        value ="{{user_info.settings.basic_DE.study_list_length}}"
+                                        min="10"
+                                        max="40"
+                                        data-instance="basic"
+                                        data-language="DE">
+                                    
+                                </label>
+                                <br>
+                                <label for="settings-rep_words_number">* Дефолтна кількість слів з коробки "ПОВТОР" при створенні навчального списку. 
+                                    <input  name="repeat_words_number" class="js-settings-rep-num settings_input"  type="number"
+                                        value ="{{user_info.settings.basic_DE.repeat_words_number}}"
+                                        max="{{user_info.settings.basic_DE.study_list_length}}"
+                                        min="0"
+                                        data-instance="basic"
+                                        data-language="DE">
+                                        <strong> (Інші слова беруться із НОВИХ)</strong>
+                                </label>
+                                <br>
+                                
+                                
+                                <input type="text" hidden name="instance_type" value="basic">
+                                <input type="text" hidden name="instance_language" value="DE">
+                                <button type="submit">ЗБЕРЕГТИ </button>
+                                
+                                <hr>
+                            </form>
+
+                            <form class="js-form-settings needs-validation"  method="POST" action="/profile/change-settings/" >
+                                 {% csrf_token %}
+                                 <p><strong>СПИСОК ВИВЧЕННЯ СЛІВ ДЛЯ CUSTOM СЛОВНИКА</strong></p>
+                                <label >* Кількість слів в навчальному списку
+                                    <input  name="study_list_length" class="js-settings-study-list-length settings_input"  type="number" 
+                                        value ="{{user_info.settings.custom_DE.study_list_length}}"
+                                        min="10"
+                                        max="40"
+                                        data-instance="custom"
+                                        data-language="DE">
+                                    
+                                </label>
+                                <br>
+                                <label for="settings-rep_words_number">* Дефолтна кількість слів з коробки "ПОВТОР" при створенні навчального списку. 
+                                    <input  name="repeat_words_number" class="js-settings-rep-num settings_input"  type="number"
+                                        value ="{{user_info.settings.custom_DE.repeat_words_number}}"
+                                        max="{{user_info.settings.custom_DE.study_list_length}}"
+                                        min="0"
+                                        data-instance="custom"
+                                        data-language="DE">
+                                        <strong> (Інші слова беруться із НОВИХ)</strong>
+                                </label>
+                                <br>
+                                
+                                
+                                <input type="text" hidden name="instance_type" value="custom">
+                                <input type="text" hidden name="instance_language" value="DE">
+                                <button type="submit">ЗБЕРЕГТИ</button>
+                                
+                                <hr>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5 justify-content-center">
+            {% if user.is_superuser %}
+            <div class="col-12 col-md-2 nav_icon_container">
+                <a class="nav_link text-center" href="{% url 'admin:index' %}">
+                    <div class="nav_icon_wrapper">
+                        
+                        <svg class="nav_icon" fill="#000000" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 236 256" enable-background="new 0 0 236 256" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M117.5,2c-12.47,0-22.63,10.16-22.63,22.63c0,12.46,10.06,22.62,22.63,22.62c12.37,0,22.62-10.16,22.62-22.62 C140.12,12.16,129.97,2,117.5,2z M146,52H89c-15.59,0-28,13.41-28,29v32h20V86c0-1.71,1.29-3,3-3s3,1.29,3,3v27h61V86 c0-1.71,1.29-3,3-3s3,1.29,3,3v27h20V81C174,65.51,161.49,52,146,52z M96.84,158.41c-4.81,0-8.71,3.9-8.71,8.71s3.9,8.71,8.71,8.71 s8.71-3.9,8.71-8.71S101.65,158.41,96.84,158.41z M139.28,194.14c-6-2.52-12.9,0.31-15.42,6.31c-2.52,6,0.31,12.91,6.31,15.42 c6,2.52,12.91-0.31,15.42-6.31C148.11,203.56,145.28,196.66,139.28,194.14z M139.28,194.14c-6-2.52-12.9,0.31-15.42,6.31 c-2.52,6,0.31,12.91,6.31,15.42c6,2.52,12.91-0.31,15.42-6.31C148.11,203.56,145.28,196.66,139.28,194.14z M96.84,158.41 c-4.81,0-8.71,3.9-8.71,8.71s3.9,8.71,8.71,8.71s8.71-3.9,8.71-8.71S101.65,158.41,96.84,158.41z M2,118v27h23v109h185V145h24v-27H2 z M74.76,164.38l5.75-0.97c0.42-1.88,1.16-3.64,2.16-5.22l-3.38-4.74l3.88-3.88l4.74,3.37c1.58-0.99,3.34-1.73,5.22-2.16l0.97-5.74 h5.48l0.97,5.74c1.88,0.43,3.64,1.17,5.22,2.16l4.74-3.37l3.88,3.88l-3.38,4.74c1,1.58,1.74,3.34,2.16,5.22l5.75,0.97v5.48 l-5.75,0.96c-0.42,1.89-1.16,3.64-2.16,5.23l3.38,4.74l-3.88,3.87l-4.74-3.37c-1.58,1-3.34,1.74-5.22,2.16l-0.97,5.74H94.1 l-0.97-5.74c-1.88-0.42-3.64-1.16-5.22-2.16l-4.74,3.37l-3.88-3.87l3.38-4.74c-1-1.59-1.74-3.34-2.16-5.23l-5.75-0.96V164.38z M101.46,210.49l-3.8,0.64c-0.28,1.25-0.77,2.41-1.43,3.46l2.23,3.14l-2.56,2.56l-3.14-2.23c-1.05,0.66-2.21,1.15-3.46,1.43 l-0.64,3.8h-3.63l-0.64-3.8c-1.24-0.28-2.4-0.77-3.45-1.43l-3.14,2.23l-2.56-2.56l2.23-3.14c-0.66-1.05-1.15-2.21-1.43-3.46 l-3.8-0.64v-3.62l3.8-0.64c0.28-1.25,0.77-2.41,1.43-3.46l-2.23-3.14l2.56-2.56l3.14,2.23c1.05-0.66,2.21-1.15,3.45-1.43l0.64-3.8 h3.63l0.64,3.8c1.25,0.28,2.41,0.77,3.46,1.43l3.14-2.23l2.56,2.56l-2.23,3.14c0.66,1.05,1.15,2.21,1.43,3.46l3.8,0.64V210.49z M157.04,208.92l6.65,4.21l-2.86,6.84l-7.67-1.8c-1.51,2.12-3.35,3.93-5.43,5.38l1.73,7.68l-6.86,2.81l-4.15-6.69 c-2.49,0.42-5.07,0.42-7.64-0.03l-4.21,6.65l-6.84-2.86l1.8-7.67c-2.12-1.51-3.93-3.35-5.38-5.43l-7.68,1.73l-2.81-6.86l6.69-4.15 c-0.42-2.49-0.42-5.07,0.03-7.64l-6.65-4.21l2.86-6.84l7.67,1.8c1.51-2.12,3.36-3.93,5.43-5.38l-1.73-7.68l6.86-2.81l4.15,6.69 c2.49-0.42,5.07-0.42,7.64,0.03l4.21-6.65l6.84,2.86l-1.8,7.67c2.12,1.51,3.93,3.36,5.38,5.43l7.68-1.73l2.81,6.86l-6.69,4.15 C157.49,203.77,157.49,206.35,157.04,208.92z M139.28,194.14c-6-2.52-12.9,0.31-15.42,6.31c-2.52,6,0.31,12.91,6.31,15.42 c6,2.52,12.91-0.31,15.42-6.31C148.11,203.56,145.28,196.66,139.28,194.14z M96.84,175.83c4.81,0,8.71-3.9,8.71-8.71 s-3.9-8.71-8.71-8.71s-8.71,3.9-8.71,8.71S92.03,175.83,96.84,175.83z M86.85,204.64c-2.23,0-4.04,1.81-4.04,4.04 s1.81,4.04,4.04,4.04c2.23,0,4.04-1.81,4.04-4.04S89.08,204.64,86.85,204.64z M139.28,194.14c-6-2.52-12.9,0.31-15.42,6.31 c-2.52,6,0.31,12.91,6.31,15.42c6,2.52,12.91-0.31,15.42-6.31C148.11,203.56,145.28,196.66,139.28,194.14z M139.28,194.14 c-6-2.52-12.9,0.31-15.42,6.31c-2.52,6,0.31,12.91,6.31,15.42c6,2.52,12.91-0.31,15.42-6.31 C148.11,203.56,145.28,196.66,139.28,194.14z"></path> </g></svg>
+                        
+                        </svg>
+                        <div class="nav_icon_text">АДМІНКА</div>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="col-12 col-md-2 nav_icon_container">
+                <form id="logout-form" method="POST" action="{% url 'logout' %}" style="display: none;">
+                    {% csrf_token %}
+                </form>
+
+                <a class="nav_link active text-center" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    <div class="nav_icon_wrapper">
+                        <svg class="nav_icon" fill="#000000" height="800px" width="800px" version="1.2" baseProfile="tiny" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                            viewBox="-1077 923 256 256" xml:space="preserve">
+                        <g>
+                            <path d="M-934.7,1039.4c-0.2,0-0.3,0-0.5,0.1c-0.1,0-0.1,0-0.2-0.1l-23.4,3.5l-13.3-29.3c-1.8-3.6-4-6.6-6.7-8.9
+                                c-1.1-1.1-2.5-2.1-3.9-3c-1.5-0.8-3-1.4-4.7-1.7c-4.3-1-8.2-0.4-11.8,1.7l-29.3,13.7c-2,1.3-3.9,1.8-4.4,2.1
+                                c-3,2.1-3.5,3.2-3.9,3.9l-14.8,28.3c-0.1,0.3-0.2,0.6-0.3,0.8c-0.5,1.1-0.9,2.3-0.9,3.6c0,1.3,0.4,2.6,0.9,3.7c0.7,1.8,2,3,3.7,3.5
+                                c1,0.5,2.2,0.8,3.4,0.8c3.2,0,5.9-1.9,7.2-4.5c0.1-0.2,0.2-0.3,0.3-0.5c9.2-17.2,13.8-25.9,13.8-26.1l15.7-3.7l-18.8,79.1
+                                l-35.9-0.3c-0.1,0-0.1,0-0.2,0c-0.1,0-0.1,0-0.2,0c-4.7,0-8.6,3.8-8.6,8.6c0,4.4,3.3,7.9,7.5,8.5v0.1l10,0
+                                c7.8,0.4,30.7,1.4,37.7,0.6c0.2,0,0.4,0.1,0.7,0.1c3.9,0,7.1-2.8,7.8-6.4l5.4-15.8l0,0c3.6-10.3,6-20.4,6-20.4
+                                c9.4,9.9,16.4,16.3,22.8,23l11,36.1l2.3,8.7l0.1,0c1.2,3.8,4.7,6.6,8.9,6.6c5.2,0,9.4-4.2,9.4-9.4c0-0.7-0.1-1.5-0.3-2.2l-0.7-2.7
+                                c0,0,0-0.1,0-0.1l-2-7.5l-2-7.4l0,0l-8.1-30c-1.1-2.8-2.1-5.5-4.4-8.1c0,0-22.5-25-23.1-25.3l5.1-24.2l7.1,15.1
+                                c0.1,0.1,0.2,0.3,0.3,0.4c0.5,0.7,0.9,1.3,1.3,1.7c1.4,1.4,3.3,2.2,5.3,2.2c0.1,0,0.1,0,0.2,0c0.6,0,1.2-0.1,1.8-0.2l26.3-2.9
+                                c0.1,0,0.2,0,0.2,0c0.7,0,1.3-0.1,1.9-0.3l0.4,0c0.1,0,0.1-0.1,0.2-0.1c3.1-1.1,5.4-4,5.4-7.4
+                                C-926.8,1043-930.3,1039.4-934.7,1039.4z"/>
+                            <path d="M-984.2,995.1c4.4,0,8.2-1.6,11.3-4.7c3.1-3.1,4.7-6.8,4.7-11.1c0-4.4-1.6-8.2-4.7-11.3c-3.1-3.1-6.9-4.7-11.3-4.7
+                                c-4.3,0-8,1.6-11.1,4.7c-3.1,3.1-4.7,6.9-4.7,11.3c0,4.3,1.6,8,4.7,11.1C-992.2,993.6-988.5,995.1-984.2,995.1z"/>
+                            <path d="M-897.2,948.6V1145l72.6,31.8V925.2L-897.2,948.6z M-886.1,1055.8c-1.4,0-2.6-4.4-2.6-9.8s1.2-9.8,2.6-9.8
+                                c1.4,0,2.6,4.4,2.6,9.8S-884.6,1055.8-886.1,1055.8z"/>
+                        </g>
+                        </svg>
+                        <div class="nav_icon_text">вийти</div>
+                    </div>
+                </a> 
+            </div>`
+        </div>
+    </div>
+
+    
+    
+                
+{% endblock %}

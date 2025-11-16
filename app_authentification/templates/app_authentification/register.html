@@ -1,0 +1,58 @@
+<!-- register.html -->
+{% extends "../base.html" %}
+{% load static %}
+
+{% block title %}Створення користувача{% endblock %}
+
+{% block local_css %}
+
+<link rel="stylesheet" href="{% static 'app_authentification/css/' %}auth.css">
+
+{% endblock %}
+
+{% block content %}
+    
+    <div class="container-fluid vh-100">
+        {% include "app_authentification/logo.html" %}
+        <div class="row  justify-content-center align-items-center mb-5">
+            
+            <div class="col-10 col-md-6 col-lg-4">
+                <h4 class="auth_title">{{page_name_title}}</h2>
+                    
+                <!-- <form method="post">
+                    {% csrf_token %}
+                    {{ register_form.as_p }}
+                    <input type="submit" name="register_submit" value="Створити користувача"></button>
+                </form> -->
+                <form method="post" action="{% url 'app_authentification:register' %}">
+                    {% csrf_token %}
+                    {{ register_form.non_field_errors }}
+
+                    {% for field in register_form %}
+                    <div class="mb-3">
+                        {{ field.label_tag }}
+                        {{ field }}
+                        {{ field.errors }}
+                    </div>
+                    {% endfor %}
+
+                    <button type="submit" name="register_submit" class="btn auth_btn w-100 mb-4">
+                        Зареєструватися
+                    </button>
+
+                    <div>
+                        <a class="btn btn-secondary w-100" href="{% url 'app_authentification:login' %}">Увійти</a>
+                    </div>
+                    </form>
+                
+            </div>
+            
+        </div>
+        {% include "app_authentification/logo_footer.html" %}
+    </div>
+
+
+    
+
+    
+{% endblock %}

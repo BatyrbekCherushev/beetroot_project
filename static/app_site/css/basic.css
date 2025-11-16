@@ -1,0 +1,244 @@
+:root {
+  --interface-color-1: #283044;
+  /* --interface-color-2: rgb(173, 216, 230); */
+  --interface-color-3: #6b8fa8;
+  --interface-color-2: #5d7d95;
+  --interface-color-4: #c3d5e1;
+  --interface-color-5: #78a1bb;
+
+  
+}
+
+
+
+@font-face {
+  font-family: "Volja-Black"; /* довільна назва шрифту */
+  src: url("../fonts/Volja-Black.otf") format("opentype"); /* сучасний формат */
+  font-weight: normal;   /* можна вказати normal, bold */
+  font-style: normal;    /* normal, italic */
+}
+
+@font-face {
+  font-family: "Volja-Regular"; /* довільна назва шрифту */
+  src: url("../fonts/Volja-Regular.otf") format("opentype"); /* сучасний формат */
+  font-weight: normal;   /* можна вказати normal, bold */
+  font-style: normal;    /* normal, italic */
+}
+
+@font-face {
+  font-family: "Mantonico-ExtraLight"; /* довільна назва шрифту */
+  src: url("../fonts/Mantonico-ExtraLight.otf") format("opentype"); /* сучасний формат */
+  font-weight: normal;   /* можна вказати normal, bold */
+  font-style: normal;    /* normal, italic */
+}
+
+@font-face {
+  font-family: "Holos-Bold"; /* довільна назва шрифту */
+  src: url("../fonts/Holos-Bold.otf") format("opentype"); /* сучасний формат */
+  font-weight: normal;   /* можна вказати normal, bold */
+  font-style: normal;    /* normal, italic */
+}
+
+@font-face {
+  font-family: "UAFMemory-Black"; /* довільна назва шрифту */
+  src: url("../fonts/UAFMemory-Black.otf") format("opentype"); /* сучасний формат */
+  font-weight: normal;   /* можна вказати normal, bold */
+  font-style: normal;    /* normal, italic */
+}
+
+@font-face {
+  font-family: "Antique Quest"; /* довільна назва шрифту */
+  src: url("../fonts/Antique Quest St.ttf") format("truetype"); /* сучасний формат */
+  font-weight: normal;   /* можна вказати normal, bold */
+  font-style: normal;    /* normal, italic */
+}
+
+@font-face {
+  font-family: "ComicRunes"; /* довільна назва шрифту */
+  src: url("../fonts/ComicRunes.otf") format("opentype"); /* сучасний формат */
+  font-weight: normal;   /* можна вказати normal, bold */
+  font-style: normal;    /* normal, italic */
+}
+
+body {
+  min-height: 1000px;
+  /* font-family: "Mantonico-ExtraLight"; */
+  /* font-family: "Volja-Regular"; */
+}
+
+h1{
+  color: darkgrey;
+  font-family: "Volja-Regular";
+}
+
+button {
+  border: 2px solid var(--interface-color-5);
+    color: var(--interface-color-4);
+    border-radius: 30px;
+    min-width: 36px;
+    background-color: var(--interface-color-2);
+    padding: 5px;
+    box-shadow: 5px 5px 10px var(--interface-color-1);
+}
+/* NAVIGATION */
+.nav_icon_container {
+  height: 200px;
+  font-family: "Volja-Regular";
+}
+
+.nav_link {
+  text-decoration: none;
+}
+
+/* .nav_link:hover .nav_icon_text {
+  color: green;
+}
+
+.nav_link:active .nav_icon_text{
+  color: var(--interface-color-4);
+} */
+
+
+.nav_icon_wrapper {
+  margin-bottom: 30px;
+}
+
+.nav_icon_text {
+  color: transparent;
+  transform: scale(0.05);
+  transition: 2s all ease;
+}
+
+/* .nav_icon_wrapper:hover .nav_icon_text {
+  
+} */
+
+.nav_icon_wrapper:active .nav_icon_text {
+  display: block;
+  color: lightgray;
+}
+
+
+.nav_icon {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    transition: 1s ;
+}
+
+.nav_icon:hover {
+    fill: gray;
+    stroke: gray;
+    cursor: pointer;
+    transform: scale(0.5) translate(0px, -20px) ;
+    transition: 1s all ease;
+}
+
+.nav_icon:hover + .nav_icon_text {
+  display: block;
+  color: gray;
+  transform: scale(1.3);
+  transition: 1s all ease;
+}
+
+.nav_icon:active {
+    fill: white;
+    stroke: white;
+    transform: scale(0.05) translate(0px, -20px) ;
+    /* transform: rotatez(-20deg); */
+    
+}
+
+.nav_icon_open {
+    fill: darkred;
+    stroke: darkred;
+    transform: rotate(-10deg);
+}
+
+.nav_icon_open:hover {
+  stroke: darkred;
+  fill: darkred;
+  transform: scale(0.05)  rotate(-190deg) !important;
+}
+
+.nav_icon_open:hover + .nav_icon_text {
+  color: transparent;
+  transform: scale(0.05);
+  transition: 0.5s all ease;
+}
+
+/*============================= */
+
+/* BOOTSRAP ACCORDIONS */
+.accordion-item {
+  border-color: gray;
+}
+
+.collapse_button_flag {
+    width: 50px;
+    margin-right: 10px;
+}
+
+.collapse_button_icon {
+  width: 50px;
+  margin-right: 10px;
+  stroke: var(--interface-color-1);
+  fill: var(--interface-color-1);
+}
+
+
+
+.accordion-button:hover {
+  color: lightgrey;
+}
+
+.accordion-button:hover svg {
+  transform: scale(1.2);
+}
+
+.accordion-button:hover .collapse_button_icon {
+  fill: lightgray;
+  stroke: lightgray;
+}
+
+.accordion-button:active {
+  color: gray;
+}
+
+.accordion-button:active .collapse_button_icon{
+  fill: var(--interface-color-4);
+}
+
+
+
+.accordion-button:not(.collapsed) {
+  background-color: lightgray;
+  color: darkred;
+ 
+}
+
+.accordion-button:not(.collapsed) .collapse_button_icon {
+    fill: darkred;
+  stroke: darkred;
+}
+
+/* MODAL MESSAGE */
+
+/* .modal-content {
+    background-color: var(--interface-color-4) !important;
+} */
+
+
+
+
+
+
+
+
+
+
+
+
+
+

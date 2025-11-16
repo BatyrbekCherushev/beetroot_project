@@ -1,0 +1,49 @@
+body {
+    font-family: "Mantonico-ExtraLight";
+    font-size: 20px;
+}
+
+label {
+    display: block;
+}
+
+.title_icon {
+    width: 200px;
+    margin-bottom: 50px;
+    
+}
+
+.logo {
+    margin-bottom: 50px;
+}
+.logo_title {
+    font-family: "Volja-Black" !important;
+    font-size: 70px;
+    color: darkgray;
+}
+
+.logo_title_icon {
+    width: 80px;
+    margin: 20px;
+    transform: translateY(-10%);
+}
+
+.title_icon_dice {
+    width: 50px;
+}
+
+.auth_title {
+    font-family: "Volja-Regular";
+    font-size: 20px;
+}
+
+.auth_btn {
+    background-color: #6b0000;
+    color: white;
+    width: 50%;
+}
+
+
+.logo_footer_icon {
+    width: 90px;
+}
