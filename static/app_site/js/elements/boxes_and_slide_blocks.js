@@ -309,6 +309,12 @@ createButton.addEventListener('click', (event) =>{
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STUDY WORDS SLIDE BLOCK
+//-------------------------------------------------------------- CLICK STUDY WORDS
+document.querySelector('.js-study-panel').addEventListener('click', ()=>{
+  document.querySelector('.js-study-container').classList.remove('d-none');
+  document.querySelector('.js-test-container').classList.add('d-none');
+});
+
 const study_slide_block_display = document.querySelector('.js-study-display');
 
 function fill_study_slide_block_badges(activeSlide){
@@ -455,6 +461,94 @@ document.querySelector('.js-card-badge-link').addEventListener('click', ()=>{
     study_slide_block_display.innerHTML = `<a href="${active_word_card.dataset.word_link}" target="_blank" style="text-decoration: none;">${active_word_card.dataset.word_link}</a>`;
   }
 });
+
+
+//------------------------------------------------------------------------------------- TES STUDY WORDS
+function clear_test_block() {
+  const form = document.querySelector('.js-test-study-words');
+  form.innerHTML = '';
+
+  document.querySelector('.js-test-word').innerText = '';
+
+  document.querySelector('.js-check-test-btn').classList.add('d-none');
+}
+//-------------------------------------------------------------- CLICK TEST STUDY WORDS PANEL BUTTON
+document.querySelector('.js-test-panel').addEventListener('click', ()=>{
+  document.querySelector('.js-study-container').classList.add('d-none');
+  document.querySelector('.js-test-container').classList.remove('d-none');
+});
+
+// ------------------------------------------------------------- TESTING PROCESS FOR STUDY LIST
+async function load_question() {
+  const instance_type = slideBlockStudy.dataset.caller_instance_type;
+  const instance_language = slideBlockStudy.dataset.caller_instance_language;
+  const response = await fetch(`/get-study-test-case/?instance_type=${instance_type}&instance_language=${instance_language}`);
+  const data = await response.json();
+
+  if (data.error) {
+    clear_test_block();
+    document.querySelector('.js-test-error').innerText = data.error;
+
+    return; 
+  }
+  console.log(data.correct_answer);
+  if (data.word) {
+    document.querySelector('.js-test-error').innerText = '';
+    document.querySelector('.js-correct-answer').classList.add('d-none');
+    document.querySelector('.js-check-test-btn').classList.remove('d-none');
+
+    const form = document.querySelector('.js-test-study-words');
+    const word_element = document.querySelector('.js-test-word');
+    word_element.innerText = data.word;
+    word_element.dataset.correctAnswer = data.correct_answer;
+    word_element.classList.remove('d-none');
+    
+    form.innerHTML = '';
+
+    data.answer_options.forEach((opt, index) => {
+      const label = document.createElement('label');
+      label.classList.add('answer_option');
+      label.innerHTML = `
+        <input class=" form-check-input" type="radio" name="answer" value="${opt}" hidden ${index === 0 ? 'checked' : ''}>
+        ${opt}
+      `;
+      form.appendChild(label);
+      form.appendChild(document.createElement('br'));
+    });
+
+    
+  } 
+
+  
+}
+
+document.querySelector('.js-start-testing').addEventListener('click', ()=>{
+  load_question();
+});
+
+//------------------------------ Check answer
+document.querySelector('.js-check-test-btn').addEventListener('click', ()=>{
+  const correct_answer = document.querySelector('.js-test-word').dataset.correctAnswer;
+  // console.log('Correct answer = ', correct_answer);
+  const chosen_answer = document.querySelector('input[name="answer"]:checked').value;
+  // console.log('Chosen answer = ', chosen_answer);
+  if (correct_answer && chosen_answer) {
+    const error_text_element = document.querySelector('.js-test-error');
+    const correct_answer_element = document.querySelector('.js-correct-answer');
+    
+    if (correct_answer == chosen_answer) {
+      correct_answer_element.classList.remove('d-none');
+      error_text_element.classList.add('d-none');
+    } else {
+      correct_answer_element.classList.add('d-none');
+      error_text_element.innerText = `НАЖАЛЬ, НЕПРАВИЛЬНО! Правильна відповідь: ${correct_answer}`
+      error_text_element.classList.remove('d-none');
+    }
+
+  }
+});
+
+
 
 //-------------------------------------------------------------- CLICK CLEAR STUDY LIST BUTTON
 

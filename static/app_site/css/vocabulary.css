@@ -54,3 +54,8 @@
     color: grey;
 }
 
+.export_icon {
+    fill: var(--interface-color-6) !important;
+    stroke:  var(--interface-color-6) !important;
+}
+

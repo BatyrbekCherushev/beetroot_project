@@ -1,15 +1,15 @@
 :root {
-  --interface-color-1: #283044;
+--interface-color-1: #283044;
   /* --interface-color-2: rgb(173, 216, 230); */
   --interface-color-3: #6b8fa8;
   --interface-color-2: #5d7d95;
   --interface-color-4: #c3d5e1;
   --interface-color-5: #78a1bb;
 
-  
+  --interface-color-6:rgb(107, 0, 0);
+  --interface-color-7: #7E7777;
+
 }
-
-
 
 @font-face {
   font-family: "Volja-Black"; /* довільна назва шрифту */
@@ -62,7 +62,8 @@
 
 body {
   min-height: 1000px;
-  /* font-family: "Mantonico-ExtraLight"; */
+  /* font-family: "Mantonico-ExtraLight";
+  font-size: 20px; */
   /* font-family: "Volja-Regular"; */
 }
 
@@ -151,8 +152,8 @@ button {
 }
 
 .nav_icon_open {
-    fill: darkred;
-    stroke: darkred;
+    fill: #6b0000;
+    stroke: #6b0000;
     transform: rotate(-10deg);
 }
 
