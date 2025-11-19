@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}VOCABULARY{% endblock %}
+{% block title %}МІЙ СЛОВНИК{% endblock %}
 
 {% block local_css %}
 
@@ -271,6 +271,16 @@
                                         </td>
                                         <td>
                                             <input class="js-edit-translation" type="text" name="translation">
+                                        </td>
+                                    </tr>
+
+                                    <!-- TRANSLATION -->
+                                    <tr>
+                                        <td>                                          
+                                            варіанти перекладу <strong>(вводити через *)</strong>
+                                        </td>
+                                        <td>
+                                            <input class="js-edit-translation-options" type="text" name="translation">
                                         </td>
                                     </tr>
                                     <!-- COMMENT -->

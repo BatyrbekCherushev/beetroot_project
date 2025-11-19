@@ -146,8 +146,8 @@ class UserCustomWord(models.Model):
     repetition_count = models.IntegerField(default=0)
 
     class Meta:
-        verbose_name = 'КОРИСТУВАЦЬКЕ СЛОВО'
-        verbose_name_plural = "КОРИСТУВАЦЬКІ СЛОВА"
+        verbose_name = 'CUSTOM_VOCABULARY'
+        verbose_name_plural = "CUSTOM_VOCABULARY"
 
 #------------------------------------------------------------------------------------------------- BASIC ENGLISH  VOCABULARY WORDS MODEL and WORD STATUSES MODEL
 class Word(models.Model):
@@ -163,9 +163,9 @@ class Word(models.Model):
     comment = models.TextField(max_length=200, default='NO COMMENTS')
     link = models.CharField(default='https://www.oxfordlearnersdictionaries.com/wordlists/oxford3000-5000')
     
-    # specific verb forms
-    is_irregular_verb = models.BooleanField(default = False)
-    is_modal_verb = models.BooleanField(default = False)
+    # # specific verb forms
+    # is_irregular_verb = models.BooleanField(default = False)
+    # is_modal_verb = models.BooleanField(default = False)
 
     category = models.ForeignKey(
         WordCategory,
@@ -183,8 +183,8 @@ class Word(models.Model):
     )
     
     class Meta:
-        verbose_name = 'ENGLISH: Слово'
-        verbose_name_plural = "ENGLISH: Слова"
+        verbose_name = 'BASIC_EN: Слово'
+        verbose_name_plural = "BASIC_EN: Слова"
 
 
 class UserWordsProgress(models.Model):
@@ -207,8 +207,8 @@ class UserWordsProgress(models.Model):
     is_freezed = models.BooleanField(default=False)
 
     class Meta:
-        verbose_name = 'ENGLISH: Статус слова'
-        verbose_name_plural = "ENGLISH: Статуси слів"
+        verbose_name = 'BASIC_EN: Статус слова'
+        verbose_name_plural = "BASIC_EN: Статуси слів"
 
 #------------------------------------------------------------------------------------- BASIC DEUTCH  VOCABULARY WORDS MODEL and WORD STATUSES MODEL
 class WordDeutch(models.Model):
@@ -225,9 +225,9 @@ class WordDeutch(models.Model):
     link = models.CharField(default='https://www.verbformen.net/')
     
     # specific verb forms
-    is_trennbar_verb = models.BooleanField(default = False)
-    is_vokalwechsel_verb = models.BooleanField(default=False)
-    is_modal_verb = models.BooleanField(default = False)
+    # is_trennbar_verb = models.BooleanField(default = False)
+    # is_vokalwechsel_verb = models.BooleanField(default=False)
+    # is_modal_verb = models.BooleanField(default = False)
 
     category = models.ForeignKey(
         WordCategory,

@@ -61,6 +61,7 @@ def get_custom_words(request):
     word = request.GET.get('word')
     language = request.GET.get('language')
     translation = request.GET.get('translation')
+    comment = request.GET.get('comment')
     category = request.GET.get('category')
     sub_category = request.GET.get("sub_category", "")
 
@@ -68,23 +69,30 @@ def get_custom_words(request):
         filters['word_level'] = word_level
     if word_type:
         filters['word_type'] = word_type
-    if word:
-        filters['word'] = word  # пошук по слову частково
     if language:
         filters['language'] = language
     if translation:
         filters['translation'] = translation
+    
+
     if not(category in (None, '', 'RANDOM')):
         filters['category'] = int(category)
     if not(sub_category in (None, '', 'RANDOM')):
         filters['sub_category'] = int(sub_category)
 
 
-    # тільки для поточного користувача
+    # ФІЛЬТР ДЛЯ ПОТОЧНОГО користувача з попередніми точними фільтрами
     searched_words = UserCustomWord.objects.filter(user=request.user, **filters)
+
+    # НЕТОЧНЕ ФІЛЬТРУВАННЯ для слова  коментаря
+    if word: 
+        searched_words = searched_words.filter(word__icontains=word)
+    if comment:
+        searched_words = searched_words.filter(comment__icontains=comment)
 
     words_list = [serialize_custom_word(word) for word in searched_words]
     
+    print('>>>>>>>>>>>>> WORDS LIST: ', words_list)
     if len(words_list) == 0 :
         return JsonResponse({"status": "error", "message": "Співпадінь не знайдено"})
 
@@ -294,7 +302,10 @@ def create_study_list(request):
         words_list.extend(new_words_list)            
         server_answer = f'There were found {len(new_words_list)} words by your filter conditions!'
     else:
-        server_answer = 'No words found for you filter!'        
+        
+        return JsonResponse({
+            'error':'Слів для даного фільтру не знайдено!',
+            'code': 'СЛІВ НЕ ЗНАЙДЕНО!!!'}, status = 404)     
 
     if len(words_list) > 0:
         return JsonResponse({'words': words_list,

@@ -12,7 +12,7 @@ const input_edit_article = document.querySelector('.js-edit-article');
 const input_edit_transcription = document.querySelector('.js-edit-transcription');
 const input_edit_word = document.querySelector('.js-edit-word');
 const input_edit_translation = document.querySelector('.js-edit-translation');
-// const textEditTranslationOptions = document.querySelector('.js-edit-translation-options');
+const input_edit_translation_options = document.querySelector('.js-edit-translation-options')
 const input_edit_category = document.querySelector('.js-edit-category');
 const input_edit_sub_category = document.querySelector('.js-edit-subcategory');
 const input_edit_comment = document.querySelector('.js-edit-comment');
@@ -90,7 +90,7 @@ document.querySelector('.js-btn-search-word').addEventListener('click', async ()
         transcription: input_edit_transcription.value,
         word: input_edit_word.value,
         translation: input_edit_translation.value,
-        // translation_options: textEditTranslationOptions.value,
+        translation_options: input_edit_translation_options.value,
         category: input_edit_category.value,
         sub_category: input_edit_sub_category.value,
         comment: input_edit_comment.value,
@@ -186,6 +186,7 @@ document.querySelector('.js-btn-search-word').addEventListener('click', async ()
         input_edit_word.value = element.dataset.word;
         input_edit_transcription.value = element.dataset.transcription
         input_edit_translation.value = element.dataset.translation;
+        input_edit_translation_options.value = element.dataset.translation_options;
         input_edit_comment.value = element.dataset.comment;
         input_edit_synonims.value = element.dataset.synonims;
         // textEditTranslationOptions.value = element.dataset.translation_options;
@@ -201,11 +202,11 @@ document.querySelector('.js-btn-search-word').addEventListener('click', async ()
   if (data['status'] == 'error') {
     btn_add_word.disabled = false;
     
-    search_feedback.textContent = 'NO WORDS FOUND WITH SUCH A FILTER CONDITIONS';
+    search_feedback.textContent = 'СЛІВ ЗА ТАКИМИ ПАРАМЕТРАМИ ПОШУКУ НЕ ЗНАЙДЕНО!!!';
     search_feedback.classList.add('text-danger');
     tableSearchResults.innerHTML = '';
 
-    show_modal_message('danger', 'NO WORDS FOUND', 'NO WORDS FOUND WITH SUCH A FILTER CONDITIONS')
+    show_modal_message('danger', 'NO WORDS FOUND', 'СЛІВ ЗА ТАКИМИ ПАРАМЕТРАМИ ПОШУКУ НЕ ЗНАЙДЕНО!!!')
   }
 });
 
@@ -219,7 +220,7 @@ btn_add_word.addEventListener('click', () =>{
         transcription: input_edit_transcription.value,
         word: input_edit_word.value,
         ukrainian: input_edit_translation.value,
-        // translation_options: textEditTranslationOptions.value,
+        translation_options: input_edit_translation_options.value,
         category: input_edit_category.value,
         sub_category: input_edit_sub_category.value,
         comment: input_edit_comment.value,
@@ -243,7 +244,7 @@ btn_add_word.addEventListener('click', () =>{
         transcription: input_edit_transcription.value,
         word: input_edit_word.value,
         translation: input_edit_translation.value,
-        // translation_options: textEditTranslationOptions.value,
+        translation_options: input_edit_translation_options.value,
         category: input_edit_category.value,
         sub_category: input_edit_sub_category.value,
         comment: input_edit_comment.value,
@@ -291,7 +292,7 @@ btn_modify_word.addEventListener('click', ()=> {
         transcription: input_edit_transcription.value,
         word: input_edit_word.value,
         translation: input_edit_translation.value,
-        // translation_options: textEditTranslationOptions.value,
+        translation_options: input_edit_translation_options.value,
         category: input_edit_category.value,
         sub_category: input_edit_sub_category.value,
         comment: input_edit_comment.value,
@@ -338,6 +339,7 @@ function clear_filter_fields(){
   input_edit_word.value = input_edit_word.defaultValue;
   input_edit_transcription.value = input_edit_transcription.defaultValue;
   input_edit_translation.value = input_edit_translation.defaultValue;
+  input_edit_translation_options.value = input_edit_translation_options.defaultValue;
   input_edit_comment.value = input_edit_comment.defaultValue;
   input_edit_synonims.value = input_edit_synonims.defaultValue;
   input_edit_ID.value = input_edit_ID.defaultValue;

@@ -212,12 +212,13 @@ class WordAdmin(ImportExportModelAdmin):
         'id', 'word_level', 'word_type', 'article', 'word',
         'transcription', 'translation', 'translation_options',
         'synonims', 'comment', 'category', 'sub_category',"link",
-        'is_irregular_verb', 'is_modal_verb'
+        # 'is_irregular_verb', 'is_modal_verb'
     )
     list_editable = (
         "word_level", "word_type", "article", "word", "transcription",
         "translation", "translation_options", "synonims", "comment",
-        "category", "sub_category", "link", "is_irregular_verb", "is_modal_verb"
+        "category", "sub_category", "link", 
+        # "is_irregular_verb", "is_modal_verb"
     )
     # readonly_fields = ('id',)
     actions = ["delete_all_and_reset_id_and_progress"]
@@ -259,7 +260,7 @@ class WordDeutchResource(resources.ModelResource):
             "word_level", "word_type", "article", "word",
             "transcription", "translation", "translation_options", "synonims",
             "comment", "category", "sub_category", "link",
-            "is_modal_verb", "is_trennbar_verb", "is_vokalwechsel_verb"
+            # "is_modal_verb", "is_trennbar_verb", "is_vokalwechsel_verb"
         )
         import_id_fields = ("id",)  # або будь-яке унікальне поле для оновлення        
 
@@ -285,7 +286,8 @@ class WordDeutchAdmin(ImportExportModelAdmin):
     "category",
     "sub_category",
     "link",
-    "is_modal_verb")
+    # "is_modal_verb"
+    )
     list_editable = (
         
         "word_level",
@@ -300,7 +302,8 @@ class WordDeutchAdmin(ImportExportModelAdmin):
     "category",
     "sub_category",
     "link",
-    "is_modal_verb")
+    # "is_modal_verb"
+    )
     # readonly_fields = ('id',)
 
     actions = ["delete_all_and_reset_id_and_progress"]

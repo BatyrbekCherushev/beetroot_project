@@ -83,6 +83,7 @@ const selectWordsType = document.querySelector('.js-study-list-words-type');
 const selectWordsLevel = document.querySelector('.js-study-list-words-level');
 const selectWordsCategory = document.querySelector('.js-study-list-category');
 const selectWordsSubCategory = document.querySelector('.js-study-list-subcategories');
+const input_words_comment = document.querySelector('.js-study-list-comment')
 
 
 //------------------------------------------------------------------------------------ ЛОГІКА ФОРМИ СТВОРЕННЯ СПИСКУ СЛІВ
@@ -143,7 +144,6 @@ selectWordsCategory.addEventListener('change', (event) =>{
 
 //------------------------------------------------------------------------------------ CREATE STUDY LIST
 function createStudyList(instance_type, instance_language) {
-  
 
   fetch('/create-study-list/', {
     method: 'POST',
@@ -159,7 +159,8 @@ function createStudyList(instance_type, instance_language) {
       words_type: selectWordsType.value,
       words_level: selectWordsLevel.value,
       words_category: selectWordsCategory.value,
-      words_subcategory: selectWordsSubCategory.value
+      words_subcategory: selectWordsSubCategory.value,
+      words_comment: input_words_comment.value
     })
   })
   .then(response => {
@@ -184,11 +185,12 @@ function createStudyList(instance_type, instance_language) {
   })
   .catch(error => {
     // тут ловимо як мережеві помилки, так і помилки сервера
-    console.error('Error:', error);
+    
     if (error.code === 'NO_MORE_WORDS') {
-      alert('Слова для вивчення закінчилися!');
+      show_modal_message('danger', 'NO_MORE_WORDS', 'There no more words have been left in databse!')
     } else {
-      alert('Сталася помилка при створенні списку слів.');
+      // alert('Сталася помилка при створенні списку слів.');
+      show_modal_message('danger', error.code, error.error)
     }
     //  global.getUserInfo();
     get_statistics();

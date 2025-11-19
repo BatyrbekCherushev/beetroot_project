@@ -194,8 +194,7 @@ def serialize_word(word): # utilit
         'word_level': word.word_level,
         'category': word.category.name,
         'subcategory': word.sub_category.name,
-        "link":word.link
-        
+        "link":word.link       
         
    }
 
@@ -215,8 +214,14 @@ def create_custom_study_list(user, data):
     if data.get('words_subcategory') not in (None, '', 'RANDOM'):
         filters['sub_category'] = int(data['new_words_subcategory'])
     
+    
+    
 
     words_qs = UserCustomWord.objects.filter(user=user, language=instance_language)
+
+    comment = data.get('words_comment')
+    if comment:
+        words_qs = words_qs.filter(comment__icontains=comment)
 
     words_list = []
 
@@ -273,6 +278,7 @@ def create_basic_study_list(user, data):
     filters = {}
     words_type = data['words_type'] if data['words_type'] and data['words_type'] != 'RANDOM' else ''
     words_level = data['words_level'] if data['words_level'] and data['words_level'] != 'RANDOM' else ''
+    comment = data['words_comment']
     if words_type:
         filters['word_type'] = words_type
     if words_level:
@@ -308,9 +314,17 @@ def create_basic_study_list(user, data):
 
         rep_words = words_model.objects.filter(
             **filters,
-            id__in=statuses_model.objects.filter(user=user, status='REPEAT').values_list('word__id', flat=True))[:repeat_words_number]
+            id__in=statuses_model
+                .objects.filter(user=user, status='REPEAT')
+                .values_list('word__id', flat=True))
         
+        if comment:
+            rep_words = rep_words.filter(comment__icontains=comment)
+        
+
+        rep_words = rep_words[:repeat_words_number]
         statuses_model.objects.filter(user=user,  word__in=rep_words).update(status="PROCESS")
+
 
         for word in rep_words:
             words_list.append(serialize_word(word))
@@ -324,9 +338,14 @@ def create_basic_study_list(user, data):
         # CHOOSE 'NEW' words
         # ДОДАВАННЯ нових слів до навчального списку з урахуванням обраних користувачем фільтрів
         
-        new_words = words_model.objects.filter(**filters).exclude(id__in=in_process_word_ids)[:new_words_number ]
+        new_words = words_model.objects.filter(**filters).exclude(id__in=in_process_word_ids)
 
-        if new_words.count() > 0:
+        if comment:
+            new_words = new_words.filter(comment__icontains=comment)
+        
+        new_words = new_words[:new_words_number ]
+
+        if new_words.exists():
             for word in new_words:
                 statuses_model.objects.create(
                     user=user,
