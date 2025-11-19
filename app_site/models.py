@@ -111,7 +111,7 @@ class UserCustomWord(models.Model):
     translation_options = models.TextField(default='')
     synonims = models.TextField(default='NO SYNONIM FOR THIS WORD')
     comment = models.TextField(default='')
-    link = models.CharField(default='')
+    link = models.CharField(default='', max_length=400)
 
     category = models.ForeignKey(
         WordCategory,
@@ -161,7 +161,7 @@ class Word(models.Model):
     translation_options = models.TextField(default='')
     synonims = models.TextField(max_length=200, default='NO SYNONIMS')
     comment = models.TextField(max_length=200, default='NO COMMENTS')
-    link = models.CharField(default='https://www.oxfordlearnersdictionaries.com/wordlists/oxford3000-5000')
+    link = models.CharField(default='https://www.oxfordlearnersdictionaries.com/wordlists/oxford3000-5000', max_length=400)
     
     # # specific verb forms
     # is_irregular_verb = models.BooleanField(default = False)
@@ -222,7 +222,7 @@ class WordDeutch(models.Model):
     translation_options = models.TextField(default='')
     synonims = models.TextField(default='NO SYNONIM FOR THIS WORD')
     comment = models.TextField(default='')
-    link = models.CharField(default='https://www.verbformen.net/')
+    link = models.CharField(default='https://www.verbformen.net/', max_length=400)
     
     # specific verb forms
     # is_trennbar_verb = models.BooleanField(default = False)
