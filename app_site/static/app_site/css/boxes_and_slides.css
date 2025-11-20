@@ -311,7 +311,7 @@
   border: 3px solid var(--interface-color-6);
   border-radius: 50px;
   background-color: lightgray;
-  color: white;
+  color: var(--interface-color-6);
   padding: 15px;
   text-align: left;
 
@@ -473,15 +473,15 @@ left: 40px;
     right: 103%;
 }
 
-.badge_word_comment {
-    cursor: pointer;
+.badge_word_link {
+    z-index: 1000;
+    text-decoration: none;
     top: 37%;
     left: 103%;
 }
 
-.badge_word_link {
-    z-index: 1000;
-    text-decoration: none;
+.badge_word_comment {
+    cursor: pointer;
     top: 55%;
     right: 103%;
 }

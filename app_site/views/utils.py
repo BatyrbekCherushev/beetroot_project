@@ -279,6 +279,7 @@ def create_basic_study_list(user, data):
     words_type = data['words_type'] if data['words_type'] and data['words_type'] != 'RANDOM' else ''
     words_level = data['words_level'] if data['words_level'] and data['words_level'] != 'RANDOM' else ''
     comment = data['words_comment']
+    
     if words_type:
         filters['word_type'] = words_type
     if words_level:
