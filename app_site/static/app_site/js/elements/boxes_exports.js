@@ -4,10 +4,6 @@ export function refresh_instance_statistics(instance_type, instance_language, in
     const settings = JSON.parse(localStorage.getItem('settings'))[`${instance_type}_${instance_language}`];
     // console.log(instance_data);
     if (instance_data && settings) {
-      const vocabulary_header = document.querySelector(`.js-vocabulary-header[data-instance_type="${instance_type}"][data-instance_language="${instance_language}"]`);
-      if (vocabulary_header) {
-        vocabulary_header.textContent = ` ${instance_data['TOTAL']} слів в словнику всього, ${instance_data['NEW']} слів зі статусом НОВЕ`;
-      }
 
       const categories = ['REPEAT','PROCESS','BOX_1', 'BOX_2', 'BOX_3', 'LEARNT']
       for (const category of categories){

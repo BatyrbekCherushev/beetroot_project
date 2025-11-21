@@ -1,8 +1,156 @@
-import {get_statistics, getCookie, getUserInfo, show_modal_message} from '../global.js'
+import {get_statistics, getCookie, getUserInfo, show_modal_message, show_modal_statistics} from '../global.js'
 import {refresh_instance_statistics} from './boxes_exports.js'
 
 
   
+// ================================================================================ INSTANCE MENU =================================================================
+
+// -------------------------------------------------------------------------------- CLICK INSTANCE MENU STATISTICS BUTTON
+document.querySelectorAll('.js-instance-statistics-btn').forEach(btn =>{
+  btn.addEventListener('click', async (event)=>{
+    // console.log(event.currentTarget.dataset.instance_type + '_' + event.currentTarget.dataset.instance_language);
+    const instance_type = event.currentTarget.dataset.instance_type;
+    const instance_language = event.currentTarget.dataset.instance_language;
+    const statistics = await get_statistics();
+    console.log(statistics[instance_type][instance_language]);
+    show_modal_statistics('','','',statistics[instance_type][instance_language]);
+  });
+
+  
+  
+});
+
+// ------------------------------------------------------------------------------- CLICK INSTANCE MENU STUDY WORDS BTN
+const btns_study_words = document.querySelectorAll('.js-study-words');
+
+btns_study_words.forEach(button =>{
+  button.addEventListener('click', () => {
+    // const closest_box = button.closest('.js-box');
+    const instance_type = button.dataset.instance_type;
+    const instance_language = button.dataset.instance_language;
+
+    document.dispatchEvent(new CustomEvent('study_words', {
+      detail: {
+        instance_type: instance_type,
+        instance_language: instance_language,
+      }
+    }));    
+  });
+});
+
+
+//--------------------------------------------------------------CLICK INSTANCE MENU TEST STUDY WORDS BUTTON
+const btns_study_words_test = document.querySelectorAll('.js-study-words-test');
+
+btns_study_words_test.forEach(button => {
+  button.addEventListener('click', ()=> {
+    const instance_type = button.dataset.instance_type;
+    const instance_language = button.dataset.instance_language;
+
+    document.dispatchEvent(new CustomEvent('study_words_test', {
+      detail: {
+        instance_type: instance_type,
+        instance_language: instance_language,
+      }
+    })); 
+  });
+  
+});
+//===================================================================================== TEST STUDY WORDS SLIDE BLOCK ============================================================================
+
+// ----------------------------------------------------------- EVENT REACTION
+document.addEventListener('study_words_test', (event)=>{
+  slide_block_test_study_words.dataset.caller_instance_type = event.detail.instance_type;
+  slide_block_test_study_words.dataset.caller_instance_language = event.detail.instance_language;
+
+  hide_slide_blocks();
+  clear_test_block();
+  // document.querySelector('.js-test-error').classList.add('d-none');
+  // document.querySelector('.js-correct-answer').classList.add('d-none');
+  slide_block_test_study_words.classList.add('slide_block_show');
+});
+
+
+function clear_test_block() {
+  const form = document.querySelector('.js-test-study-words');
+  form.innerHTML = '';
+
+  document.querySelector('.js-test-word').innerText = '';
+  document.querySelector('.js-check-test-btn').classList.add('d-none');
+  
+}
+
+
+
+// ------------------------------------------------------------- TESTING PROCESS FOR STUDY LIST
+async function load_question() {
+  const instance_type = slide_block_test_study_words.dataset.caller_instance_type;
+  const instance_language = slide_block_test_study_words.dataset.caller_instance_language;
+  const response = await fetch(`/get-study-test-case/?instance_type=${instance_type}&instance_language=${instance_language}`);
+  const data = await response.json();
+
+  if (data.error) {
+    clear_test_block();
+    document.querySelector('.js-test-error').innerText = data.error;
+
+    return; 
+  }
+  console.log(data.correct_answer);
+  if (data.word) {
+    document.querySelector('.js-test-error').innerText = '';
+    document.querySelector('.js-correct-answer').classList.add('d-none');
+    document.querySelector('.js-check-test-btn').classList.remove('d-none');
+
+    const form = document.querySelector('.js-test-study-words');
+    const word_element = document.querySelector('.js-test-word');
+    word_element.innerText = data.word;
+    word_element.dataset.correctAnswer = data.correct_answer;
+    word_element.classList.remove('d-none');
+    
+    form.innerHTML = '';
+
+    data.answer_options.forEach((opt, index) => {
+      const label = document.createElement('label');
+      label.classList.add('answer_option');
+      label.innerHTML = `
+        <input class=" form-check-input" type="radio" name="answer" value="${opt}" hidden ${index === 0 ? 'checked' : ''}>
+        ${opt}
+      `;
+      form.appendChild(label);
+      form.appendChild(document.createElement('br'));
+    });
+
+    
+  } 
+
+  
+}
+
+document.querySelector('.js-start-testing').addEventListener('click', ()=>{
+  load_question();
+});
+
+//------------------------------ Check answer
+document.querySelector('.js-check-test-btn').addEventListener('click', ()=>{
+  const correct_answer = document.querySelector('.js-test-word').dataset.correctAnswer;
+  // console.log('Correct answer = ', correct_answer);
+  const chosen_answer = document.querySelector('input[name="answer"]:checked').value;
+  // console.log('Chosen answer = ', chosen_answer);
+  if (correct_answer && chosen_answer) {
+    const error_text_element = document.querySelector('.js-test-error');
+    const correct_answer_element = document.querySelector('.js-correct-answer');
+    
+    if (correct_answer == chosen_answer) {
+      correct_answer_element.classList.remove('d-none');
+      error_text_element.classList.add('d-none');
+    } else {
+      correct_answer_element.classList.add('d-none');
+      error_text_element.innerText = `НАЖАЛЬ, НЕПРАВИЛЬНО! Правильна відповідь: ${correct_answer}`
+      error_text_element.classList.remove('d-none');
+    }
+
+  }
+});
 
 //================================================================================= CLICK ON BOXES BUTTONS =====================================================================================
 
@@ -41,22 +189,7 @@ btns_test_words.forEach(button => {
   });
 });
 
-const btns_study_words = document.querySelectorAll('.js-study-words');
 
-btns_study_words.forEach(button =>{
-  button.addEventListener('click', () => {
-    const closest_box = button.closest('.js-box');
-    const instance_type = closest_box.dataset.instance_type;
-    const instance_language = closest_box.dataset.instance_language;
-
-    document.dispatchEvent(new CustomEvent('study_words', {
-      detail: {
-        instance_type: instance_type,
-        instance_language: instance_language,
-      }
-    }));    
-  });
-});
 
 const btns_clear_box = document.querySelectorAll('.js-clean-box');
 
@@ -253,7 +386,9 @@ function fillWords(instance_type, instance_language, wordsList, createDate){
 const slideBlockCreateList = document.querySelector('.js-slide-block-create-list');
 const slideBlockTesting = document.querySelector('.js-slide-block-testing');
 const slideBlockStudy = document.querySelector('.js-slide-block-study');
+const slide_block_test_study_words = document.querySelector('.js-slide-block-test-study-words');
 const slideBlockCleanBox = document.querySelector('.js-slide-block-clean-box');
+
 
 document.querySelectorAll('.js-slide-block-hide').forEach( button => {
   button.addEventListener('click', () => {
@@ -266,7 +401,7 @@ function hide_test_slide_block(){
 }
 
 function hide_slide_blocks(){
-  [slideBlockCreateList, slideBlockStudy, slideBlockTesting, slideBlockCleanBox].forEach(slideBlock =>{
+  [slideBlockCreateList, slideBlockStudy, slideBlockTesting, slideBlockCleanBox, slide_block_test_study_words].forEach(slideBlock =>{
       slideBlock.classList.remove('slide_block_show');
     });
 }
@@ -311,11 +446,7 @@ createButton.addEventListener('click', (event) =>{
 
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> STUDY WORDS SLIDE BLOCK
-//-------------------------------------------------------------- CLICK STUDY WORDS
-document.querySelector('.js-study-panel').addEventListener('click', ()=>{
-  document.querySelector('.js-study-container').classList.remove('d-none');
-  document.querySelector('.js-test-container').classList.add('d-none');
-});
+
 
 const study_slide_block_display = document.querySelector('.js-study-display');
 
@@ -464,99 +595,11 @@ document.querySelector('.js-card-badge-link').addEventListener('click', ()=>{
   }
 });
 
-
-//------------------------------------------------------------------------------------- TES STUDY WORDS
-function clear_test_block() {
-  const form = document.querySelector('.js-test-study-words');
-  form.innerHTML = '';
-
-  document.querySelector('.js-test-word').innerText = '';
-
-  document.querySelector('.js-check-test-btn').classList.add('d-none');
-}
-//-------------------------------------------------------------- CLICK TEST STUDY WORDS PANEL BUTTON
-document.querySelector('.js-test-panel').addEventListener('click', ()=>{
-  document.querySelector('.js-study-container').classList.add('d-none');
-  document.querySelector('.js-test-container').classList.remove('d-none');
-});
-
-// ------------------------------------------------------------- TESTING PROCESS FOR STUDY LIST
-async function load_question() {
-  const instance_type = slideBlockStudy.dataset.caller_instance_type;
-  const instance_language = slideBlockStudy.dataset.caller_instance_language;
-  const response = await fetch(`/get-study-test-case/?instance_type=${instance_type}&instance_language=${instance_language}`);
-  const data = await response.json();
-
-  if (data.error) {
-    clear_test_block();
-    document.querySelector('.js-test-error').innerText = data.error;
-
-    return; 
-  }
-  console.log(data.correct_answer);
-  if (data.word) {
-    document.querySelector('.js-test-error').innerText = '';
-    document.querySelector('.js-correct-answer').classList.add('d-none');
-    document.querySelector('.js-check-test-btn').classList.remove('d-none');
-
-    const form = document.querySelector('.js-test-study-words');
-    const word_element = document.querySelector('.js-test-word');
-    word_element.innerText = data.word;
-    word_element.dataset.correctAnswer = data.correct_answer;
-    word_element.classList.remove('d-none');
-    
-    form.innerHTML = '';
-
-    data.answer_options.forEach((opt, index) => {
-      const label = document.createElement('label');
-      label.classList.add('answer_option');
-      label.innerHTML = `
-        <input class=" form-check-input" type="radio" name="answer" value="${opt}" hidden ${index === 0 ? 'checked' : ''}>
-        ${opt}
-      `;
-      form.appendChild(label);
-      form.appendChild(document.createElement('br'));
-    });
-
-    
-  } 
-
-  
-}
-
-document.querySelector('.js-start-testing').addEventListener('click', ()=>{
-  load_question();
-});
-
-//------------------------------ Check answer
-document.querySelector('.js-check-test-btn').addEventListener('click', ()=>{
-  const correct_answer = document.querySelector('.js-test-word').dataset.correctAnswer;
-  // console.log('Correct answer = ', correct_answer);
-  const chosen_answer = document.querySelector('input[name="answer"]:checked').value;
-  // console.log('Chosen answer = ', chosen_answer);
-  if (correct_answer && chosen_answer) {
-    const error_text_element = document.querySelector('.js-test-error');
-    const correct_answer_element = document.querySelector('.js-correct-answer');
-    
-    if (correct_answer == chosen_answer) {
-      correct_answer_element.classList.remove('d-none');
-      error_text_element.classList.add('d-none');
-    } else {
-      correct_answer_element.classList.add('d-none');
-      error_text_element.innerText = `НАЖАЛЬ, НЕПРАВИЛЬНО! Правильна відповідь: ${correct_answer}`
-      error_text_element.classList.remove('d-none');
-    }
-
-  }
-});
-
-
-
 //-------------------------------------------------------------- CLICK CLEAR STUDY LIST BUTTON
 
-document.querySelector('.js-clear-study_list').addEventListener('click', async ()=>{
-  const instance = slideBlockStudy.dataset.caller_instance_type;
-  const language = slideBlockStudy.dataset.caller_instance_language;
+document.querySelector('.js-clear-study_list').addEventListener('click', async (event)=>{
+  const instance = event.currentTarget.dataset.instance_type;
+  const language = event.currentTarget.dataset.instance_language;
   const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
   const container = parent_container.querySelector('.js-flip-card-container');
   
@@ -606,7 +649,7 @@ document.querySelector('.js-clear-study_list').addEventListener('click', async (
         // console.error('Помилка при відправці відповіді:', err);
     }
 });
-//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> TEST WORD SLIDE BLOCK
+//========================================================================================== TEST WORD SLIDE BLOCK ========================================================================
 
 // -------------------------------- EVENT that test words butoon on some box was pressed
 document.addEventListener('test_words', (event)=>{

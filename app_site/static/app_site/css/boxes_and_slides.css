@@ -1,6 +1,26 @@
 
 
-/* BOXES */
+/* =================================================================== BOXES ===================================================================*/
+
+/* --------------------------------------------------------------------- BOXES MENU */
+.boxes_menu_btn {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.boxes_menu_btn:hover {
+    background-color: rgba(173, 216, 230, 0.3);
+    border: 2px solid var(--interface-color-6);
+    stroke: var(--interface-color-6);
+    fill: var(--interface-color-6);
+}
+
+/* --------------------------------------------------------------------- BOXES MENU  - END*/
+
 .box:hover {
     cursor: pointer;
     /* transform: scale(1.2); */

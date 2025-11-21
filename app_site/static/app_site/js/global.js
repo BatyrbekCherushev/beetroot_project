@@ -19,13 +19,13 @@ export function getCookie(name) {
 }
 
 
-//----------------------------------------------------------------------------------- MODAL
-const myModal = new bootstrap.Modal('#myModal', {
+//----------------------------------------------------------------------------------- MODALS
+const myModal = new bootstrap.Modal('#modal_message', {
     keyboard: false
   })
 
 export function show_modal_message(type='secondary', title='NO TITLE', message='NO MESSAGE') {
-  const modalEl = document.getElementById('myModal');
+  const modalEl = document.getElementById('modal_message');
   const modalTitle = document.querySelector('.my_modal_title');
   const modalBody = document.querySelector('.my_modal_body');
   
@@ -33,6 +33,22 @@ export function show_modal_message(type='secondary', title='NO TITLE', message='
   modalTitle.innerHTML = `<span class="text-${type}">${title}</span>`;
 
   myModal.show();
+}
+
+const statistics_modal = new bootstrap.Modal("#modal_statistics", {
+  keyboard: false
+});
+
+export function show_modal_statistics(type='seconadry', title='NO TITLE', message='NO MESSAGE', data={}) {
+  const modal_element = document.getElementById('modal_statistics');
+  const modal_title = modal_element.querySelector('.my_modal_title');
+  const modalBody = modal_element.querySelector('.my_modal_body');
+  modalBody.innerHTML = `
+    <p class="statistics_total">Всього слів: ${data['TOTAL']}</p>
+    <p class="statistics_new">Нових слів: ${data['NEW']}</p>
+    <p class="statistics_learnt">Вивчено слів: ${data['LEARNT']}</p>
+  `;
+  statistics_modal.show();
 }
 
 // show_modal_message();
