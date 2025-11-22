@@ -77,8 +77,19 @@ def get_statistics_info(user):
                 Status_Model = INSTANCES_MAP['basic'][language]['statuses']
 
                 count_total_words = Word_Model.objects.count()
+                count_A1_total_words = Word_Model.objects.filter( word_level='A1').count()
+                count_A2_total_words = Word_Model.objects.filter( word_level='A2').count()
+                count_B1_total_words = Word_Model.objects.filter( word_level='B1').count()
+                count_B2_total_words = Word_Model.objects.filter( word_level='B2').count()
+                count_C1_total_words = Word_Model.objects.filter( word_level='C1').count()
+                count_C2_total_words = Word_Model.objects.filter( word_level='C2').count()
+
+
                 count_repeat_words = Status_Model.objects.filter(user=user, status='REPEAT').count()
+
+                # IN PROCESS
                 count_process_words = Status_Model.objects.filter(user=user, status='PROCESS').count()
+
                 count_box_1_words = Status_Model.objects.filter(user=user, status='BOX_1').count()
                 count_box_1_usable = Status_Model.objects.filter(
                     user=user, status='BOX_1', status_changed_date__lte=limit_datetime
@@ -91,7 +102,33 @@ def get_statistics_info(user):
                 count_box_3_usable = Status_Model.objects.filter(
                     user=user, status='BOX_3', status_changed_date__lte=limit_datetime
                 ).count()
+                
+                # LEARNT
                 count_learnt_words = Status_Model.objects.filter(user=user, status='LEARNT').count()
+                count_A1_learnt_words = Status_Model.objects.filter(
+                    user=user,
+                    status='LEARNT',
+                    word__word_level='A1').count()
+                count_A2_learnt_words = Status_Model.objects.filter(
+                    user=user,
+                    status='LEARNT',
+                    word__word_level='A2').count()
+                count_B1_learnt_words = Status_Model.objects.filter(
+                    user=user,
+                    status='LEARNT',
+                    word__word_level='B1').count()
+                count_B2_learnt_words = Status_Model.objects.filter(
+                    user=user,
+                    status='LEARNT',
+                    word__word_level='B2').count()
+                count_C1_learnt_words = Status_Model.objects.filter(
+                    user=user,
+                    status='LEARNT',
+                    word__word_level='C1').count()
+                count_C2_learnt_words = Status_Model.objects.filter(
+                    user=user,
+                    status='LEARNT',
+                    word__word_level='C2').count()
                 count_learnt_usable = Status_Model.objects.filter(
                     user=user, status='LEARNT', status_changed_date__lte=limit_datetime
                 ).count()
@@ -107,7 +144,16 @@ def get_statistics_info(user):
                                   count_box_1_words - count_box_2_words - count_box_3_words - count_learnt_words
             else:
                 Custom_Words_Model = UserCustomWord.objects.filter(user=user, language=language)
+                
+                # TOTAL
                 count_total_words = Custom_Words_Model.count()
+                count_A1_total_words = Custom_Words_Model.filter(word_level='A1').count()
+                count_A2_total_words = Custom_Words_Model.filter(word_level='A2').count()
+                count_B1_total_words = Custom_Words_Model.filter(word_level='B1').count()
+                count_B2_total_words = Custom_Words_Model.filter(word_level='B2').count()
+                count_C1_total_words = Custom_Words_Model.filter(word_level='C1').count()
+                count_C2_total_words = Custom_Words_Model.filter(word_level='C2').count()
+
                 count_repeat_words = Custom_Words_Model.filter(status='REPEAT').count()
                 count_process_words = Custom_Words_Model.filter(status='PROCESS').count()
 
@@ -125,7 +171,26 @@ def get_statistics_info(user):
                 count_box_3_usable = Custom_Words_Model.filter(
                     status='BOX_3', status_changed_date__lte=limit_datetime).count()
                 
+                # LEARNT
                 count_learnt_words = Custom_Words_Model.filter(status='LEARNT').count()
+                count_A1_learnt_words = Custom_Words_Model.filter(
+                    word_level="A1",
+                    status='LEARNT').count()
+                count_A2_learnt_words = Custom_Words_Model.filter(
+                    word_level="A2",
+                    status='LEARNT').count()
+                count_B1_learnt_words = Custom_Words_Model.filter(
+                    word_level="B1",
+                    status='LEARNT').count()
+                count_B2_learnt_words = Custom_Words_Model.filter(
+                    word_level="B2",
+                    status='LEARNT').count()
+                count_C1_learnt_words = Custom_Words_Model.filter(
+                    word_level="C1",
+                    status='LEARNT').count()
+                count_C2_learnt_words = Custom_Words_Model.filter(
+                    word_level="C2",
+                    status='LEARNT').count()
                 count_learnt_usable = Custom_Words_Model.filter(
                     status='LEARNT', status_changed_date__lte=limit_datetime
                 ).count()
@@ -142,6 +207,13 @@ def get_statistics_info(user):
 
             result_statistics[instance][language] = {
                 'TOTAL': count_total_words,
+                'A1_TOTAL': count_A1_total_words,
+                'A2_TOTAL': count_A2_total_words,
+                'B1_TOTAL': count_B1_total_words,
+                'B2_TOTAL': count_B2_total_words,
+                'C1_TOTAL': count_C1_total_words,
+                'C2_TOTAL': count_C2_total_words,
+
                 'NEW': count_new_words,
                 'REPEAT': count_repeat_words,
                 'PROCESS': count_process_words,
@@ -151,12 +223,21 @@ def get_statistics_info(user):
                 'BOX_2_usable': count_box_2_usable,
                 'BOX_3': count_box_3_words,
                 'BOX_3_usable': count_box_3_usable,
+
                 'LEARNT': count_learnt_words,
+                'A1_LEARNT': count_A1_learnt_words,
+                'A2_LEARNT': count_A2_learnt_words,
+                'B1_LEARNT': count_B1_learnt_words,
+                'B2_LEARNT': count_B2_learnt_words,
+                'C1_LEARNT': count_C1_learnt_words,
+                'C2_LEARNT': count_C2_learnt_words,
+
                 'LEARNT_usable': count_learnt_usable,
                 'LEARNT_freezed': count_learnt_freezed,
                 'BOX_1_LIMIT': current_instance_settings.get('box_1_limit', 90),
                 'BOX_2_LIMIT': current_instance_settings.get('box_2_limit', 150),
                 'BOX_3_LIMIT': current_instance_settings.get('box_3_limit', 150),
+
             }
 
     return result_statistics

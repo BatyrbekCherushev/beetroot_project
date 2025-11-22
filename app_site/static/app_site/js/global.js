@@ -43,10 +43,61 @@ export function show_modal_statistics(type='seconadry', title='NO TITLE', messag
   const modal_element = document.getElementById('modal_statistics');
   const modal_title = modal_element.querySelector('.my_modal_title');
   const modalBody = modal_element.querySelector('.my_modal_body');
+
+  modal_title.innerHTML = `<span class="text-${type}">${title}</span>`;
+
   modalBody.innerHTML = `
-    <p class="statistics_total">Всього слів: ${data['TOTAL']}</p>
-    <p class="statistics_new">Нових слів: ${data['NEW']}</p>
-    <p class="statistics_learnt">Вивчено слів: ${data['LEARNT']}</p>
+
+    <table class="table">
+      <thead>
+        <tr >
+          <th scope="col">ТИП</th>
+          <th scope="col">ВСЬОГО</th>
+          <th scope="col">ВИВЧЕНО</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-dark">
+          <td>Всі слова</td>
+          <td>${data['TOTAL']}</td>        
+          <td>${data['LEARNT']}</td>
+        </tr>
+        
+        <tr class="table-light">
+          <td>A1</td>
+          <td>${data['A1_TOTAL']}</td>
+          <td>${data['A1_LEARNT']}</td>
+        </tr>
+        <tr class="table-warning">
+          <td>A2</td>
+          <td>${data['A2_TOTAL']}</td>
+          <td>${data['A2_LEARNT']}</td>
+        </tr>
+
+        <tr class="table-secondary">
+          <td>B1</td>
+          <td>${data['B1_TOTAL']}</td>
+          <td>${data['B1_LEARNT']}</td>
+        </tr>
+        <tr class="table-danger">
+          <td>B2</td>
+          <td>${data['B2_TOTAL']}</td>
+          <td>${data['B2_LEARNT']}</td>
+        </tr>
+
+        <tr class="table-info">
+          <td>C1</td>
+          <td>${data['C1_TOTAL']}</td>
+          <td>${data['C1_LEARNT']}</td>
+        </tr>
+        <tr class="table-success">
+          <td>C2</td>
+          <td>${data['C2_TOTAL']}</td>
+          <td>${data['C2_LEARNT']}</td>
+        </tr>
+        
+      </tbody>
+    </table>
   `;
   statistics_modal.show();
 }

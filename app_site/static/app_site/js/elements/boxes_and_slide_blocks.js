@@ -13,7 +13,7 @@ document.querySelectorAll('.js-instance-statistics-btn').forEach(btn =>{
     const instance_language = event.currentTarget.dataset.instance_language;
     const statistics = await get_statistics();
     console.log(statistics[instance_type][instance_language]);
-    show_modal_statistics('','','',statistics[instance_type][instance_language]);
+    show_modal_statistics('success',`Статистика для словника ${instance_type}_${instance_language}`,'',statistics[instance_type][instance_language]);
   });
 
   
@@ -154,6 +154,68 @@ document.querySelector('.js-check-test-btn').addEventListener('click', ()=>{
 
 //================================================================================= CLICK ON BOXES BUTTONS =====================================================================================
 
+
+// ------------------------------------------ CLICK CLEAN STUDY LIST BTN 
+const btns_clean_study_list = document.querySelectorAll('.js-clear-study_list');
+
+btns_clean_study_list.forEach(button => {
+  button.addEventListener('click', async (event)=>{
+    const instance = event.currentTarget.dataset.instance_type;
+    const language = event.currentTarget.dataset.instance_language;
+    const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
+    const container = parent_container.querySelector('.js-flip-card-container');
+  
+    if (container.innerHTML == '') {
+      show_modal_message('danger', 'NO WORDS', 'Thera are no words in your study list...')
+      return;
+    }
+    try {
+          const response = await fetch('/clear-study-list/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': getCookie('csrftoken')  // функція getCookie повинна бути визначена
+              },
+              body: JSON.stringify({
+                  instance_type: instance,
+                  instance_language: language,
+                  
+              })
+          });
+          if (!response.ok) {
+              // Сервер повернув помилку (400, 404 тощо)
+              const errorText = await response.text();  // отримуємо тіло відповіді як текст
+              show_modal_message('danger', 'ПОМИЛКА', errorText)
+              // console.error(`Помилка сервера ${response.status}:`, errorText);
+              return;
+          }
+
+          const data = await response.json();
+
+          console.log(data);
+          if (data['words']) {
+            fillWords(instance, language, data['words'], new Date().toLocaleString());
+            show_modal_message('warning', 'Не повністю очищено', data['message'])
+          } else {
+            clear_study_list(instance, language);
+            clear_study_slide_block_badges();
+            show_modal_message('success', 'FULLY CLEARED', 'Your study list is fully cleared');
+          }
+
+          
+          
+          get_statistics();
+
+      } catch (err) {
+          show_modal_message('danger', 'ПОМИЛКА', err)
+          // console.error('Помилка при відправці відповіді:', err);
+      }
+});
+});
+
+
+
+// --------------------------------------------------------- CLICK CREATE STUDY LIST BTN
 const btns_create_study_list = document.querySelectorAll('.js-btn-create-list')
 
 btns_create_study_list.forEach(btn_create => {
@@ -170,6 +232,7 @@ btns_create_study_list.forEach(btn_create => {
       });
 });
 
+// ------------------------------------------------------------- CLICK TEST BTN ON BOX
 const btns_test_words = document.querySelectorAll('.js-test');
 
 btns_test_words.forEach(button => {
@@ -595,60 +658,9 @@ document.querySelector('.js-card-badge-link').addEventListener('click', ()=>{
   }
 });
 
-//-------------------------------------------------------------- CLICK CLEAR STUDY LIST BUTTON
 
-document.querySelector('.js-clear-study_list').addEventListener('click', async (event)=>{
-  const instance = event.currentTarget.dataset.instance_type;
-  const language = event.currentTarget.dataset.instance_language;
-  const parent_container = document.querySelector(`.js-study-cards-container[data-instance_type="${instance}"][data-instance_language="${language}"]`);
-  const container = parent_container.querySelector('.js-flip-card-container');
-  
-  if (container.innerHTML == '') {
-    show_modal_message('danger', 'NO WORDS', 'Thera are no words in your study list...')
-    return;
-  }
-  try {
-        const response = await fetch('/clear-study-list/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')  // функція getCookie повинна бути визначена
-            },
-            body: JSON.stringify({
-                instance_type: instance,
-                instance_language: language,
-                
-            })
-        });
-        if (!response.ok) {
-            // Сервер повернув помилку (400, 404 тощо)
-            const errorText = await response.text();  // отримуємо тіло відповіді як текст
-            show_modal_message('danger', 'ПОМИЛКА', errorText)
-            // console.error(`Помилка сервера ${response.status}:`, errorText);
-            return;
-        }
 
-        const data = await response.json();
 
-        console.log(data);
-        if (data['words']) {
-          fillWords(instance, language, data['words'], new Date().toLocaleString());
-          show_modal_message('warning', 'Не повністю очищено', data['message'])
-        } else {
-          clear_study_list(instance, language);
-          clear_study_slide_block_badges();
-          show_modal_message('success', 'FULLY CLEARED', 'Your study list is fully cleared');
-        }
-
-        
-        
-        get_statistics();
-
-    } catch (err) {
-        show_modal_message('danger', 'ПОМИЛКА', err)
-        // console.error('Помилка при відправці відповіді:', err);
-    }
-});
 //========================================================================================== TEST WORD SLIDE BLOCK ========================================================================
 
 // -------------------------------- EVENT that test words butoon on some box was pressed
